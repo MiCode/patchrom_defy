@@ -1117,12 +1117,10 @@
     .line 435
     .local v7, expandedText:Ljava/lang/String;
     :goto_1
-    new-instance v8, Landroid/content/Intent;
+    
+    invoke-static {}, Lcom/android/phone/PhoneApp;->createCallLogIntent()Landroid/content/Intent;
 
-    const-string v1, "com.motorola.dialer.action.RECENT_CALLS"
-
-    invoke-direct {v8, v1}, Landroid/content/Intent;-><init>(Ljava/lang/String;)V
-
+    move-result-object v8
     .line 436
     .local v8, intent:Landroid/content/Intent;
     const-string v1, "com.android.phone.RecentCallsListActivity.viewOption"
