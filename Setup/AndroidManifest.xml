@@ -47,7 +47,6 @@
         <activity android:theme="@style/Theme.Transparent" android:label="Set-Up" android:name=".HomeActivity" android:excludeFromRecents="true" android:configChanges="locale|keyboardHidden|orientation">
             <intent-filter android:priority="0">
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
