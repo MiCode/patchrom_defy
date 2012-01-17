@@ -535,7 +535,7 @@
 
     move-result-object v1
 
-    const v2, 0x1090090
+    const v2, 0x4030021
 
     invoke-direct {v0, v1, v2}, Landroid/widget/RemoteViews;-><init>(Ljava/lang/String;I)V
 
@@ -564,23 +564,6 @@
     invoke-virtual {v0, v1, p3}, Landroid/widget/RemoteViews;->setTextViewText(ILjava/lang/CharSequence;)V
 
     :cond_2
-    iget-wide v1, p0, Landroid/app/Notification;->when:J
-
-    const-wide/16 v3, 0x0
-
-    cmp-long v1, v1, v3
-
-    if-eqz v1, :cond_3
-
-    const v1, 0x102005b
-
-    const-string v2, "setTime"
-
-    iget-wide v3, p0, Landroid/app/Notification;->when:J
-
-    invoke-virtual {v0, v1, v2, v3, v4}, Landroid/widget/RemoteViews;->setLong(ILjava/lang/String;J)V
-
-    :cond_3
     iput-object v0, p0, Landroid/app/Notification;->contentView:Landroid/widget/RemoteViews;
 
     iput-object p4, p0, Landroid/app/Notification;->contentIntent:Landroid/app/PendingIntent;

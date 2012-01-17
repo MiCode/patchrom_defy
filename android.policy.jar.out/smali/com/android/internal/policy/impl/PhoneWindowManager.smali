@@ -85,13 +85,13 @@
 
 .field static final SEARCH_BAR_LAYER:I = 0x4
 
-.field static final SECURE_SYSTEM_OVERLAY_LAYER:I = 0x11
+.field static final SECURE_SYSTEM_OVERLAY_LAYER:I = 0x13
 
 .field static final SHOW_PROCESSES_ON_ALT_MENU:Z = false
 
 .field static final SHOW_STARTING_ANIMATIONS:Z = true
 
-.field static final STATUS_BAR_LAYER:I = 0x7
+.field static final STATUS_BAR_LAYER:I = 0x10
 
 .field static final STATUS_BAR_PANEL_LAYER:I = 0x5
 
@@ -113,13 +113,13 @@
 
 .field static final SYSTEM_ERROR_LAYER:I = 0xb
 
-.field static final SYSTEM_OVERLAY_LAYER:I = 0x10
+.field static final SYSTEM_OVERLAY_LAYER:I = 0x12
 
 .field static final TAG:Ljava/lang/String; = "WindowManager"
 
 .field static final TOAST_LAYER:I = 0x8
 
-.field static final TOUCH_SYSTEM_OVERLAY_LAYER:I = 0x12
+.field static final TOUCH_SYSTEM_OVERLAY_LAYER:I = 0x14
 
 .field private static final VIBRATE_DURATION:I = 0x96
 
@@ -297,7 +297,7 @@
 
 .field volatile mPowerKeyHandled:Z
 
-.field private final mPowerLongPress:Ljava/lang/Runnable;
+.field mPowerLongPress:Ljava/lang/Runnable;
 
 .field private mPowerLongPressKeyCode:I
 
@@ -3467,7 +3467,8 @@
     .locals 1
 
     .prologue
-    const/4 v0, 0x7
+
+    const/16 v0, 0x10
 
     return v0
 .end method
@@ -9845,7 +9846,7 @@
     goto :goto_0
 
     :pswitch_0
-    const/4 v0, 0x7
+    const/16 v0, 0x10
 
     goto :goto_0
 
@@ -9900,12 +9901,12 @@
     goto :goto_0
 
     :pswitch_b
-    const/16 v0, 0x10
+    const/16 v0, 0x12
 
     goto :goto_0
 
     :pswitch_c
-    const/16 v0, 0x11
+    const/16 v0, 0x13
 
     goto :goto_0
 
@@ -9925,7 +9926,7 @@
     goto :goto_0
 
     :pswitch_10
-    const/16 v0, 0x12
+    const/16 v0, 0x14
 
     goto :goto_0
 

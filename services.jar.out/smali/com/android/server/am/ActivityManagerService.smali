@@ -1514,6 +1514,8 @@
     .local v1, systemDir:Ljava/io/File;
     invoke-virtual {v1}, Ljava/io/File;->mkdirs()Z
 
+    invoke-static {v1}, Lmiui/os/Environment;->init(Ljava/io/File;)V
+
     new-instance v3, Lcom/android/server/am/BatteryStatsService;
 
     new-instance v4, Ljava/io/File;
@@ -58022,7 +58024,7 @@
 
     and-int/lit8 v4, v24, 0x4
 
-    if-eqz v4, :cond_8
+    if-eqz v4, :cond_d
 
     const/4 v9, 0x0
 
@@ -58057,6 +58059,29 @@
     move-object/from16 v8, p0
 
     invoke-direct/range {v8 .. v21}, Lcom/android/server/am/ActivityManagerService;->broadcastIntentLocked(Lcom/android/server/am/ProcessRecord;Ljava/lang/String;Landroid/content/Intent;Ljava/lang/String;Landroid/content/IIntentReceiver;ILjava/lang/String;Landroid/os/Bundle;Ljava/lang/String;ZZII)I
+
+    :cond_d
+    move-object/from16 v0, p0
+
+    iget-object v0, v0, Lcom/android/server/am/ActivityManagerService;->mContext:Landroid/content/Context;
+
+    move-object v4, v0
+
+    move-object/from16 v0, p0
+
+    iget-object v0, v0, Lcom/android/server/am/ActivityManagerService;->mHandler:Landroid/os/Handler;
+
+    move-object v5, v0
+
+    move/from16 v0, v24
+
+    move-object/from16 v1, v28
+
+    move-object v2, v4
+
+    move-object v3, v5
+
+    invoke-static {v0, v1, v2, v3}, Landroid/app/MiuiThemeHelper;->handleExtraConfigurationChanges(ILandroid/content/res/Configuration;Landroid/content/Context;Landroid/os/Handler;)V
 
     .end local v7           #intent:Landroid/content/Intent;
     .end local v22           #ac:Lcom/android/server/AttributeCache;

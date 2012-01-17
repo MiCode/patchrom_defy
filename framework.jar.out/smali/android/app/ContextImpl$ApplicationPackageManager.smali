@@ -136,7 +136,7 @@
     throw v1
 .end method
 
-.method private getCachedIcon(Landroid/app/ContextImpl$ApplicationPackageManager$ResourceName;)Landroid/graphics/drawable/Drawable;
+.method static getCachedIcon(Landroid/app/ContextImpl$ApplicationPackageManager$ResourceName;)Landroid/graphics/drawable/Drawable;
     .locals 4
     .parameter "name"
 
@@ -148,7 +148,7 @@
     :try_start_0
     sget-object v3, Landroid/app/ContextImpl$ApplicationPackageManager;->sIconCache:Ljava/util/HashMap;
 
-    invoke-virtual {v3, p1}, Ljava/util/HashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
+    invoke-virtual {v3, p0}, Ljava/util/HashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
 
     move-result-object v1
 
@@ -178,7 +178,7 @@
     :cond_0
     sget-object v3, Landroid/app/ContextImpl$ApplicationPackageManager;->sIconCache:Ljava/util/HashMap;
 
-    invoke-virtual {v3, p1}, Ljava/util/HashMap;->remove(Ljava/lang/Object;)Ljava/lang/Object;
+    invoke-virtual {v3, p0}, Ljava/util/HashMap;->remove(Ljava/lang/Object;)Ljava/lang/Object;
 
     .end local v0           #dr:Landroid/graphics/drawable/Drawable;
     :cond_1
@@ -462,7 +462,7 @@
     goto :goto_3
 .end method
 
-.method private putCachedIcon(Landroid/app/ContextImpl$ApplicationPackageManager$ResourceName;Landroid/graphics/drawable/Drawable;)V
+.method static putCachedIcon(Landroid/app/ContextImpl$ApplicationPackageManager$ResourceName;Landroid/graphics/drawable/Drawable;)V
     .locals 3
     .parameter "name"
     .parameter "dr"
@@ -477,9 +477,9 @@
 
     new-instance v2, Ljava/lang/ref/WeakReference;
 
-    invoke-direct {v2, p2}, Ljava/lang/ref/WeakReference;-><init>(Ljava/lang/Object;)V
+    invoke-direct {v2, p1}, Ljava/lang/ref/WeakReference;-><init>(Ljava/lang/Object;)V
 
-    invoke-virtual {v1, p1, v2}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+    invoke-virtual {v1, p0, v2}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 
     monitor-exit v0
 
@@ -1398,7 +1398,7 @@
     invoke-direct {v2, p1, p2}, Landroid/app/ContextImpl$ApplicationPackageManager$ResourceName;-><init>(Ljava/lang/String;I)V
 
     .local v2, name:Landroid/app/ContextImpl$ApplicationPackageManager$ResourceName;
-    invoke-direct {p0, v2}, Landroid/app/ContextImpl$ApplicationPackageManager;->getCachedIcon(Landroid/app/ContextImpl$ApplicationPackageManager$ResourceName;)Landroid/graphics/drawable/Drawable;
+    invoke-static {v2}, Landroid/app/ContextImpl$ApplicationPackageManager;->getCachedIcon(Landroid/app/ContextImpl$ApplicationPackageManager$ResourceName;)Landroid/graphics/drawable/Drawable;
 
     move-result-object v0
 
@@ -1433,7 +1433,7 @@
 
     move-result-object v0
 
-    invoke-direct {p0, v2, v0}, Landroid/app/ContextImpl$ApplicationPackageManager;->putCachedIcon(Landroid/app/ContextImpl$ApplicationPackageManager$ResourceName;Landroid/graphics/drawable/Drawable;)V
+    invoke-static {v2, v0}, Landroid/app/ContextImpl$ApplicationPackageManager;->putCachedIcon(Landroid/app/ContextImpl$ApplicationPackageManager$ResourceName;Landroid/graphics/drawable/Drawable;)V
     :try_end_1
     .catch Landroid/content/pm/PackageManager$NameNotFoundException; {:try_start_1 .. :try_end_1} :catch_1
     .catch Ljava/lang/RuntimeException; {:try_start_1 .. :try_end_1} :catch_2

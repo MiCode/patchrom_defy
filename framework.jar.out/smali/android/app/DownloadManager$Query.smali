@@ -25,9 +25,9 @@
 
 .field private mOnlyIncludeVisibleInDownloadsUi:Z
 
-.field private mOrderByColumn:Ljava/lang/String;
+.field mOrderByColumn:Ljava/lang/String;
 
-.field private mOrderDirection:I
+.field mOrderDirection:I
 
 .field private mStatusFlags:Ljava/lang/Integer;
 
@@ -172,6 +172,24 @@
 
 
 # virtual methods
+.method addExtraSelectionParts(Ljava/util/List;)V
+    .locals 0
+    .parameter
+    .annotation system Ldalvik/annotation/Signature;
+        value = {
+            "(",
+            "Ljava/util/List",
+            "<",
+            "Ljava/lang/String;",
+            ">;)V"
+        }
+    .end annotation
+
+    .prologue
+    .local p1, selectionParts:Ljava/util/List;,"Ljava/util/List<Ljava/lang/String;>;"
+    return-void
+.end method
+
 .method public orderBy(Ljava/lang/String;I)Landroid/app/DownloadManager$Query;
     .locals 3
     .parameter "column"
@@ -270,16 +288,12 @@
 .end method
 
 .method runQuery(Landroid/content/ContentResolver;[Ljava/lang/String;Landroid/net/Uri;)Landroid/database/Cursor;
-    .locals 11
+    .locals 9
     .parameter "resolver"
     .parameter "projection"
     .parameter "baseUri"
 
     .prologue
-    const-string v10, " AND "
-
-    const-string v2, "="
-
     move-object v1, p3
 
     .local v1, uri:Landroid/net/Uri;
@@ -331,9 +345,9 @@
 
     const-string v0, "="
 
-    const/16 v0, 0xbe
+    const/16 v2, 0xbe
 
-    invoke-direct {p0, v2, v0}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
+    invoke-direct {p0, v0, v2}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
 
     move-result-object v0
 
@@ -352,9 +366,9 @@
 
     const-string v0, "="
 
-    const/16 v0, 0xc0
+    const/16 v2, 0xc0
 
-    invoke-direct {p0, v2, v0}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
+    invoke-direct {p0, v0, v2}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
 
     move-result-object v0
 
@@ -373,19 +387,9 @@
 
     const-string v0, "="
 
-    const/16 v0, 0xc1
+    const/16 v2, 0xc1
 
-    invoke-direct {p0, v2, v0}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
-
-    move-result-object v0
-
-    invoke-interface {v7, v0}, Ljava/util/List;->add(Ljava/lang/Object;)Z
-
-    const-string v0, "="
-
-    const/16 v0, 0xc2
-
-    invoke-direct {p0, v2, v0}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
+    invoke-direct {p0, v0, v2}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
 
     move-result-object v0
 
@@ -393,9 +397,9 @@
 
     const-string v0, "="
 
-    const/16 v0, 0xc3
+    const/16 v2, 0xc2
 
-    invoke-direct {p0, v2, v0}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
+    invoke-direct {p0, v0, v2}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
 
     move-result-object v0
 
@@ -403,9 +407,19 @@
 
     const-string v0, "="
 
-    const/16 v0, 0xc4
+    const/16 v2, 0xc3
 
-    invoke-direct {p0, v2, v0}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
+    invoke-direct {p0, v0, v2}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
+
+    move-result-object v0
+
+    invoke-interface {v7, v0}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    const-string v0, "="
+
+    const/16 v2, 0xc4
+
+    invoke-direct {p0, v0, v2}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
 
     move-result-object v0
 
@@ -424,9 +438,9 @@
 
     const-string v0, "="
 
-    const/16 v0, 0xc8
+    const/16 v2, 0xc8
 
-    invoke-direct {p0, v2, v0}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
+    invoke-direct {p0, v0, v2}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
 
     move-result-object v0
 
@@ -455,9 +469,9 @@
 
     const-string v2, ">="
 
-    const/16 v9, 0x190
+    const/16 v3, 0x190
 
-    invoke-direct {p0, v2, v9}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
+    invoke-direct {p0, v2, v3}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
 
     move-result-object v2
 
@@ -467,15 +481,15 @@
 
     const-string v2, " AND "
 
-    invoke-virtual {v0, v10}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    invoke-virtual {v0, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
     move-result-object v0
 
     const-string v2, "<"
 
-    const/16 v9, 0x258
+    const/16 v3, 0x258
 
-    invoke-direct {p0, v2, v9}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
+    invoke-direct {p0, v2, v3}, Landroid/app/DownloadManager$Query;->statusClause(Ljava/lang/String;I)Ljava/lang/String;
 
     move-result-object v2
 
@@ -496,9 +510,33 @@
     invoke-interface {v7, v0}, Ljava/util/List;->add(Ljava/lang/Object;)Z
 
     :cond_5
-    const-string v0, " OR "
+    new-instance v0, Ljava/lang/StringBuilder;
 
-    invoke-direct {p0, v0, v7}, Landroid/app/DownloadManager$Query;->joinStrings(Ljava/lang/String;Ljava/lang/Iterable;)Ljava/lang/String;
+    invoke-direct {v0}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string v2, "("
+
+    invoke-virtual {v0, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v0
+
+    const-string v2, " OR "
+
+    invoke-direct {p0, v2, v7}, Landroid/app/DownloadManager$Query;->joinStrings(Ljava/lang/String;Ljava/lang/Iterable;)Ljava/lang/String;
+
+    move-result-object v2
+
+    invoke-virtual {v0, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v0
+
+    const-string v2, ")"
+
+    invoke-virtual {v0, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
 
     move-result-object v0
 
@@ -515,13 +553,15 @@
     invoke-interface {v8, v0}, Ljava/util/List;->add(Ljava/lang/Object;)Z
 
     :cond_7
+    invoke-virtual {p0, v8}, Landroid/app/DownloadManager$Query;->addExtraSelectionParts(Ljava/util/List;)V
+
     const-string v0, "deleted != \'1\'"
 
     invoke-interface {v8, v0}, Ljava/util/List;->add(Ljava/lang/Object;)Z
 
     const-string v0, " AND "
 
-    invoke-direct {p0, v10, v8}, Landroid/app/DownloadManager$Query;->joinStrings(Ljava/lang/String;Ljava/lang/Iterable;)Ljava/lang/String;
+    invoke-direct {p0, v0, v8}, Landroid/app/DownloadManager$Query;->joinStrings(Ljava/lang/String;Ljava/lang/Iterable;)Ljava/lang/String;
 
     move-result-object v3
 

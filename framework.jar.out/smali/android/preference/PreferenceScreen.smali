@@ -109,6 +109,8 @@
     :goto_1
     invoke-virtual {v1, v2}, Landroid/app/Dialog;->setContentView(Landroid/view/View;)V
 
+    invoke-static {v1, v2}, Lmiui/preference/PreferenceActivityListener;->onShowDialog(Landroid/app/Dialog;Landroid/widget/ListView;)V
+
     invoke-static {v4}, Landroid/text/TextUtils;->isEmpty(Ljava/lang/CharSequence;)Z
 
     move-result v5
@@ -325,9 +327,9 @@
     .locals 1
 
     .prologue
-    new-instance v0, Landroid/preference/PreferenceGroupAdapter;
+    invoke-static {p0}, Landroid/preference/MiuiClassFactory;->newPreferenceGroupAdapter(Landroid/preference/PreferenceGroup;)Landroid/preference/PreferenceGroupAdapter;
 
-    invoke-direct {v0, p0}, Landroid/preference/PreferenceGroupAdapter;-><init>(Landroid/preference/PreferenceGroup;)V
+    move-result-object v0
 
     return-object v0
 .end method

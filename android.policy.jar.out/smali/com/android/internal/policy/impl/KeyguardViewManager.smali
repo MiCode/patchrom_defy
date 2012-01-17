@@ -560,7 +560,7 @@
 
     if-nez v1, :cond_3
 
-    const v4, 0x10100800
+    const v4, 0x10100900
 
     .local v4, flags:I
     iget-boolean v1, p0, Lcom/android/internal/policy/impl/KeyguardViewManager;->mNeedsInput:Z
@@ -594,7 +594,7 @@
 
     iput v1, v0, Landroid/view/WindowManager$LayoutParams;->windowAnimations:I
 
-    const/4 v1, 0x5
+    const/4 v1, 0x1
 
     iput v1, v0, Landroid/view/WindowManager$LayoutParams;->screenOrientation:I
 

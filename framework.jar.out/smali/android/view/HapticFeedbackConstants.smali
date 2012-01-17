@@ -18,6 +18,8 @@
 
 .field public static final VIRTUAL_KEY:I = 0x1
 
+.field public static final VIRTUAL_RELEASED:I = 0x2
+
 
 # direct methods
 .method private constructor <init>()V

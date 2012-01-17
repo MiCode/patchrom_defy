@@ -101,11 +101,11 @@
 
 .field private static final TAG:Ljava/lang/String; = "DownloadManager"
 
-.field private static final UNDERLYING_COLUMNS:[Ljava/lang/String;
+.field static final UNDERLYING_COLUMNS:[Ljava/lang/String;
 
 
 # instance fields
-.field private mBaseUri:Landroid/net/Uri;
+.field mBaseUri:Landroid/net/Uri;
 
 .field private mPackageName:Ljava/lang/String;
 

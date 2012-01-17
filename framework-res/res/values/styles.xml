@@ -77,7 +77,7 @@
         <item name="windowNoTitle">false</item>
         <item name="windowIsFloating">false</item>
         <item name="windowContentOverlay">@drawable/title_bar_shadow</item>
-        <item name="windowTitleSize">25.0dip</item>
+        <item name="windowTitleSize">41dip</item>
         <item name="windowTitleStyle">@style/WindowTitle</item>
         <item name="windowTitleBackgroundStyle">@style/WindowTitleBackground</item>
         <item name="alertDialogStyle">@style/AlertDialog</item>
@@ -357,7 +357,7 @@
         <item name="indeterminateOnly">false</item>
         <item name="indeterminateDrawable">@drawable/progress_indeterminate_horizontal</item>
         <item name="progressDrawable">@drawable/progress_horizontal</item>
-        <item name="minHeight">20.0dip</item>
+        <item name="minHeight">16px</item>
     </style>
     <style name="Widget.SeekBar" parent="@style/Widget">
         <item name="focusable">true</item>
@@ -365,7 +365,7 @@
         <item name="indeterminateOnly">false</item>
         <item name="indeterminateDrawable">@drawable/progress_horizontal</item>
         <item name="progressDrawable">@drawable/progress_horizontal</item>
-        <item name="minHeight">20.0dip</item>
+        <item name="minHeight">16px</item>
         <item name="thumb">@drawable/seek_thumb</item>
         <item name="thumbOffset">8.0dip</item>
     </style>
@@ -468,7 +468,7 @@
         <item name="fadingEdge">vertical</item>
         <item name="listSelector">@drawable/menu_selector</item>
         <item name="cacheColorHint">@null</item>
-        <item name="divider">@drawable/divider_horizontal_bright</item>
+        <item name="divider">@null</item>
     </style>
     <style name="Widget.GridView" parent="@style/Widget.AbsListView">
         <item name="listSelector">@drawable/grid_selector_background</item>
@@ -535,7 +535,7 @@
         <item name="textColor">#ffffffff</item>
     </style>
     <style name="TextAppearance.Large" parent="@style/TextAppearance">
-        <item name="textSize">22.0sp</item>
+        <item name="textSize">18sp</item>
         <item name="textStyle">normal</item>
         <item name="textColor">?textColorPrimary</item>
     </style>
@@ -544,7 +544,7 @@
         <item name="textColorHint">?textColorHintInverse</item>
     </style>
     <style name="TextAppearance.Medium" parent="@style/TextAppearance">
-        <item name="textSize">18.0sp</item>
+        <item name="textSize">16sp</item>
         <item name="textStyle">normal</item>
         <item name="textColor">?textColorPrimary</item>
     </style>
@@ -553,7 +553,7 @@
         <item name="textColorHint">?textColorHintInverse</item>
     </style>
     <style name="TextAppearance.Small" parent="@style/TextAppearance">
-        <item name="textSize">14.0sp</item>
+        <item name="textSize">13sp</item>
         <item name="textStyle">normal</item>
         <item name="textColor">?textColorSecondary</item>
     </style>
@@ -568,7 +568,7 @@
     </style>
     <style name="TextAppearance.Widget.IconMenu.Item" parent="@style/TextAppearance.Small">
         <item name="textSize">13.0dip</item>
-        <item name="textColor">@color/primary_text_light</item>
+        <item name="textColor">?textColorPrimaryInverse</item>
     </style>
     <style name="TextAppearance.Widget.EditText" parent="@style/TextAppearance.Widget">
         <item name="textColor">@color/widget_edittext_dark</item>

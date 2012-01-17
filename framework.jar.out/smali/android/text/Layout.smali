@@ -33,13 +33,7 @@
 
 .field public static final DIR_RIGHT_TO_LEFT:I = -0x1
 
-.field static final EMOJI_FACTORY:Landroid/emoji/EmojiFactory; = null
-
-#the value of this static final field might be set in the static constructor
-.field static final MAX_EMOJI:I = 0x0
-
-#the value of this static final field might be set in the static constructor
-.field static final MIN_EMOJI:I = 0x0
+.field protected static EMOJI_PADDING_PX:I = 0x0
 
 .field private static final NO_PARA_SPANS:[Landroid/text/style/ParagraphStyle; = null
 
@@ -51,7 +45,7 @@
 # instance fields
 .field private mAlignment:Landroid/text/Layout$Alignment;
 
-.field private mEmojiRect:Landroid/graphics/RectF;
+.field private mEmojiDestRect:Landroid/graphics/RectF;
 
 .field private mPaint:Landroid/text/TextPaint;
 
@@ -73,7 +67,7 @@
     .locals 4
 
     .prologue
-    const/4 v1, -0x1
+    const/4 v1, 0x1
 
     const-class v0, Landroid/text/style/ParagraphStyle;
 
@@ -85,33 +79,8 @@
 
     sput-object v0, Landroid/text/Layout;->NO_PARA_SPANS:[Landroid/text/style/ParagraphStyle;
 
-    invoke-static {}, Landroid/emoji/EmojiFactory;->newAvailableInstance()Landroid/emoji/EmojiFactory;
+    sput v1, Landroid/text/Layout;->EMOJI_PADDING_PX:I
 
-    move-result-object v0
-
-    sput-object v0, Landroid/text/Layout;->EMOJI_FACTORY:Landroid/emoji/EmojiFactory;
-
-    sget-object v0, Landroid/text/Layout;->EMOJI_FACTORY:Landroid/emoji/EmojiFactory;
-
-    if-eqz v0, :cond_0
-
-    sget-object v0, Landroid/text/Layout;->EMOJI_FACTORY:Landroid/emoji/EmojiFactory;
-
-    invoke-virtual {v0}, Landroid/emoji/EmojiFactory;->getMinimumAndroidPua()I
-
-    move-result v0
-
-    sput v0, Landroid/text/Layout;->MIN_EMOJI:I
-
-    sget-object v0, Landroid/text/Layout;->EMOJI_FACTORY:Landroid/emoji/EmojiFactory;
-
-    invoke-virtual {v0}, Landroid/emoji/EmojiFactory;->getMaximumAndroidPua()I
-
-    move-result v0
-
-    sput v0, Landroid/text/Layout;->MAX_EMOJI:I
-
-    :goto_0
     new-instance v0, Landroid/graphics/Rect;
 
     invoke-direct {v0}, Landroid/graphics/Rect;-><init>()V
@@ -119,8 +88,6 @@
     sput-object v0, Landroid/text/Layout;->sTempRect:Landroid/graphics/Rect;
 
     new-instance v0, Landroid/text/Layout$Directions;
-
-    const/4 v1, 0x1
 
     new-array v1, v1, [S
 
@@ -147,13 +114,6 @@
     sput-object v0, Landroid/text/Layout;->DIRS_ALL_RIGHT_TO_LEFT:Landroid/text/Layout$Directions;
 
     return-void
-
-    :cond_0
-    sput v1, Landroid/text/Layout;->MIN_EMOJI:I
-
-    sput v1, Landroid/text/Layout;->MAX_EMOJI:I
-
-    goto :goto_0
 
     :array_0
     .array-data 0x2
@@ -447,7 +407,7 @@
 .end method
 
 .method private drawText(Landroid/graphics/Canvas;Ljava/lang/CharSequence;IIILandroid/text/Layout$Directions;FIIILandroid/text/TextPaint;Landroid/text/TextPaint;Z[Ljava/lang/Object;)V
-    .locals 31
+    .locals 27
     .parameter "canvas"
     .parameter "text"
     .parameter "start"
@@ -507,19 +467,19 @@
     return-void
 
     :cond_1
-    const/16 v20, 0x0
+    const/16 v19, 0x0
 
-    .local v20, buf:[C
+    .local v19, buf:[C
     :goto_1
+    const/16 v21, 0x0
+
+    .local v21, h:F
     const/16 v22, 0x0
 
-    .local v22, h:F
+    .local v22, here:I
     const/16 v23, 0x0
 
-    .local v23, here:I
-    const/16 v24, 0x0
-
-    .local v24, i:I
+    .local v23, i:I
     :goto_2
     #getter for: Landroid/text/Layout$Directions;->mDirections:[S
     invoke-static/range {p6 .. p6}, Landroid/text/Layout$Directions;->access$000(Landroid/text/Layout$Directions;)[S
@@ -528,7 +488,7 @@
 
     array-length v5, v5
 
-    move/from16 v0, v24
+    move/from16 v0, v23
 
     move v1, v5
 
@@ -539,55 +499,55 @@
 
     move-result-object v5
 
-    aget-short v5, v5, v24
+    aget-short v5, v5, v23
 
-    add-int v29, v23, v5
+    add-int v26, v22, v5
 
-    .local v29, there:I
+    .local v26, there:I
     sub-int v5, p4, p3
 
-    move/from16 v0, v29
+    move/from16 v0, v26
 
     move v1, v5
 
     if-le v0, v1, :cond_2
 
-    sub-int v29, p4, p3
+    sub-int v26, p4, p3
 
     :cond_2
-    move/from16 v27, v23
+    move/from16 v25, v22
 
-    .local v27, segstart:I
+    .local v25, segstart:I
     if-eqz p13, :cond_7
 
-    move/from16 v25, v23
+    move/from16 v24, v22
 
-    .local v25, j:I
+    .local v24, j:I
     :goto_3
-    move/from16 v0, v25
+    move/from16 v0, v24
 
-    move/from16 v1, v29
+    move/from16 v1, v26
 
     if-gt v0, v1, :cond_e
 
-    move/from16 v0, v25
+    move/from16 v0, v24
 
-    move/from16 v1, v29
+    move/from16 v1, v26
 
     if-eq v0, v1, :cond_3
 
-    aget-char v5, v20, v25
+    aget-char v5, v19, v24
 
     const/16 v6, 0x9
 
     if-ne v5, v6, :cond_a
 
     :cond_3
-    add-int v7, p3, v27
+    add-int v7, p3, v25
 
-    add-int v8, p3, v25
+    add-int v8, p3, v24
 
-    and-int/lit8 v5, v24, 0x1
+    and-int/lit8 v5, v23, 0x1
 
     if-eqz v5, :cond_8
 
@@ -596,9 +556,9 @@
     move v10, v5
 
     :goto_4
-    add-float v11, p7, v22
+    add-float v11, p7, v21
 
-    add-int v5, p3, v25
+    add-int v5, p3, v24
 
     move v0, v5
 
@@ -631,15 +591,15 @@
 
     move-result v5
 
-    add-float v22, v22, v5
+    add-float v21, v21, v5
 
-    move/from16 v0, v25
+    move/from16 v0, v24
 
-    move/from16 v1, v29
+    move/from16 v1, v26
 
     if-eq v0, v1, :cond_4
 
-    aget-char v5, v20, v25
+    aget-char v5, v19, v24
 
     const/16 v6, 0x9
 
@@ -657,7 +617,7 @@
 
     move v6, v0
 
-    mul-float v6, v6, v22
+    mul-float v6, v6, v21
 
     move-object/from16 v0, p2
 
@@ -673,32 +633,32 @@
 
     move-result v6
 
-    mul-float v22, v5, v6
+    mul-float v21, v5, v6
 
     :cond_4
-    add-int/lit8 v27, v25, 0x1
+    add-int/lit8 v25, v24, 0x1
 
     :cond_5
     :goto_6
-    add-int/lit8 v25, v25, 0x1
+    add-int/lit8 v24, v24, 0x1
 
     goto :goto_3
 
-    .end local v20           #buf:[C
-    .end local v22           #h:F
-    .end local v23           #here:I
-    .end local v24           #i:I
-    .end local v25           #j:I
-    .end local v27           #segstart:I
-    .end local v29           #there:I
+    .end local v19           #buf:[C
+    .end local v21           #h:F
+    .end local v22           #here:I
+    .end local v23           #i:I
+    .end local v24           #j:I
+    .end local v25           #segstart:I
+    .end local v26           #there:I
     :cond_6
     sub-int v5, p4, p3
 
     invoke-static {v5}, Landroid/text/TextUtils;->obtain(I)[C
 
-    move-result-object v20
+    move-result-object v19
 
-    .restart local v20       #buf:[C
+    .restart local v19       #buf:[C
     const/4 v5, 0x0
 
     move-object/from16 v0, p2
@@ -707,7 +667,7 @@
 
     move/from16 v2, p4
 
-    move-object/from16 v3, v20
+    move-object/from16 v3, v19
 
     move v4, v5
 
@@ -715,17 +675,17 @@
 
     goto/16 :goto_1
 
-    .restart local v22       #h:F
-    .restart local v23       #here:I
-    .restart local v24       #i:I
-    .restart local v27       #segstart:I
-    .restart local v29       #there:I
+    .restart local v21       #h:F
+    .restart local v22       #here:I
+    .restart local v23       #i:I
+    .restart local v25       #segstart:I
+    .restart local v26       #there:I
     :cond_7
-    move/from16 v25, v29
+    move/from16 v24, v26
 
     goto :goto_3
 
-    .restart local v25       #j:I
+    .restart local v24       #j:I
     :cond_8
     const/4 v5, 0x0
 
@@ -743,69 +703,20 @@
     :cond_a
     if-eqz p13, :cond_5
 
-    aget-char v5, v20, v25
+    aget-char v5, v19, v24
 
-    const v6, 0xd800
+    invoke-static {v5}, Lmiui/text/util/EmojiSmileys;->getEmojiBitmap(I)Landroid/graphics/Bitmap;
 
-    if-lt v5, v6, :cond_5
+    move-result-object v18
 
-    aget-char v5, v20, v25
+    .local v18, bm:Landroid/graphics/Bitmap;
+    if-eqz v18, :cond_5
 
-    const v6, 0xdfff
+    add-int v7, p3, v25
 
-    if-gt v5, v6, :cond_5
+    add-int v8, p3, v24
 
-    add-int/lit8 v5, v25, 0x1
-
-    move v0, v5
-
-    move/from16 v1, v29
-
-    if-ge v0, v1, :cond_5
-
-    move-object/from16 v0, v20
-
-    move/from16 v1, v25
-
-    invoke-static {v0, v1}, Ljava/lang/Character;->codePointAt([CI)I
-
-    move-result v21
-
-    .local v21, emoji:I
-    sget v5, Landroid/text/Layout;->MIN_EMOJI:I
-
-    move/from16 v0, v21
-
-    move v1, v5
-
-    if-lt v0, v1, :cond_5
-
-    sget v5, Landroid/text/Layout;->MAX_EMOJI:I
-
-    move/from16 v0, v21
-
-    move v1, v5
-
-    if-gt v0, v1, :cond_5
-
-    sget-object v5, Landroid/text/Layout;->EMOJI_FACTORY:Landroid/emoji/EmojiFactory;
-
-    move-object v0, v5
-
-    move/from16 v1, v21
-
-    invoke-virtual {v0, v1}, Landroid/emoji/EmojiFactory;->getBitmapFromAndroidPua(I)Landroid/graphics/Bitmap;
-
-    move-result-object v19
-
-    .local v19, bm:Landroid/graphics/Bitmap;
-    if-eqz v19, :cond_5
-
-    add-int v7, p3, v27
-
-    add-int v8, p3, v25
-
-    and-int/lit8 v5, v24, 0x1
+    and-int/lit8 v5, v23, 0x1
 
     if-eqz v5, :cond_c
 
@@ -814,9 +725,9 @@
     move v10, v5
 
     :goto_7
-    add-float v11, p7, v22
+    add-float v11, p7, v21
 
-    add-int v5, p3, v25
+    add-int v5, p3, v24
 
     move v0, v5
 
@@ -849,36 +760,17 @@
 
     move-result v5
 
-    add-float v22, v22, v5
+    add-float v21, v21, v5
 
-    move-object/from16 v0, p0
-
-    iget-object v0, v0, Landroid/text/Layout;->mEmojiRect:Landroid/graphics/RectF;
-
-    move-object v5, v0
-
-    if-nez v5, :cond_b
-
-    new-instance v5, Landroid/graphics/RectF;
-
-    invoke-direct {v5}, Landroid/graphics/RectF;-><init>()V
-
-    move-object v0, v5
-
-    move-object/from16 v1, p0
-
-    iput-object v0, v1, Landroid/text/Layout;->mEmojiRect:Landroid/graphics/RectF;
-
-    :cond_b
     move-object/from16 v0, p12
 
     move-object/from16 v1, p11
 
     invoke-virtual {v0, v1}, Landroid/text/TextPaint;->set(Landroid/text/TextPaint;)V
 
-    add-int v8, p3, v25
+    add-int v8, p3, v24
 
-    add-int v5, p3, v25
+    add-int v5, p3, v24
 
     add-int/lit8 v9, v5, 0x1
 
@@ -892,47 +784,49 @@
 
     invoke-static/range {v5 .. v10}, Landroid/text/Styled;->measureText(Landroid/text/TextPaint;Landroid/text/TextPaint;Ljava/lang/CharSequence;IILandroid/graphics/Paint$FontMetricsInt;)F
 
-    invoke-virtual/range {v19 .. v19}, Landroid/graphics/Bitmap;->getHeight()I
-
-    move-result v5
-
-    move v0, v5
-
-    int-to-float v0, v0
-
-    move/from16 v18, v0
-
-    .local v18, bitmapHeight:F
-    invoke-virtual/range {p12 .. p12}, Landroid/text/TextPaint;->ascent()F
-
-    move-result v5
-
-    move v0, v5
-
-    neg-float v0, v0
-
-    move/from16 v28, v0
-
-    .local v28, textHeight:F
-    div-float v26, v28, v18
-
-    .local v26, scale:F
-    invoke-virtual/range {v19 .. v19}, Landroid/graphics/Bitmap;->getWidth()I
-
-    move-result v5
-
-    int-to-float v5, v5
-
-    mul-float v30, v5, v26
-
-    .local v30, width:F
     move-object/from16 v0, p0
 
-    iget-object v0, v0, Landroid/text/Layout;->mEmojiRect:Landroid/graphics/RectF;
+    iget-object v0, v0, Landroid/text/Layout;->mEmojiDestRect:Landroid/graphics/RectF;
 
     move-object v5, v0
 
-    add-float v6, p7, v22
+    if-nez v5, :cond_b
+
+    new-instance v5, Landroid/graphics/RectF;
+
+    invoke-direct {v5}, Landroid/graphics/RectF;-><init>()V
+
+    move-object v0, v5
+
+    move-object/from16 v1, p0
+
+    iput-object v0, v1, Landroid/text/Layout;->mEmojiDestRect:Landroid/graphics/RectF;
+
+    :cond_b
+    invoke-virtual/range {p12 .. p12}, Landroid/text/TextPaint;->descent()F
+
+    move-result v5
+
+    invoke-virtual/range {p12 .. p12}, Landroid/text/TextPaint;->ascent()F
+
+    move-result v6
+
+    sub-float v20, v5, v6
+
+    .local v20, emojiSize:F
+    sget v5, Landroid/text/Layout;->EMOJI_PADDING_PX:I
+
+    int-to-float v5, v5
+
+    add-float v21, v21, v5
+
+    move-object/from16 v0, p0
+
+    iget-object v0, v0, Landroid/text/Layout;->mEmojiDestRect:Landroid/graphics/RectF;
+
+    move-object v5, v0
+
+    add-float v6, p7, v21
 
     move/from16 v0, p9
 
@@ -940,11 +834,15 @@
 
     move v7, v0
 
-    sub-float v7, v7, v28
+    invoke-virtual/range {p12 .. p12}, Landroid/text/TextPaint;->ascent()F
 
-    add-float v8, p7, v22
+    move-result v8
 
-    add-float v8, v8, v30
+    add-float/2addr v7, v8
+
+    add-float v8, p7, v21
+
+    add-float v8, v8, v20
 
     move/from16 v0, p9
 
@@ -952,19 +850,25 @@
 
     move v9, v0
 
+    invoke-virtual/range {p12 .. p12}, Landroid/text/TextPaint;->descent()F
+
+    move-result v10
+
+    add-float/2addr v9, v10
+
     invoke-virtual {v5, v6, v7, v8, v9}, Landroid/graphics/RectF;->set(FFFF)V
 
     const/4 v5, 0x0
 
     move-object/from16 v0, p0
 
-    iget-object v0, v0, Landroid/text/Layout;->mEmojiRect:Landroid/graphics/RectF;
+    iget-object v0, v0, Landroid/text/Layout;->mEmojiDestRect:Landroid/graphics/RectF;
 
     move-object v6, v0
 
     move-object/from16 v0, p1
 
-    move-object/from16 v1, v19
+    move-object/from16 v1, v18
 
     move-object v2, v5
 
@@ -974,18 +878,19 @@
 
     invoke-virtual {v0, v1, v2, v3, v4}, Landroid/graphics/Canvas;->drawBitmap(Landroid/graphics/Bitmap;Landroid/graphics/Rect;Landroid/graphics/RectF;Landroid/graphics/Paint;)V
 
-    add-float v22, v22, v30
+    sget v5, Landroid/text/Layout;->EMOJI_PADDING_PX:I
 
-    add-int/lit8 v25, v25, 0x1
+    int-to-float v5, v5
 
-    add-int/lit8 v27, v25, 0x1
+    add-float v5, v5, v20
+
+    add-float v21, v21, v5
+
+    add-int/lit8 v25, v24, 0x1
 
     goto/16 :goto_6
 
-    .end local v18           #bitmapHeight:F
-    .end local v26           #scale:F
-    .end local v28           #textHeight:F
-    .end local v30           #width:F
+    .end local v20           #emojiSize:F
     :cond_c
     const/4 v5, 0x0
 
@@ -1000,22 +905,21 @@
 
     goto/16 :goto_8
 
-    .end local v19           #bm:Landroid/graphics/Bitmap;
-    .end local v21           #emoji:I
+    .end local v18           #bm:Landroid/graphics/Bitmap;
     :cond_e
-    move/from16 v23, v29
+    move/from16 v22, v26
 
-    add-int/lit8 v24, v24, 0x1
+    add-int/lit8 v23, v23, 0x1
 
     goto/16 :goto_2
 
-    .end local v25           #j:I
-    .end local v27           #segstart:I
-    .end local v29           #there:I
+    .end local v24           #j:I
+    .end local v25           #segstart:I
+    .end local v26           #there:I
     :cond_f
     if-eqz p13, :cond_0
 
-    invoke-static/range {v20 .. v20}, Landroid/text/TextUtils;->recycle([C)V
+    invoke-static/range {v19 .. v19}, Landroid/text/TextUtils;->recycle([C)V
 
     goto/16 :goto_0
 .end method
@@ -1859,10 +1763,10 @@
     invoke-static {v0, v1, v2, v3, v4}, Landroid/text/TextUtils;->getChars(Ljava/lang/CharSequence;II[CI)V
 
     :cond_0
-    move-object v12, v5
+    move-object v11, v5
 
     .end local v5           #buf:[C
-    .local v12, buf:[C
+    .local v11, buf:[C
     const/4 v5, 0x0
 
     .local v5, h:F
@@ -1876,7 +1780,7 @@
 
     if-ne v0, v1, :cond_1
 
-    if-nez p8, :cond_6
+    if-nez p8, :cond_5
 
     const/16 p8, 0x1
 
@@ -1888,10 +1792,10 @@
     const/4 v7, 0x0
 
     .local v7, i:I
-    move v14, v7
+    move v13, v7
 
     .end local v7           #i:I
-    .local v14, i:I
+    .local v13, i:I
     :goto_1
     #getter for: Landroid/text/Layout$Directions;->mDirections:[S
     invoke-static/range {p7 .. p7}, Landroid/text/Layout$Directions;->access$000(Landroid/text/Layout$Directions;)[S
@@ -1900,11 +1804,11 @@
 
     array-length v7, v7
 
-    if-ge v14, v7, :cond_12
+    if-ge v13, v7, :cond_12
 
     if-eqz p9, :cond_2
 
-    if-nez p8, :cond_7
+    if-nez p8, :cond_6
 
     const/16 p8, 0x1
 
@@ -1915,7 +1819,7 @@
 
     move-result-object v7
 
-    aget-short v7, v7, v14
+    aget-short v7, v7, v13
 
     add-int/2addr v7, v6
 
@@ -1934,7 +1838,7 @@
     move v7, v6
 
     .local v7, segstart:I
-    if-eqz p10, :cond_8
+    if-eqz p10, :cond_7
 
     .local v6, j:I
     :goto_4
@@ -1946,10 +1850,10 @@
 
     .end local v7           #segstart:I
     .local v16, segstart:I
-    move v13, v5
+    move v12, v5
 
     .end local v5           #h:F
-    .local v13, h:F
+    .local v12, h:F
     :goto_5
     move v0, v15
 
@@ -1957,112 +1861,75 @@
 
     if-gt v0, v1, :cond_11
 
-    const/4 v6, 0x0
-
-    .local v6, codept:I
     const/4 v5, 0x0
 
-    .local v5, bm:Landroid/graphics/Bitmap;
-    if-eqz p10, :cond_3
+    .local v5, isEmoji:Z
+    if-eqz p10, :cond_17
 
     move v0, v15
-
-    move/from16 v1, v18
-
-    if-ge v0, v1, :cond_3
-
-    aget-char v6, v12, v15
-
-    :cond_3
-    const v7, 0xd800
-
-    if-lt v6, v7, :cond_17
-
-    const v7, 0xdfff
-
-    if-gt v6, v7, :cond_17
-
-    add-int/lit8 v7, v15, 0x1
-
-    move v0, v7
 
     move/from16 v1, v18
 
     if-ge v0, v1, :cond_17
 
-    invoke-static {v12, v15}, Ljava/lang/Character;->codePointAt([CI)I
+    aget-char v5, v11, v15
 
-    move-result v6
+    .end local v5           #isEmoji:Z
+    invoke-static {v5}, Lmiui/text/util/EmojiSmileys;->isEmoji(I)Z
 
-    sget v7, Landroid/text/Layout;->MIN_EMOJI:I
+    move-result v5
 
-    if-lt v6, v7, :cond_17
+    .restart local v5       #isEmoji:Z
+    move v14, v5
 
-    sget v7, Landroid/text/Layout;->MAX_EMOJI:I
-
-    if-gt v6, v7, :cond_17
-
-    sget-object v5, Landroid/text/Layout;->EMOJI_FACTORY:Landroid/emoji/EmojiFactory;
-
-    .end local v5           #bm:Landroid/graphics/Bitmap;
-    invoke-virtual {v5, v6}, Landroid/emoji/EmojiFactory;->getBitmapFromAndroidPua(I)Landroid/graphics/Bitmap;
-
-    move-result-object v5
-
-    .restart local v5       #bm:Landroid/graphics/Bitmap;
-    move-object v11, v5
-
-    .end local v5           #bm:Landroid/graphics/Bitmap;
-    .local v11, bm:Landroid/graphics/Bitmap;
-    move v5, v6
-
-    .end local v6           #codept:I
-    .local v5, codept:I
+    .end local v5           #isEmoji:Z
+    .local v14, isEmoji:Z
     :goto_6
     move v0, v15
 
     move/from16 v1, v18
 
-    if-eq v0, v1, :cond_4
+    if-eq v0, v1, :cond_3
+
+    aget-char v5, v11, v15
 
     const/16 v6, 0x9
 
-    if-eq v5, v6, :cond_4
+    if-eq v5, v6, :cond_3
 
-    if-eqz v11, :cond_16
+    if-eqz v14, :cond_16
+
+    :cond_3
+    add-int v5, p3, v15
+
+    move/from16 v0, p4
+
+    move v1, v5
+
+    if-lt v0, v1, :cond_4
+
+    if-eqz p8, :cond_9
+
+    add-int v5, p3, v15
+
+    move/from16 v0, p4
+
+    move v1, v5
+
+    if-gt v0, v1, :cond_9
 
     :cond_4
-    add-int v5, p3, v15
-
-    move/from16 v0, p4
-
-    move v1, v5
-
-    if-lt v0, v1, :cond_5
-
-    .end local v5           #codept:I
-    if-eqz p8, :cond_a
-
-    add-int v5, p3, v15
-
-    move/from16 v0, p4
-
-    move v1, v5
-
-    if-gt v0, v1, :cond_a
-
-    :cond_5
     const/4 v5, 0x1
 
     move/from16 v0, p6
 
     move v1, v5
 
-    if-ne v0, v1, :cond_9
+    if-ne v0, v1, :cond_8
 
-    and-int/lit8 v5, v14, 0x1
+    and-int/lit8 v5, v13, 0x1
 
-    if-nez v5, :cond_9
+    if-nez v5, :cond_8
 
     add-int v8, p3, v16
 
@@ -2081,13 +1948,13 @@
     move-result p0
 
     .end local p0
-    add-float p0, p0, v13
+    add-float p0, p0, v12
 
-    .end local v13           #h:F
+    .end local v12           #h:F
     .local p0, h:F
     move/from16 p1, p0
 
-    .end local v11           #bm:Landroid/graphics/Bitmap;
+    .end local v14           #isEmoji:Z
     .end local v15           #j:I
     .end local v16           #segstart:I
     .end local v18           #there:I
@@ -2096,25 +1963,25 @@
     :goto_7
     return p1
 
-    .end local v14           #i:I
+    .end local v13           #i:I
     .local v5, h:F
     .local p0, paint:Landroid/text/TextPaint;
     .local p1, workPaint:Landroid/text/TextPaint;
+    :cond_5
+    const/16 p8, 0x0
+
+    goto :goto_0
+
+    .local v6, here:I
+    .restart local v13       #i:I
     :cond_6
     const/16 p8, 0x0
 
-    goto/16 :goto_0
-
-    .local v6, here:I
-    .restart local v14       #i:I
-    :cond_7
-    const/16 p8, 0x0
-
-    goto/16 :goto_2
+    goto :goto_2
 
     .restart local v7       #segstart:I
     .restart local v18       #there:I
-    :cond_8
+    :cond_7
     move/from16 v6, v18
 
     goto :goto_4
@@ -2122,22 +1989,22 @@
     .end local v5           #h:F
     .end local v6           #here:I
     .end local v7           #segstart:I
-    .restart local v11       #bm:Landroid/graphics/Bitmap;
-    .restart local v13       #h:F
+    .restart local v12       #h:F
+    .restart local v14       #isEmoji:Z
     .restart local v15       #j:I
     .restart local v16       #segstart:I
-    :cond_9
+    :cond_8
     const/4 v5, -0x1
 
     move/from16 v0, p6
 
     move v1, v5
 
-    if-ne v0, v1, :cond_a
+    if-ne v0, v1, :cond_9
 
-    and-int/lit8 v5, v14, 0x1
+    and-int/lit8 v5, v13, 0x1
 
-    if-eqz v5, :cond_a
+    if-eqz v5, :cond_9
 
     add-int v8, p3, v16
 
@@ -2156,9 +2023,9 @@
     move-result p0
 
     .end local p0           #paint:Landroid/text/TextPaint;
-    sub-float p0, v13, p0
+    sub-float p0, v12, p0
 
-    .end local v13           #h:F
+    .end local v12           #h:F
     .local p0, h:F
     move/from16 p1, p0
 
@@ -2166,10 +2033,10 @@
     .local p1, h:F
     goto :goto_7
 
-    .restart local v13       #h:F
+    .restart local v12       #h:F
     .local p0, paint:Landroid/text/TextPaint;
     .local p1, workPaint:Landroid/text/TextPaint;
-    :cond_a
+    :cond_9
     add-int v8, p3, v16
 
     add-int v9, p3, v15
@@ -2193,9 +2060,9 @@
 
     move v1, v5
 
-    if-lt v0, v1, :cond_b
+    if-lt v0, v1, :cond_a
 
-    if-eqz p8, :cond_d
+    if-eqz p8, :cond_c
 
     add-int v5, p3, v15
 
@@ -2203,10 +2070,51 @@
 
     move v1, v5
 
-    if-gt v0, v1, :cond_d
+    if-gt v0, v1, :cond_c
 
-    :cond_b
+    :cond_a
     const/4 v5, 0x1
+
+    move/from16 v0, p6
+
+    move v1, v5
+
+    if-ne v0, v1, :cond_b
+
+    add-int v8, p3, v16
+
+    const/4 v10, 0x0
+
+    move-object/from16 v5, p0
+
+    move-object/from16 v6, p1
+
+    move-object/from16 v7, p2
+
+    move/from16 v9, p4
+
+    invoke-static/range {v5 .. v10}, Landroid/text/Styled;->measureText(Landroid/text/TextPaint;Landroid/text/TextPaint;Ljava/lang/CharSequence;IILandroid/graphics/Paint$FontMetricsInt;)F
+
+    move-result p0
+
+    .end local p0           #paint:Landroid/text/TextPaint;
+    sub-float p0, v17, p0
+
+    add-float p0, p0, v12
+
+    .end local v12           #h:F
+    .local p0, h:F
+    move/from16 p1, p0
+
+    .end local p0           #h:F
+    .local p1, h:F
+    goto :goto_7
+
+    .restart local v12       #h:F
+    .local p0, paint:Landroid/text/TextPaint;
+    .local p1, workPaint:Landroid/text/TextPaint;
+    :cond_b
+    const/4 v5, -0x1
 
     move/from16 v0, p6
 
@@ -2233,9 +2141,9 @@
     .end local p0           #paint:Landroid/text/TextPaint;
     sub-float p0, v17, p0
 
-    add-float p0, p0, v13
+    sub-float p0, v12, p0
 
-    .end local v13           #h:F
+    .end local v12           #h:F
     .local p0, h:F
     move/from16 p1, p0
 
@@ -2243,7 +2151,7 @@
     .local p1, h:F
     goto :goto_7
 
-    .restart local v13       #h:F
+    .restart local v12       #h:F
     .local p0, paint:Landroid/text/TextPaint;
     .local p1, workPaint:Landroid/text/TextPaint;
     :cond_c
@@ -2255,50 +2163,9 @@
 
     if-ne v0, v1, :cond_d
 
-    add-int v8, p3, v16
+    sub-float v5, v12, v17
 
-    const/4 v10, 0x0
-
-    move-object/from16 v5, p0
-
-    move-object/from16 v6, p1
-
-    move-object/from16 v7, p2
-
-    move/from16 v9, p4
-
-    invoke-static/range {v5 .. v10}, Landroid/text/Styled;->measureText(Landroid/text/TextPaint;Landroid/text/TextPaint;Ljava/lang/CharSequence;IILandroid/graphics/Paint$FontMetricsInt;)F
-
-    move-result p0
-
-    .end local p0           #paint:Landroid/text/TextPaint;
-    sub-float p0, v17, p0
-
-    sub-float p0, v13, p0
-
-    .end local v13           #h:F
-    .local p0, h:F
-    move/from16 p1, p0
-
-    .end local p0           #h:F
-    .local p1, h:F
-    goto :goto_7
-
-    .restart local v13       #h:F
-    .local p0, paint:Landroid/text/TextPaint;
-    .local p1, workPaint:Landroid/text/TextPaint;
-    :cond_d
-    const/4 v5, -0x1
-
-    move/from16 v0, p6
-
-    move v1, v5
-
-    if-ne v0, v1, :cond_e
-
-    sub-float v5, v13, v17
-
-    .end local v13           #h:F
+    .end local v12           #h:F
     .restart local v5       #h:F
     :goto_8
     move v0, v15
@@ -2307,7 +2174,7 @@
 
     if-eq v0, v1, :cond_15
 
-    aget-char v6, v12, v15
+    aget-char v6, v11, v15
 
     const/16 v7, 0x9
 
@@ -2319,7 +2186,7 @@
 
     move v1, v6
 
-    if-ne v0, v1, :cond_f
+    if-ne v0, v1, :cond_e
 
     move/from16 p0, v5
 
@@ -2331,17 +2198,17 @@
     .local p1, h:F
     goto/16 :goto_7
 
-    .restart local v13       #h:F
+    .restart local v12       #h:F
     .local p0, paint:Landroid/text/TextPaint;
     .local p1, workPaint:Landroid/text/TextPaint;
-    :cond_e
-    add-float v5, v13, v17
+    :cond_d
+    add-float v5, v12, v17
 
-    .end local v13           #h:F
+    .end local v12           #h:F
     .restart local v5       #h:F
     goto :goto_8
 
-    :cond_f
+    :cond_e
     move/from16 v0, p6
 
     int-to-float v0, v0
@@ -2374,20 +2241,42 @@
     mul-float/2addr v5, v6
 
     .restart local v5       #h:F
-    move v13, v5
+    move v12, v5
 
     .end local v5           #h:F
-    .restart local v13       #h:F
+    .restart local v12       #h:F
     :goto_9
-    if-eqz v11, :cond_14
+    if-eqz v14, :cond_14
 
+    add-int v5, p3, v15
+
+    move/from16 v0, p4
+
+    move v1, v5
+
+    if-ne v0, v1, :cond_f
+
+    move/from16 p0, v12
+
+    .end local v12           #h:F
+    .local p0, h:F
+    move/from16 p1, v12
+
+    .end local p0           #h:F
+    .local p1, h:F
+    goto/16 :goto_7
+
+    .restart local v12       #h:F
+    .local p0, paint:Landroid/text/TextPaint;
+    .local p1, workPaint:Landroid/text/TextPaint;
+    :cond_f
     move-object/from16 v0, p1
 
     move-object/from16 v1, p0
 
     invoke-virtual {v0, v1}, Landroid/text/TextPaint;->set(Landroid/text/TextPaint;)V
 
-    add-int/lit8 v9, v15, 0x2
+    add-int/lit8 v9, v15, 0x1
 
     const/4 v10, 0x0
 
@@ -2401,27 +2290,23 @@
 
     invoke-static/range {v5 .. v10}, Landroid/text/Styled;->measureText(Landroid/text/TextPaint;Landroid/text/TextPaint;Ljava/lang/CharSequence;IILandroid/graphics/Paint$FontMetricsInt;)F
 
-    invoke-virtual {v11}, Landroid/graphics/Bitmap;->getWidth()I
+    invoke-virtual/range {p1 .. p1}, Landroid/text/TextPaint;->descent()F
 
     move-result v5
-
-    int-to-float v5, v5
 
     invoke-virtual/range {p1 .. p1}, Landroid/text/TextPaint;->ascent()F
 
     move-result v6
 
-    neg-float v6, v6
+    sub-float/2addr v5, v6
 
-    mul-float/2addr v5, v6
+    sget v6, Landroid/text/Layout;->EMOJI_PADDING_PX:I
 
-    invoke-virtual {v11}, Landroid/graphics/Bitmap;->getHeight()I
-
-    move-result v6
+    mul-int/lit8 v6, v6, 0x2
 
     int-to-float v6, v6
 
-    div-float/2addr v5, v6
+    add-float/2addr v5, v6
 
     .local v5, wid:F
     const/4 v6, -0x1
@@ -2432,24 +2317,25 @@
 
     if-ne v0, v1, :cond_10
 
-    sub-float v5, v13, v5
+    sub-float v5, v12, v5
 
-    .end local v13           #h:F
+    .end local v12           #h:F
     .local v5, h:F
     :goto_a
     add-int/lit8 v6, v15, 0x1
 
-    .end local v15           #j:I
-    .local v6, j:I
-    :goto_b
-    add-int/lit8 v7, v6, 0x1
-
     .end local v16           #segstart:I
+    .local v6, segstart:I
+    move v7, v6
+
+    .end local v6           #segstart:I
     .end local v17           #segw:F
     .restart local v7       #segstart:I
-    :goto_c
-    add-int/lit8 v6, v6, 0x1
+    :goto_b
+    add-int/lit8 v6, v15, 0x1
 
+    .end local v15           #j:I
+    .local v6, j:I
     move v15, v6
 
     .end local v6           #j:I
@@ -2458,44 +2344,44 @@
 
     .end local v7           #segstart:I
     .restart local v16       #segstart:I
-    move v13, v5
+    move v12, v5
 
     .end local v5           #h:F
-    .restart local v13       #h:F
+    .restart local v12       #h:F
     goto/16 :goto_5
 
     .local v5, wid:F
     .restart local v17       #segw:F
     :cond_10
-    add-float/2addr v5, v13
+    add-float/2addr v5, v12
 
-    .end local v13           #h:F
+    .end local v12           #h:F
     .local v5, h:F
     goto :goto_a
 
     .end local v5           #h:F
-    .end local v11           #bm:Landroid/graphics/Bitmap;
+    .end local v14           #isEmoji:Z
     .end local v17           #segw:F
-    .restart local v13       #h:F
+    .restart local v12       #h:F
     :cond_11
     move/from16 v5, v18
 
     .local v5, here:I
-    add-int/lit8 v6, v14, 0x1
+    add-int/lit8 v6, v13, 0x1
 
-    .end local v14           #i:I
+    .end local v13           #i:I
     .local v6, i:I
-    move v14, v6
+    move v13, v6
 
     .end local v6           #i:I
-    .restart local v14       #i:I
+    .restart local v13       #i:I
     move v6, v5
 
     .end local v5           #here:I
     .local v6, here:I
-    move v5, v13
+    move v5, v12
 
-    .end local v13           #h:F
+    .end local v12           #h:F
     .local v5, h:F
     goto/16 :goto_1
 
@@ -2505,7 +2391,7 @@
     :cond_12
     if-eqz p10, :cond_13
 
-    invoke-static {v12}, Landroid/text/TextUtils;->recycle([C)V
+    invoke-static {v11}, Landroid/text/TextUtils;->recycle([C)V
 
     :cond_13
     move/from16 p0, v5
@@ -2519,8 +2405,8 @@
     goto/16 :goto_7
 
     .end local v6           #here:I
-    .restart local v11       #bm:Landroid/graphics/Bitmap;
-    .restart local v13       #h:F
+    .restart local v12       #h:F
+    .restart local v14       #isEmoji:Z
     .restart local v15       #j:I
     .restart local v16       #segstart:I
     .restart local v17       #segw:F
@@ -2528,67 +2414,50 @@
     .local p0, paint:Landroid/text/TextPaint;
     .local p1, workPaint:Landroid/text/TextPaint;
     :cond_14
-    move v6, v15
+    move v5, v12
 
-    .end local v15           #j:I
-    .local v6, j:I
-    move v5, v13
-
-    .end local v13           #h:F
+    .end local v12           #h:F
     .restart local v5       #h:F
-    goto :goto_b
+    goto :goto_a
 
-    .end local v6           #j:I
-    .restart local v15       #j:I
     :cond_15
-    move v13, v5
+    move v12, v5
 
     .end local v5           #h:F
-    .restart local v13       #h:F
+    .restart local v12       #h:F
     goto :goto_9
 
     .end local v17           #segw:F
-    .local v5, codept:I
     :cond_16
-    move v6, v15
-
-    .end local v15           #j:I
-    .restart local v6       #j:I
     move/from16 v7, v16
 
     .end local v16           #segstart:I
     .restart local v7       #segstart:I
-    move v5, v13
+    move v5, v12
 
-    .end local v13           #h:F
-    .local v5, h:F
-    goto :goto_c
+    .end local v12           #h:F
+    .restart local v5       #h:F
+    goto :goto_b
 
     .end local v7           #segstart:I
-    .end local v11           #bm:Landroid/graphics/Bitmap;
-    .local v5, bm:Landroid/graphics/Bitmap;
-    .local v6, codept:I
-    .restart local v13       #h:F
-    .restart local v15       #j:I
+    .end local v14           #isEmoji:Z
+    .local v5, isEmoji:Z
+    .restart local v12       #h:F
     .restart local v16       #segstart:I
     :cond_17
-    move-object v11, v5
+    move v14, v5
 
-    .end local v5           #bm:Landroid/graphics/Bitmap;
-    .restart local v11       #bm:Landroid/graphics/Bitmap;
-    move v5, v6
-
-    .end local v6           #codept:I
-    .local v5, codept:I
+    .end local v5           #isEmoji:Z
+    .restart local v14       #isEmoji:Z
     goto/16 :goto_6
 
-    .end local v11           #bm:Landroid/graphics/Bitmap;
-    .end local v13           #h:F
+    .end local v12           #h:F
+    .end local v14           #isEmoji:Z
     .end local v15           #j:I
     .end local v16           #segstart:I
     .end local v18           #there:I
     .local v5, h:F
-    .local v6, here:I
+    .restart local v6       #here:I
     .local v7, there:I
     :cond_18
     move/from16 v18, v7
@@ -2638,10 +2507,10 @@
     invoke-static {v0, v1, v2, v3, v4}, Landroid/text/TextUtils;->getChars(Ljava/lang/CharSequence;II[CI)V
 
     :cond_0
-    move-object v14, v5
+    move-object v13, v5
 
     .end local v5           #buf:[C
-    .local v14, buf:[C
+    .local v13, buf:[C
     sub-int v16, p4, p3
 
     .local v16, len:I
@@ -2682,7 +2551,7 @@
     iput v0, v1, Landroid/graphics/Paint$FontMetricsInt;->descent:I
 
     :cond_1
-    if-eqz p6, :cond_5
+    if-eqz p6, :cond_4
 
     const/4 v9, 0x0
 
@@ -2692,18 +2561,18 @@
 
     .end local v9           #pos:I
     .local v17, pos:I
-    move v13, v6
+    move v12, v6
 
     .end local v6           #bottom:I
-    .local v13, bottom:I
+    .local v12, bottom:I
     move/from16 v18, v10
 
     .end local v10           #top:I
     .local v18, top:I
-    move v15, v7
+    move v14, v7
 
     .end local v7           #descent:I
-    .local v15, descent:I
+    .local v14, descent:I
     move/from16 v19, v11
 
     .end local v11           #width:F
@@ -2712,94 +2581,56 @@
 
     .end local v5           #ascent:I
     .local v11, ascent:I
-    move v7, v8
+    move v6, v8
 
     .end local v8           #lastPos:I
-    .local v7, lastPos:I
+    .local v6, lastPos:I
     :goto_1
     move/from16 v0, v17
 
     move/from16 v1, v16
 
-    if-gt v0, v1, :cond_8
+    if-gt v0, v1, :cond_7
 
-    const/4 v6, 0x0
-
-    .local v6, codept:I
     const/4 v5, 0x0
 
-    .local v5, bm:Landroid/graphics/Bitmap;
-    if-eqz p6, :cond_2
+    .local v5, isEmoji:Z
+    if-eqz p6, :cond_11
 
     move/from16 v0, v17
 
     move/from16 v1, v16
 
-    if-ge v0, v1, :cond_2
+    if-ge v0, v1, :cond_11
 
-    aget-char v6, v14, v17
+    aget-char v5, v13, v17
 
-    :cond_2
-    const v8, 0xd800
+    .end local v5           #isEmoji:Z
+    invoke-static {v5}, Lmiui/text/util/EmojiSmileys;->isEmoji(I)Z
 
-    if-lt v6, v8, :cond_12
+    move-result v5
 
-    const v8, 0xdfff
+    .restart local v5       #isEmoji:Z
+    move v15, v5
 
-    if-gt v6, v8, :cond_12
-
-    move/from16 v0, v17
-
-    move/from16 v1, v16
-
-    if-ge v0, v1, :cond_12
-
-    move-object v0, v14
-
-    move/from16 v1, v17
-
-    invoke-static {v0, v1}, Ljava/lang/Character;->codePointAt([CI)I
-
-    move-result v6
-
-    sget v8, Landroid/text/Layout;->MIN_EMOJI:I
-
-    if-lt v6, v8, :cond_12
-
-    sget v8, Landroid/text/Layout;->MAX_EMOJI:I
-
-    if-gt v6, v8, :cond_12
-
-    sget-object v5, Landroid/text/Layout;->EMOJI_FACTORY:Landroid/emoji/EmojiFactory;
-
-    .end local v5           #bm:Landroid/graphics/Bitmap;
-    invoke-virtual {v5, v6}, Landroid/emoji/EmojiFactory;->getBitmapFromAndroidPua(I)Landroid/graphics/Bitmap;
-
-    move-result-object v5
-
-    .restart local v5       #bm:Landroid/graphics/Bitmap;
-    move-object v12, v5
-
-    .end local v5           #bm:Landroid/graphics/Bitmap;
-    .local v12, bm:Landroid/graphics/Bitmap;
-    move v5, v6
-
-    .end local v6           #codept:I
-    .local v5, codept:I
+    .end local v5           #isEmoji:Z
+    .local v15, isEmoji:Z
     :goto_2
     move/from16 v0, v17
 
     move/from16 v1, v16
 
-    if-eq v0, v1, :cond_3
+    if-eq v0, v1, :cond_2
 
-    const/16 v6, 0x9
+    aget-char v5, v13, v17
 
-    if-eq v5, v6, :cond_3
+    const/16 v7, 0x9
 
-    if-eqz v12, :cond_11
+    if-eq v5, v7, :cond_2
 
-    :cond_3
+    if-eqz v15, :cond_10
+
+    :cond_2
     const/4 v5, 0x0
 
     move v0, v5
@@ -2808,8 +2639,7 @@
 
     iput v0, v1, Landroid/text/TextPaint;->baselineShift:I
 
-    .end local v5           #codept:I
-    add-int v8, p3, v7
+    add-int v8, p3, v6
 
     add-int v9, p3, v17
 
@@ -2823,12 +2653,12 @@
 
     invoke-static/range {v5 .. v10}, Landroid/text/Styled;->measureText(Landroid/text/TextPaint;Landroid/text/TextPaint;Ljava/lang/CharSequence;IILandroid/graphics/Paint$FontMetricsInt;)F
 
-    .end local v7           #lastPos:I
+    .end local v6           #lastPos:I
     move-result v5
 
     add-float v19, v19, v5
 
-    if-eqz p5, :cond_4
+    if-eqz p5, :cond_3
 
     move-object/from16 v0, p1
 
@@ -2836,7 +2666,7 @@
 
     move v5, v0
 
-    if-gez v5, :cond_6
+    if-gez v5, :cond_5
 
     move-object/from16 v0, p5
 
@@ -2878,15 +2708,15 @@
 
     iput v0, v1, Landroid/graphics/Paint$FontMetricsInt;->top:I
 
-    :cond_4
+    :cond_3
     :goto_3
     move/from16 v0, v17
 
     move/from16 v1, v16
 
-    if-eq v0, v1, :cond_10
+    if-eq v0, v1, :cond_f
 
-    if-nez v12, :cond_7
+    if-nez v15, :cond_6
 
     move-object/from16 v0, p2
 
@@ -2904,16 +2734,12 @@
 
     .end local v19           #width:F
     .local v5, width:F
-    move/from16 v9, v17
-
-    .end local v17           #pos:I
-    .restart local v9       #pos:I
-    move v12, v5
+    move v10, v5
 
     .end local v5           #width:F
-    .local v12, width:F
+    .local v10, width:F
     :goto_4
-    if-eqz p5, :cond_f
+    if-eqz p5, :cond_e
 
     move-object/from16 v0, p5
 
@@ -2921,7 +2747,7 @@
 
     move v5, v0
 
-    if-ge v5, v11, :cond_e
+    if-ge v5, v11, :cond_d
 
     move-object/from16 v0, p5
 
@@ -2938,7 +2764,7 @@
 
     move v6, v0
 
-    if-le v6, v15, :cond_d
+    if-le v6, v14, :cond_c
 
     move-object/from16 v0, p5
 
@@ -2946,12 +2772,12 @@
 
     move v6, v0
 
-    .end local v15           #descent:I
+    .end local v14           #descent:I
     .local v6, descent:I
     move v7, v6
 
     .end local v6           #descent:I
-    .local v7, descent:I
+    .restart local v7       #descent:I
     :goto_6
     move-object/from16 v0, p5
 
@@ -2963,7 +2789,7 @@
 
     move/from16 v1, v18
 
-    if-ge v0, v1, :cond_c
+    if-ge v0, v1, :cond_b
 
     move-object/from16 v0, p5
 
@@ -2984,7 +2810,7 @@
 
     move v6, v0
 
-    if-le v6, v13, :cond_b
+    if-le v6, v12, :cond_a
 
     move-object/from16 v0, p5
 
@@ -2992,39 +2818,45 @@
 
     move v6, v0
 
-    .end local v13           #bottom:I
+    .end local v12           #bottom:I
     .local v6, bottom:I
-    move v10, v8
+    move v9, v8
 
     .end local v8           #top:I
-    .restart local v10       #top:I
+    .local v9, top:I
     :goto_8
-    add-int/lit8 v8, v9, 0x1
+    add-int/lit8 v8, v17, 0x1
 
     .local v8, lastPos:I
-    move v11, v12
+    move v11, v10
 
-    .end local v12           #width:F
+    .end local v10           #width:F
     .local v11, width:F
-    :goto_9
-    add-int/lit8 v9, v9, 0x1
+    move v10, v9
 
+    .end local v9           #top:I
+    .local v10, top:I
+    :goto_9
+    add-int/lit8 v9, v17, 0x1
+
+    .end local v17           #pos:I
+    .local v9, pos:I
     move/from16 v17, v9
 
     .end local v9           #pos:I
     .restart local v17       #pos:I
-    move v13, v6
+    move v12, v6
 
     .end local v6           #bottom:I
-    .restart local v13       #bottom:I
+    .restart local v12       #bottom:I
     move/from16 v18, v10
 
     .end local v10           #top:I
     .restart local v18       #top:I
-    move v15, v7
+    move v14, v7
 
     .end local v7           #descent:I
-    .restart local v15       #descent:I
+    .restart local v14       #descent:I
     move/from16 v19, v11
 
     .end local v11           #width:F
@@ -3033,24 +2865,25 @@
 
     .end local v5           #ascent:I
     .local v11, ascent:I
-    move v7, v8
+    move v6, v8
 
     .end local v8           #lastPos:I
-    .local v7, lastPos:I
+    .local v6, lastPos:I
     goto/16 :goto_1
 
-    .end local v13           #bottom:I
-    .end local v15           #descent:I
+    .end local v12           #bottom:I
+    .end local v14           #descent:I
+    .end local v15           #isEmoji:Z
     .end local v17           #pos:I
     .end local v18           #top:I
     .end local v19           #width:F
     .restart local v5       #ascent:I
-    .restart local v6       #bottom:I
-    .local v7, descent:I
+    .local v6, bottom:I
+    .restart local v7       #descent:I
     .restart local v8       #lastPos:I
     .restart local v10       #top:I
     .local v11, width:F
-    :cond_5
+    :cond_4
     move/from16 v9, v16
 
     goto/16 :goto_0
@@ -3061,13 +2894,13 @@
     .end local v8           #lastPos:I
     .end local v10           #top:I
     .local v11, ascent:I
-    .local v12, bm:Landroid/graphics/Bitmap;
-    .restart local v13       #bottom:I
-    .restart local v15       #descent:I
+    .restart local v12       #bottom:I
+    .restart local v14       #descent:I
+    .restart local v15       #isEmoji:Z
     .restart local v17       #pos:I
     .restart local v18       #top:I
     .restart local v19       #width:F
-    :cond_6
+    :cond_5
     move-object/from16 v0, p5
 
     iget v0, v0, Landroid/graphics/Paint$FontMetricsInt;->descent:I
@@ -3110,7 +2943,7 @@
 
     goto/16 :goto_3
 
-    :cond_7
+    :cond_6
     move-object/from16 v0, p1
 
     move-object/from16 v1, p0
@@ -3133,53 +2966,41 @@
 
     invoke-static/range {v5 .. v10}, Landroid/text/Styled;->measureText(Landroid/text/TextPaint;Landroid/text/TextPaint;Ljava/lang/CharSequence;IILandroid/graphics/Paint$FontMetricsInt;)F
 
-    invoke-virtual {v12}, Landroid/graphics/Bitmap;->getWidth()I
+    invoke-virtual/range {p1 .. p1}, Landroid/text/TextPaint;->descent()F
 
     move-result v5
-
-    int-to-float v5, v5
 
     invoke-virtual/range {p1 .. p1}, Landroid/text/TextPaint;->ascent()F
 
     move-result v6
 
-    neg-float v6, v6
+    sub-float/2addr v5, v6
 
-    mul-float/2addr v5, v6
+    sget v6, Landroid/text/Layout;->EMOJI_PADDING_PX:I
 
-    invoke-virtual {v12}, Landroid/graphics/Bitmap;->getHeight()I
-
-    move-result v6
+    mul-int/lit8 v6, v6, 0x2
 
     int-to-float v6, v6
 
-    div-float/2addr v5, v6
+    add-float/2addr v5, v6
 
-    add-float v6, v19, v5
+    .local v5, wid:F
+    add-float v5, v5, v19
 
     .end local v19           #width:F
-    .local v6, width:F
-    add-int/lit8 v5, v17, 0x1
+    .local v5, width:F
+    move v10, v5
 
-    .end local v17           #pos:I
-    .local v5, pos:I
-    move v9, v5
-
-    .end local v5           #pos:I
-    .restart local v9       #pos:I
-    move v12, v6
-
-    .end local v6           #width:F
-    .local v12, width:F
+    .end local v5           #width:F
+    .local v10, width:F
     goto/16 :goto_4
 
-    .end local v9           #pos:I
-    .end local v12           #width:F
-    .local v7, lastPos:I
-    .restart local v17       #pos:I
+    .end local v10           #width:F
+    .end local v15           #isEmoji:Z
+    .local v6, lastPos:I
     .restart local v19       #width:F
-    :cond_8
-    if-eqz p5, :cond_9
+    :cond_7
+    if-eqz p5, :cond_8
 
     move v0, v11
 
@@ -3187,7 +3008,7 @@
 
     iput v0, v1, Landroid/graphics/Paint$FontMetricsInt;->ascent:I
 
-    move v0, v15
+    move v0, v14
 
     move-object/from16 v1, p5
 
@@ -3199,46 +3020,46 @@
 
     iput v0, v1, Landroid/graphics/Paint$FontMetricsInt;->top:I
 
-    move v0, v13
+    move v0, v12
 
     move-object/from16 v1, p5
 
     iput v0, v1, Landroid/graphics/Paint$FontMetricsInt;->bottom:I
 
+    :cond_8
+    if-eqz p6, :cond_9
+
+    invoke-static {v13}, Landroid/text/TextUtils;->recycle([C)V
+
     :cond_9
-    if-eqz p6, :cond_a
-
-    invoke-static {v14}, Landroid/text/TextUtils;->recycle([C)V
-
-    :cond_a
     return v19
 
+    .end local v6           #lastPos:I
     .end local v11           #ascent:I
-    .end local v15           #descent:I
-    .end local v17           #pos:I
+    .end local v14           #descent:I
     .end local v18           #top:I
     .end local v19           #width:F
     .local v5, ascent:I
-    .local v7, descent:I
+    .restart local v7       #descent:I
     .local v8, top:I
-    .restart local v9       #pos:I
-    .restart local v12       #width:F
-    :cond_b
-    move v6, v13
+    .restart local v10       #width:F
+    .restart local v15       #isEmoji:Z
+    :cond_a
+    move v6, v12
 
-    .end local v13           #bottom:I
+    .end local v12           #bottom:I
     .local v6, bottom:I
-    move v10, v8
+    move v9, v8
 
     .end local v8           #top:I
-    .restart local v10       #top:I
+    .local v9, top:I
     goto/16 :goto_8
 
     .end local v6           #bottom:I
-    .end local v10           #top:I
-    .restart local v13       #bottom:I
+    .end local v9           #top:I
+    .restart local v12       #bottom:I
     .restart local v18       #top:I
-    :cond_c
+    :cond_b
     move/from16 v8, v18
 
     .end local v18           #top:I
@@ -3247,20 +3068,20 @@
 
     .end local v7           #descent:I
     .end local v8           #top:I
-    .restart local v15       #descent:I
+    .restart local v14       #descent:I
     .restart local v18       #top:I
-    :cond_d
-    move v7, v15
+    :cond_c
+    move v7, v14
 
-    .end local v15           #descent:I
+    .end local v14           #descent:I
     .restart local v7       #descent:I
     goto/16 :goto_6
 
     .end local v5           #ascent:I
     .end local v7           #descent:I
     .restart local v11       #ascent:I
-    .restart local v15       #descent:I
-    :cond_e
+    .restart local v14       #descent:I
+    :cond_d
     move v5, v11
 
     .end local v11           #ascent:I
@@ -3269,18 +3090,18 @@
 
     .end local v5           #ascent:I
     .restart local v11       #ascent:I
-    :cond_f
-    move v6, v13
+    :cond_e
+    move v6, v12
 
-    .end local v13           #bottom:I
+    .end local v12           #bottom:I
     .restart local v6       #bottom:I
-    move/from16 v10, v18
+    move/from16 v9, v18
 
     .end local v18           #top:I
-    .restart local v10       #top:I
-    move v7, v15
+    .restart local v9       #top:I
+    move v7, v14
 
-    .end local v15           #descent:I
+    .end local v14           #descent:I
     .restart local v7       #descent:I
     move v5, v11
 
@@ -3291,85 +3112,66 @@
     .end local v5           #ascent:I
     .end local v6           #bottom:I
     .end local v7           #descent:I
-    .end local v9           #pos:I
-    .end local v10           #top:I
+    .end local v9           #top:I
+    .end local v10           #width:F
     .restart local v11       #ascent:I
-    .local v12, bm:Landroid/graphics/Bitmap;
-    .restart local v13       #bottom:I
-    .restart local v15       #descent:I
-    .restart local v17       #pos:I
+    .restart local v12       #bottom:I
+    .restart local v14       #descent:I
     .restart local v18       #top:I
     .restart local v19       #width:F
-    :cond_10
-    move/from16 v9, v17
-
-    .end local v17           #pos:I
-    .restart local v9       #pos:I
-    move/from16 v12, v19
+    :cond_f
+    move/from16 v10, v19
 
     .end local v19           #width:F
-    .local v12, width:F
+    .restart local v10       #width:F
     goto/16 :goto_4
 
-    .end local v9           #pos:I
-    .local v5, codept:I
-    .local v7, lastPos:I
-    .local v12, bm:Landroid/graphics/Bitmap;
-    .restart local v17       #pos:I
+    .end local v10           #width:F
+    .local v6, lastPos:I
     .restart local v19       #width:F
-    :cond_11
-    move/from16 v9, v17
-
-    .end local v17           #pos:I
-    .restart local v9       #pos:I
-    move v6, v13
-
-    .end local v13           #bottom:I
-    .restart local v6       #bottom:I
+    :cond_10
     move/from16 v10, v18
 
     .end local v18           #top:I
-    .restart local v10       #top:I
+    .local v10, top:I
+    move v7, v14
+
+    .end local v14           #descent:I
+    .restart local v7       #descent:I
     move v5, v11
 
     .end local v11           #ascent:I
-    .local v5, ascent:I
-    move v8, v7
+    .restart local v5       #ascent:I
+    move v8, v6
 
-    .end local v7           #lastPos:I
+    .end local v6           #lastPos:I
     .local v8, lastPos:I
     move/from16 v11, v19
 
     .end local v19           #width:F
     .local v11, width:F
-    move v7, v15
+    move v6, v12
 
-    .end local v15           #descent:I
-    .local v7, descent:I
+    .end local v12           #bottom:I
+    .local v6, bottom:I
     goto/16 :goto_9
 
+    .end local v7           #descent:I
     .end local v8           #lastPos:I
-    .end local v9           #pos:I
     .end local v10           #top:I
-    .end local v12           #bm:Landroid/graphics/Bitmap;
-    .local v5, bm:Landroid/graphics/Bitmap;
-    .local v6, codept:I
-    .local v7, lastPos:I
+    .end local v15           #isEmoji:Z
+    .local v5, isEmoji:Z
+    .local v6, lastPos:I
     .local v11, ascent:I
-    .restart local v13       #bottom:I
-    .restart local v15       #descent:I
-    .restart local v17       #pos:I
+    .restart local v12       #bottom:I
+    .restart local v14       #descent:I
     .restart local v18       #top:I
     .restart local v19       #width:F
-    :cond_12
-    move-object v12, v5
+    :cond_11
+    move v15, v5
 
-    .end local v5           #bm:Landroid/graphics/Bitmap;
-    .restart local v12       #bm:Landroid/graphics/Bitmap;
-    move v5, v6
-
-    .end local v6           #codept:I
-    .local v5, codept:I
+    .end local v5           #isEmoji:Z
+    .restart local v15       #isEmoji:Z
     goto/16 :goto_2
 .end method
 

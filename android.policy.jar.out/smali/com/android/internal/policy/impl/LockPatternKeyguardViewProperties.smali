@@ -78,17 +78,17 @@
 
 # virtual methods
 .method public createKeyguardView(Landroid/content/Context;Lcom/android/internal/policy/impl/KeyguardUpdateMonitor;Lcom/android/internal/policy/impl/KeyguardWindowController;)Lcom/android/internal/policy/impl/KeyguardViewBase;
-    .locals 2
+    .locals 1
     .parameter "context"
     .parameter "updateMonitor"
     .parameter "controller"
 
     .prologue
-    new-instance v0, Lcom/android/internal/policy/impl/LockPatternKeyguardView;
+    iget-object v0, p0, Lcom/android/internal/policy/impl/LockPatternKeyguardViewProperties;->mLockPatternUtils:Lcom/android/internal/widget/LockPatternUtils;
 
-    iget-object v1, p0, Lcom/android/internal/policy/impl/LockPatternKeyguardViewProperties;->mLockPatternUtils:Lcom/android/internal/widget/LockPatternUtils;
+    invoke-static {p1, p2, v0, p3}, Lcom/android/internal/policy/impl/MiuiClassFactory;->createKeyguardView(Landroid/content/Context;Lcom/android/internal/policy/impl/KeyguardUpdateMonitor;Lcom/android/internal/widget/LockPatternUtils;Lcom/android/internal/policy/impl/KeyguardWindowController;)Lcom/android/internal/policy/impl/KeyguardViewBase;
 
-    invoke-direct {v0, p1, p2, v1, p3}, Lcom/android/internal/policy/impl/LockPatternKeyguardView;-><init>(Landroid/content/Context;Lcom/android/internal/policy/impl/KeyguardUpdateMonitor;Lcom/android/internal/widget/LockPatternUtils;Lcom/android/internal/policy/impl/KeyguardWindowController;)V
+    move-result-object v0
 
     return-object v0
 .end method

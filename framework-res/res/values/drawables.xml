@@ -11,9 +11,9 @@
     <drawable name="stat_sys_download_done">@drawable/stat_sys_download_anim0</drawable>
     <drawable name="stat_sys_upload_done">@drawable/stat_sys_upload_anim0</drawable>
     <item type="drawable" name="screen_background_dark">#ff000000</item>
-    <item type="drawable" name="screen_background_light">#ffefefef</item>
+    <item type="drawable" name="screen_background_light">#fff7f7f7</item>
     <item type="drawable" name="screen_background_dark_transparent">#80000000</item>
-    <item type="drawable" name="screen_background_light_transparent">#80ffffff</item>
+    <item type="drawable" name="screen_background_light_transparent">#80f7f7f7</item>
     <item type="drawable" name="status_bar_closed_default_background">#ff000000</item>
     <item type="drawable" name="status_bar_opened_default_background">#ff000000</item>
     <item type="drawable" name="search_bar_default_color">#ff000000</item>

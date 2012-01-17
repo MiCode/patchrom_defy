@@ -286,7 +286,10 @@
     invoke-direct {v3, p0}, Landroid/app/ProgressDialog;-><init>(Landroid/content/Context;)V
 
     .local v3, pd:Landroid/app/ProgressDialog;
-    const v4, 0x104012c
+    sget-boolean v4, Lcom/android/internal/app/ShutdownThread;->mReboot:Z
+
+    if-eqz v4, :cond_8
+    const v4, 0x10402ca
 
     invoke-virtual {p0, v4}, Landroid/content/Context;->getText(I)Ljava/lang/CharSequence;
 
@@ -294,7 +297,7 @@
 
     invoke-virtual {v3, v4}, Landroid/app/ProgressDialog;->setTitle(Ljava/lang/CharSequence;)V
 
-    const v4, 0x104012d
+    const v4, 0x409001a
 
     invoke-virtual {p0, v4}, Landroid/content/Context;->getText(I)Ljava/lang/CharSequence;
 
@@ -302,6 +305,7 @@
 
     invoke-virtual {v3, v4}, Landroid/app/ProgressDialog;->setMessage(Ljava/lang/CharSequence;)V
 
+    :goto_4
     invoke-virtual {v3, v7}, Landroid/app/ProgressDialog;->setIndeterminate(Z)V
 
     invoke-virtual {v3, v6}, Landroid/app/ProgressDialog;->setCancelable(Z)V
@@ -456,6 +460,24 @@
 
     goto/16 :goto_2
 
+    :cond_8
+    const v4, 0x104012c
+
+    invoke-virtual {p0, v4}, Landroid/content/Context;->getText(I)Ljava/lang/CharSequence;
+
+    move-result-object v4
+
+    invoke-virtual {v3, v4}, Landroid/app/ProgressDialog;->setTitle(Ljava/lang/CharSequence;)V
+
+    const v4, 0x104012d
+
+    invoke-virtual {p0, v4}, Landroid/content/Context;->getText(I)Ljava/lang/CharSequence;
+
+    move-result-object v4
+
+    invoke-virtual {v3, v4}, Landroid/app/ProgressDialog;->setMessage(Ljava/lang/CharSequence;)V
+
+    goto/16 :goto_4
     .end local p0
     :catch_1
     move-exception v4
