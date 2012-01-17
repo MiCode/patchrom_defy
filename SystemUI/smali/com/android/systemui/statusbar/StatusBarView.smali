@@ -648,7 +648,7 @@
 
     if-eqz v3, :cond_1
 
-    const v4, 0x10802ac
+    const v4, 0x10802f4
 
     iget-object v3, p0, Lcom/android/systemui/statusbar/StatusBarView;->mBatteryIndicatorCharging:Landroid/widget/ImageView;
 

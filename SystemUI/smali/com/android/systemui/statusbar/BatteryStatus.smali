@@ -586,9 +586,9 @@
 
     :sswitch_data_0
     .sparse-switch
-        0x1080296 -> :sswitch_2
-        0x10802ac -> :sswitch_1
-        0x10802b3 -> :sswitch_0
+        0x10802de -> :sswitch_2
+        0x10802f4 -> :sswitch_1
+        0x10802fc -> :sswitch_0
     .end sparse-switch
 .end method
 

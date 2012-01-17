@@ -2441,7 +2441,7 @@
 
     .line 746
     :cond_0
-    const v0, 0x1080296
+    const v0, 0x10802de
 
     .line 749
     :cond_1
