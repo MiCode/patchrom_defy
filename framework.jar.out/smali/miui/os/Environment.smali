@@ -153,6 +153,13 @@
     const/16 v1, 0x1f9
 
     invoke-static {v0, v1, v2, v2}, Landroid/os/FileUtils;->setPermissions(Ljava/lang/String;III)I
+
+    const-string v0, "/sys/class/leds/spotlight/brightness"
+
+    const/16 v1, 0x1ff
+
+    invoke-static {v0, v1, v2, v2}, Landroid/os/FileUtils;->setPermissions(Ljava/lang/String;III)I
+    
     return-void
 .end method
 
