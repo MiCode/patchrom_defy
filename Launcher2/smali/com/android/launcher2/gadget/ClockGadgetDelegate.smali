@@ -750,7 +750,7 @@
 
     .line 335
     :cond_1
-    const-string v1, "com.android.deskclock/.AlarmClock"
+    const-string v1, "com.motorola.blur.alarmclock/.AlarmClock"
 
     invoke-static {v1}, Landroid/content/ComponentName;->unflattenFromString(Ljava/lang/String;)Landroid/content/ComponentName;
 
