@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="config_disableMenuKeyInLockScreen">false</bool>
+    <bool name="config_use_strict_phone_number_comparation">false</bool>
+    <bool name="config_alwaysUseCdmaRssi">false</bool>
+    <bool name="config_wimaxEnabled">false</bool>
+    <bool name="config_automatic_brightness_available">true</bool>
+    <bool name="config_enableUsbModeSelection">true</bool>
+    <bool name="config_show_status_bar_battery_for_keyguard">true</bool>
+    <bool name="config_show_status_bar_carrier_for_keyguard">false</bool>
+    <bool name="config_show_status_bar_notification_for_keyguard">true</bool>
+    <bool name="config_show_status_bar_status_for_keyguard">true</bool>
+    <bool name="config_show_status_bar_time_for_keyguard">false</bool>
+    <bool name="config_lock_screen_battery_animation_horizontal">true</bool>
+</resources>
