@@ -4450,9 +4450,13 @@
     .line 1778
     new-instance v0, Landroid/content/Intent;
 
-    const-string v1, "android.settings.SYNC_SETTINGS"
+    const-string v1, "android.intent.action.VIEW"
 
     invoke-direct {v0, v1}, Landroid/content/Intent;-><init>(Ljava/lang/String;)V
+
+    const-string v1, "vnd.android.cursor.dir/vnd.service.account"
+
+    invoke-virtual {v0, v1}, Landroid/content/Intent;->setType(Ljava/lang/String;)Landroid/content/Intent;
 
     .line 1779
     const-string v1, "authorities"
