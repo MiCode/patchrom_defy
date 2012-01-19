@@ -32,6 +32,8 @@
 
 .field private mBatteryLevel:I
 
+.field private mBatteryLevel1Step:I
+
 .field private mBatteryLevelCritical:Z
 
 .field private mBatteryPresent:Z
@@ -232,6 +234,79 @@
     invoke-direct {p0}, Lcom/android/server/BatteryService;->update()V
 
     return-void
+.end method
+
+.method private getBatteryLevel1Step()V
+    .locals 8
+
+    const/4 v4, 0x0
+
+    :try_start_0
+    new-instance v5, Ljava/io/FileReader;
+
+    const-string v6, "/sys/class/power_supply/battery/charge_counter"
+
+    invoke-direct {v5, v6}, Ljava/io/FileReader;-><init>(Ljava/lang/String;)V
+    :try_end_0
+    .catch Ljava/io/IOException; {:try_start_0 .. :try_end_0} :catch_1
+
+    move-object v4, v5
+
+    :goto_0
+    const/16 v6, 0x14
+
+    :try_start_1
+    new-array v1, v6, [C
+
+    invoke-virtual {v4, v1}, Ljava/io/FileReader;->read([C)I
+
+    move-result v3
+
+    invoke-virtual {v4}, Ljava/io/FileReader;->close()V
+
+    new-instance v0, Ljava/lang/String;
+
+    const/4 v6, 0x0
+
+    invoke-direct {v0, v1, v6, v3}, Ljava/lang/String;-><init>([CII)V
+
+    const-string v6, "\n"
+
+    const-string v7, ""
+
+    invoke-virtual {v0, v6, v7}, Ljava/lang/String;->replace(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String;
+
+    move-result-object v0
+
+    invoke-static {v0}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
+
+    move-result v2
+
+    const/16 v6, 0x64
+
+    if-lt v2, v6, :cond_0
+
+    const/16 v2, 0x64
+
+    :cond_0
+    sget-object v6, Ljava/lang/System;->out:Ljava/io/PrintStream;
+
+    iput v2, p0, Lcom/android/server/BatteryService;->mBatteryLevel1Step:I
+    :try_end_1
+    .catch Ljava/lang/Exception; {:try_start_1 .. :try_end_1} :catch_0
+
+    :goto_1
+    return-void
+
+    :catch_0
+    move-exception v6
+
+    goto :goto_1
+
+    :catch_1
+    move-exception v6
+
+    goto :goto_0
 .end method
 
 .method private final getIcon(I)I
@@ -954,7 +1029,9 @@
 
     const-string v3, "level"
 
-    iget v4, p0, Lcom/android/server/BatteryService;->mBatteryLevel:I
+    invoke-direct {p0}, Lcom/android/server/BatteryService;->getBatteryLevel1Step()V
+
+    iget v4, p0, Lcom/android/server/BatteryService;->mBatteryLevel1Step:I
 
     invoke-virtual {v2, v3, v4}, Landroid/content/Intent;->putExtra(Ljava/lang/String;I)Landroid/content/Intent;
 
