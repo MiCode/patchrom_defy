@@ -3448,7 +3448,7 @@
     .locals 7
 
     .prologue
-    const v6, 0x40202fa
+    const v6, 0x60202fa
 
     const/4 v5, 0x0
 
@@ -3752,7 +3752,7 @@
     if-eqz v1, :cond_2
 
     .line 1003
-    const v1, 0x4020247
+    const v1, 0x6020247
 
     invoke-virtual {v0, v1}, Landroid/widget/ImageView;->setImageResource(I)V
 
@@ -6278,7 +6278,7 @@
     :cond_a
     new-instance v0, Lcom/android/contacts/ContactPhotoLoader;
 
-    const v1, 0x4020246
+    const v1, 0x6020246
 
     invoke-direct {v0, p0, v1}, Lcom/android/contacts/ContactPhotoLoader;-><init>(Landroid/content/Context;I)V
 
