@@ -2294,8 +2294,6 @@
 
     invoke-virtual {v3, v5}, Landroid/database/sqlite/SQLiteQueryBuilder;->appendWhere(Ljava/lang/CharSequence;)V
 
-    .line 715
-    const/16 p3, 0x0
 
     .line 716
     goto :goto_1

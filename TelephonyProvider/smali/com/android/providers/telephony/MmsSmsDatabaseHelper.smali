@@ -4,45 +4,11 @@
 
 
 # static fields
-.field static final DATABASE_NAME:Ljava/lang/String; = "mmssms.db"
-
-.field static final DATABASE_VERSION:I = 0x36
-
-.field private static final PART_UPDATE_THREADS_ON_DELETE_TRIGGER:Ljava/lang/String; = "CREATE TRIGGER update_threads_on_delete_part  AFTER DELETE ON part  WHEN old.ct != \'text/plain\' AND old.ct != \'application/smil\'  BEGIN   UPDATE threads SET has_attachment =    CASE     (SELECT COUNT(*) FROM part JOIN pdu      WHERE pdu.thread_id = threads._id      AND part.ct != \'text/plain\' AND part.ct != \'application/smil\'      AND part.mid = pdu._id)   WHEN 0 THEN 0    ELSE 1    END WHERE _id = (SELECT thread_id FROM pdu WHERE _id = old.mid);  END"
-
-.field private static final PART_UPDATE_THREADS_ON_INSERT_TRIGGER:Ljava/lang/String; = "CREATE TRIGGER update_threads_on_insert_part  AFTER INSERT ON part  WHEN new.ct != \'text/plain\' AND new.ct != \'application/smil\'  BEGIN   UPDATE threads SET has_attachment=1 WHERE _id IN    (SELECT pdu.thread_id FROM part JOIN pdu ON pdu._id=part.mid      WHERE part._id=new._id LIMIT 1);  END"
-
-.field private static final PART_UPDATE_THREADS_ON_UPDATE_TRIGGER:Ljava/lang/String; = "CREATE TRIGGER update_threads_on_update_part  AFTER UPDATE of mid ON part  WHEN new.ct != \'text/plain\' AND new.ct != \'application/smil\'  BEGIN   UPDATE threads SET has_attachment=1 WHERE _id IN    (SELECT pdu.thread_id FROM part JOIN pdu ON pdu._id=part.mid      WHERE part._id=new._id LIMIT 1);  END"
-
-.field private static final PDU_UPDATE_THREADS_ON_UPDATE_TRIGGER:Ljava/lang/String; = "CREATE TRIGGER update_threads_on_update_pdu  AFTER UPDATE of thread_id ON pdu  BEGIN   UPDATE threads SET has_attachment=1 WHERE _id IN    (SELECT pdu.thread_id FROM part JOIN pdu      WHERE part.ct != \'text/plain\' AND part.ct != \'application/smil\'      AND part.mid = pdu._id); END"
-
-.field private static final PDU_UPDATE_THREAD_CONSTRAINTS:Ljava/lang/String; = "  WHEN new.m_type=132    OR new.m_type=130    OR new.m_type=128 "
-
-.field private static final PDU_UPDATE_THREAD_DATE_SNIPPET_COUNT_ON_UPDATE:Ljava/lang/String; = "BEGIN  UPDATE threads SET    sort_index = new.sort_index  WHERE threads._id = new.thread_id    AND threads.sort_index < new.sort_index;   UPDATE threads SET    date = new.date* 1000,     snippet = new.sub,     snippet_cs = new.sub_cs  WHERE threads._id = new.thread_id    AND threads.date < (new.date* 1000);   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE (SELECT COUNT(*)          FROM pdu          WHERE read = 0            AND thread_id = threads._id             AND (m_type=132 OR m_type=130 OR m_type=128))       WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
-
-.field private static final PDU_UPDATE_THREAD_READ_BODY:Ljava/lang/String; = "  UPDATE threads SET read =     CASE (SELECT COUNT(*)          FROM pdu          WHERE read = 0            AND thread_id = threads._id             AND (m_type=132 OR m_type=130 OR m_type=128))       WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; "
-
-.field private static final SMS_UPDATE_THREAD_DATE_SNIPPET_COUNT_ON_UPDATE:Ljava/lang/String; = "BEGIN  UPDATE threads SET    sort_index = new.sort_index  WHERE threads._id = new.thread_id    AND threads.sort_index < new.sort_index;   UPDATE threads SET    date = new.date,     snippet = new.body,     snippet_cs = 0  WHERE threads._id = new.thread_id    AND threads.date < new.date;   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE (SELECT COUNT(*)          FROM sms          WHERE read = 0            AND thread_id = threads._id)      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
-
-.field private static final SMS_UPDATE_THREAD_READ_BODY:Ljava/lang/String; = "  UPDATE threads SET read =     CASE (SELECT COUNT(*)          FROM sms          WHERE read = 0            AND thread_id = threads._id)      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; "
-
-.field private static final TAG:Ljava/lang/String; = "MmsSmsDatabaseHelper"
-
-.field private static final UPDATE_THREAD_COUNT_ON_NEW:Ljava/lang/String; = "  UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id; "
-
-.field private static final UPDATE_THREAD_COUNT_ON_OLD:Ljava/lang/String; = "  UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = old.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = old.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = old.thread_id; "
-
-.field private static final UPDATE_THREAD_READ_BODY_AFTER_DELETE_UNREAD_PDU:Ljava/lang/String; = "  UPDATE threads SET read =     CASE ((SELECT COUNT(*)          FROM sms          WHERE read = 0            AND thread_id = threads._id) +           (SELECT COUNT(*)          FROM pdu          WHERE read = 0            AND thread_id = threads._id             AND (m_type=132 OR m_type=130 OR m_type=128)))       WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = old.thread_id; "
-
-.field private static final UPDATE_THREAD_READ_BODY_AFTER_DELETE_UNREAD_SMS:Ljava/lang/String; = "  UPDATE threads SET read =     CASE ((SELECT COUNT(*)          FROM sms          WHERE read = 0            AND thread_id = threads._id) +           (SELECT COUNT(*)          FROM pdu          WHERE read = 0            AND thread_id = threads._id             AND (m_type=132 OR m_type=130 OR m_type=128)))       WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = old.thread_id; "
-
-.field private static final UPDATE_THREAD_SNIPPET_SNIPPET_CS_ON_DELETE:Ljava/lang/String; = "  UPDATE threads SET snippet =    (SELECT snippet FROM     (SELECT sub AS snippet, thread_id, sort_index FROM pdu      UNION SELECT body AS snippet, thread_id, sort_index FROM sms)    WHERE thread_id = OLD.thread_id ORDER BY sort_index DESC LIMIT 1)   WHERE threads._id = OLD.thread_id;   UPDATE threads SET sort_index =    (SELECT sort_index FROM     (SELECT thread_id, sort_index FROM pdu      UNION SELECT thread_id, sort_index FROM sms)    WHERE thread_id = OLD.thread_id ORDER BY sort_index DESC LIMIT 1)   WHERE threads._id = OLD.thread_id;   UPDATE threads SET snippet_cs =    (SELECT snippet_cs FROM     (SELECT sub_cs AS snippet_cs, thread_id, sort_index FROM pdu      UNION SELECT 0 AS snippet_cs, thread_id, sort_index FROM sms)    WHERE thread_id = OLD.thread_id ORDER BY sort_index DESC LIMIT 1)   WHERE threads._id = OLD.thread_id; "
-
 .field private static mInstance:Lcom/android/providers/telephony/MmsSmsDatabaseHelper;
 
 
 # instance fields
-.field private mHasCheckedConsistency:Z
+.field private mContext:Landroid/content/Context;
 
 
 # direct methods
@@ -50,7 +16,7 @@
     .locals 1
 
     .prologue
-    .line 283
+    .line 255
     const/4 v0, 0x0
 
     sput-object v0, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->mInstance:Lcom/android/providers/telephony/MmsSmsDatabaseHelper;
@@ -63,21 +29,19 @@
     .parameter "context"
 
     .prologue
-    .line 297
+    .line 263
     const-string v0, "mmssms.db"
 
     const/4 v1, 0x0
 
-    const/16 v2, 0x36
+    const/16 v2, 0x3b
 
     invoke-direct {p0, p1, v0, v1, v2}, Landroid/database/sqlite/SQLiteOpenHelper;-><init>(Landroid/content/Context;Ljava/lang/String;Landroid/database/sqlite/SQLiteDatabase$CursorFactory;I)V
 
-    .line 293
-    const/4 v0, 0x0
+    .line 264
+    iput-object p1, p0, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->mContext:Landroid/content/Context;
 
-    iput-boolean v0, p0, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->mHasCheckedConsistency:Z
-
-    .line 298
+    .line 265
     return-void
 .end method
 
@@ -86,22 +50,22 @@
     .parameter "db"
 
     .prologue
-    .line 811
+    .line 756
     const-string v0, "CREATE TABLE canonical_addresses (_id INTEGER PRIMARY KEY,address TEXT);"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 823
-    const-string v0, "CREATE TABLE threads (_id INTEGER PRIMARY KEY,date INTEGER DEFAULT 0,message_count INTEGER DEFAULT 0,recipient_ids TEXT,snippet TEXT,snippet_cs INTEGER DEFAULT 0,read INTEGER DEFAULT 1,type INTEGER DEFAULT 0,error INTEGER DEFAULT 0,has_attachment INTEGER DEFAULT 0,sort_index INTEGER DEFAULT 0);"
+    .line 768
+    const-string v0, "CREATE TABLE threads (_id INTEGER PRIMARY KEY,date INTEGER DEFAULT 0,message_count INTEGER DEFAULT 0,unread_count INTEGER DEFAULT 0,recipient_ids TEXT,snippet TEXT,snippet_cs INTEGER DEFAULT 0,read INTEGER DEFAULT 1,type INTEGER DEFAULT 0,error INTEGER DEFAULT 0,has_attachment INTEGER DEFAULT 0,state INTEGER DEFAULT 0);"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 846
+    .line 785
     const-string v0, "CREATE TABLE pending_msgs (_id INTEGER PRIMARY KEY,proto_type INTEGER,msg_id INTEGER,msg_type INTEGER,err_type INTEGER,err_code INTEGER,retry_index INTEGER NOT NULL DEFAULT 0,due_time INTEGER,last_try INTEGER);"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 857
+    .line 796
     return-void
 .end method
 
@@ -110,102 +74,78 @@
     .parameter "db"
 
     .prologue
-    .line 862
-    const-string v0, "CREATE TRIGGER pdu_update_thread_on_insert AFTER INSERT ON pdu   WHEN new.m_type=132    OR new.m_type=130    OR new.m_type=128 BEGIN  UPDATE threads SET    sort_index = new.sort_index  WHERE threads._id = new.thread_id    AND threads.sort_index < new.sort_index;   UPDATE threads SET    date = new.date* 1000,     snippet = new.sub,     snippet_cs = new.sub_cs  WHERE threads._id = new.thread_id    AND threads.date < (new.date* 1000);   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE (SELECT COUNT(*)          FROM pdu          WHERE read = 0            AND thread_id = threads._id             AND (m_type=132 OR m_type=130 OR m_type=128))       WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
+    .line 800
+    invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->createUpdateThreadsDateTrigger(Landroid/database/sqlite/SQLiteDatabase;)V
+
+    .line 801
+    invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->createUpdateThreadUnreadCountOnPduDeleteTrigger(Landroid/database/sqlite/SQLiteDatabase;)V
+
+    .line 804
+    const-string v0, "CREATE TRIGGER pdu_update_thread_read_on_update AFTER  UPDATE OF read  ON pdu   WHEN new.m_type=132    OR new.m_type=130    OR new.m_type=128 BEGIN  UPDATE threads SET unread_count=(SELECT COUNT(*) FROM sms WHERE read=0 AND thread_id=threads._id) + (SELECT COUNT(*) FROM pdu WHERE read=0 AND thread_id=threads._id AND (m_type=132 OR m_type=130 OR m_type=128)) WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE unread_count      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id;  END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 868
-    const-string v0, "CREATE TRIGGER sms_update_thread_on_insert AFTER INSERT ON sms BEGIN  UPDATE threads SET    sort_index = new.sort_index  WHERE threads._id = new.thread_id    AND threads.sort_index < new.sort_index;   UPDATE threads SET    date = new.date,     snippet = new.body,     snippet_cs = 0  WHERE threads._id = new.thread_id    AND threads.date < new.date;   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE (SELECT COUNT(*)          FROM sms          WHERE read = 0            AND thread_id = threads._id)      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
+    .line 807
+    const-string v0, "CREATE TRIGGER sms_update_thread_read_on_update AFTER  UPDATE OF read  ON sms BEGIN  UPDATE threads SET unread_count=(SELECT COUNT(*) FROM sms WHERE read=0 AND thread_id=threads._id) + (SELECT COUNT(*) FROM pdu WHERE read=0 AND thread_id=threads._id AND (m_type=132 OR m_type=130 OR m_type=128)) WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE unread_count      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 872
-    const-string v0, "CREATE TRIGGER pdu_update_thread_date_subject_on_update AFTER  UPDATE OF date, sub, msg_box  ON pdu   WHEN new.m_type=132    OR new.m_type=130    OR new.m_type=128 BEGIN  UPDATE threads SET    sort_index = new.sort_index  WHERE threads._id = new.thread_id    AND threads.sort_index < new.sort_index;   UPDATE threads SET    date = new.date* 1000,     snippet = new.sub,     snippet_cs = new.sub_cs  WHERE threads._id = new.thread_id    AND threads.date < (new.date* 1000);   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE (SELECT COUNT(*)          FROM pdu          WHERE read = 0            AND thread_id = threads._id             AND (m_type=132 OR m_type=130 OR m_type=128))       WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
+    .line 810
+    const-string v0, "CREATE TRIGGER pdu_update_thread_on_delete AFTER DELETE ON pdu BEGIN   UPDATE threads SET date =    (SELECT date FROM        (SELECT date * 1000 AS date, thread_id FROM pdu         UNION SELECT date, thread_id FROM sms)    WHERE thread_id = old.thread_id ORDER BY date DESC LIMIT 1)  WHERE threads._id = old.thread_id;  UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = old.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = old.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = old.thread_id;   UPDATE threads SET snippet =    (SELECT snippet FROM     (SELECT date * 1000 AS date, sub AS snippet, thread_id FROM pdu      UNION SELECT date, body AS snippet, thread_id FROM sms)    WHERE thread_id = OLD.thread_id ORDER BY date DESC LIMIT 1)   WHERE threads._id = OLD.thread_id;   UPDATE threads SET snippet_cs =    (SELECT snippet_cs FROM     (SELECT date * 1000 AS date, sub_cs AS snippet_cs, thread_id FROM pdu      UNION SELECT date, 0 AS snippet_cs, thread_id FROM sms)    WHERE thread_id = OLD.thread_id ORDER BY date DESC LIMIT 1)   WHERE threads._id = OLD.thread_id; END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 879
-    const-string v0, "CREATE TRIGGER sms_update_thread_date_subject_on_update AFTER  UPDATE OF date, body, type  ON sms BEGIN  UPDATE threads SET    sort_index = new.sort_index  WHERE threads._id = new.thread_id    AND threads.sort_index < new.sort_index;   UPDATE threads SET    date = new.date,     snippet = new.body,     snippet_cs = 0  WHERE threads._id = new.thread_id    AND threads.date < new.date;   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE (SELECT COUNT(*)          FROM sms          WHERE read = 0            AND thread_id = threads._id)      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 885
-    const-string v0, "CREATE TRIGGER pdu_update_thread_read_on_update AFTER  UPDATE OF read  ON pdu   WHEN new.m_type=132    OR new.m_type=130    OR new.m_type=128 BEGIN   UPDATE threads SET read =     CASE (SELECT COUNT(*)          FROM pdu          WHERE read = 0            AND thread_id = threads._id             AND (m_type=132 OR m_type=130 OR m_type=128))       WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 894
-    const-string v0, "CREATE TRIGGER sms_update_thread_read_on_update AFTER  UPDATE OF read  ON sms BEGIN   UPDATE threads SET read =     CASE (SELECT COUNT(*)          FROM sms          WHERE read = 0            AND thread_id = threads._id)      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 902
-    const-string v0, "CREATE TRIGGER pdu_update_thread_on_delete AFTER DELETE ON pdu BEGIN   UPDATE threads SET date =    (SELECT date FROM        (SELECT date * 1000 AS date, thread_id, sort_index FROM pdu         UNION SELECT date, thread_id, sort_index FROM sms)     WHERE thread_id=old.thread_id ORDER BY sort_index DESC LIMIT 1)  WHERE threads._id = old.thread_id;   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = old.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = old.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = old.thread_id;   UPDATE threads SET snippet =    (SELECT snippet FROM     (SELECT sub AS snippet, thread_id, sort_index FROM pdu      UNION SELECT body AS snippet, thread_id, sort_index FROM sms)    WHERE thread_id = OLD.thread_id ORDER BY sort_index DESC LIMIT 1)   WHERE threads._id = OLD.thread_id;   UPDATE threads SET sort_index =    (SELECT sort_index FROM     (SELECT thread_id, sort_index FROM pdu      UNION SELECT thread_id, sort_index FROM sms)    WHERE thread_id = OLD.thread_id ORDER BY sort_index DESC LIMIT 1)   WHERE threads._id = OLD.thread_id;   UPDATE threads SET snippet_cs =    (SELECT snippet_cs FROM     (SELECT sub_cs AS snippet_cs, thread_id, sort_index FROM pdu      UNION SELECT 0 AS snippet_cs, thread_id, sort_index FROM sms)    WHERE thread_id = OLD.thread_id ORDER BY sort_index DESC LIMIT 1)   WHERE threads._id = OLD.thread_id; END;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 924
+    .line 815
     const-string v0, "CREATE TRIGGER delete_obsolete_threads_pdu AFTER DELETE ON pdu BEGIN   DELETE FROM threads   WHERE     _id = old.thread_id     AND _id NOT IN     (SELECT thread_id FROM sms      UNION SELECT thread_id from pdu); END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 935
+    .line 826
     const-string v0, "CREATE TRIGGER delete_obsolete_threads_when_update_pdu AFTER UPDATE OF thread_id ON pdu WHEN old.thread_id != new.thread_id BEGIN   DELETE FROM threads   WHERE     _id = old.thread_id     AND _id NOT IN     (SELECT thread_id FROM sms      UNION SELECT thread_id from pdu); END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 948
+    .line 839
     const-string v0, "CREATE TRIGGER insert_mms_pending_on_insert AFTER INSERT ON pdu WHEN new.m_type=130  OR new.m_type=135 BEGIN   INSERT INTO pending_msgs    (proto_type,     msg_id,     msg_type,     err_type,     err_code,     retry_index,     due_time)   VALUES     (1,      new._id,      new.m_type,0,0,0,0);END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 969
+    .line 860
     const-string v0, "CREATE TRIGGER insert_mms_pending_on_update AFTER UPDATE ON pdu WHEN new.m_type=128  AND new.msg_box=4  AND old.msg_box!=4 BEGIN   INSERT INTO pending_msgs    (proto_type,     msg_id,     msg_type,     err_type,     err_code,     retry_index,     due_time)   VALUES     (1,      new._id,      new.m_type,0,0,0,0);END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 990
+    .line 881
     const-string v0, "CREATE TRIGGER delete_mms_pending_on_update AFTER UPDATE ON pdu WHEN old.msg_box=4  AND new.msg_box!=4 BEGIN   DELETE FROM pending_msgs  WHERE msg_id=new._id; END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1000
+    .line 891
     const-string v0, "CREATE TRIGGER delete_mms_pending_on_delete AFTER DELETE ON pdu BEGIN   DELETE FROM pending_msgs  WHERE msg_id=old._id; END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1011
+    .line 902
     const-string v0, "CREATE TRIGGER update_threads_error_on_update_mms   AFTER UPDATE OF err_type ON pending_msgs   WHEN (OLD.err_type < 10 AND NEW.err_type >= 10)    OR (OLD.err_type >= 10 AND NEW.err_type < 10) BEGIN  UPDATE threads SET error =     CASE      WHEN NEW.err_type >= 10 THEN error + 1      ELSE error - 1    END   WHERE _id =   (SELECT DISTINCT thread_id    FROM pdu    WHERE _id = NEW.msg_id); END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1028
+    .line 919
     const-string v0, "CREATE TRIGGER update_threads_error_on_delete_mms   BEFORE DELETE ON pdu  WHEN OLD._id IN (SELECT DISTINCT msg_id                   FROM pending_msgs                   WHERE err_type >= 10) BEGIN   UPDATE threads SET error = error - 1  WHERE _id = OLD.thread_id; END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1040
+    .line 931
     const-string v0, "CREATE TRIGGER update_threads_error_on_move_mms   BEFORE UPDATE OF msg_box ON pdu   WHEN (OLD.msg_box = 4 AND NEW.msg_box != 4)   AND (OLD._id IN (SELECT DISTINCT msg_id                   FROM pending_msgs                   WHERE err_type >= 10)) BEGIN   UPDATE threads SET error = error - 1  WHERE _id = OLD.thread_id; END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1053
+    .line 944
     const-string v0, "CREATE TRIGGER update_threads_error_on_update_sms   AFTER UPDATE OF type ON sms  WHEN (OLD.type != 5 AND NEW.type = 5)    OR (OLD.type = 5 AND NEW.type != 5) BEGIN   UPDATE threads SET error =     CASE      WHEN NEW.type = 5 THEN error + 1      ELSE error - 1    END   WHERE _id = NEW.thread_id; END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1069
-    const-string v0, "CREATE TRIGGER sms_update_thread_read_on_delete_unread AFTER DELETE ON sms  WHEN old.read = 0 BEGIN   UPDATE threads SET read =     CASE ((SELECT COUNT(*)          FROM sms          WHERE read = 0            AND thread_id = threads._id) +           (SELECT COUNT(*)          FROM pdu          WHERE read = 0            AND thread_id = threads._id             AND (m_type=132 OR m_type=130 OR m_type=128)))       WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = old.thread_id; END;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1077
-    const-string v0, "CREATE TRIGGER pdu_update_thread_read_on_delete_unread AFTER DELETE ON pdu  WHEN old.read = 0 BEGIN   UPDATE threads SET read =     CASE ((SELECT COUNT(*)          FROM sms          WHERE read = 0            AND thread_id = threads._id) +           (SELECT COUNT(*)          FROM pdu          WHERE read = 0            AND thread_id = threads._id             AND (m_type=132 OR m_type=130 OR m_type=128)))       WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = old.thread_id; END;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1086
+    .line 956
     return-void
 .end method
 
@@ -214,10 +154,10 @@
     .parameter "db"
 
     .prologue
-    .line 584
+    .line 572
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->createThreadIdIndex(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 585
+    .line 573
     return-void
 .end method
 
@@ -226,32 +166,32 @@
     .parameter "db"
 
     .prologue
-    .line 599
-    const-string v0, "CREATE TABLE pdu (_id INTEGER PRIMARY KEY,thread_id INTEGER,date INTEGER,msg_box INTEGER,read INTEGER DEFAULT 0,m_id TEXT,sub TEXT,sub_cs INTEGER,ct_t TEXT,ct_l TEXT,exp INTEGER,m_cls TEXT,m_type INTEGER,v INTEGER,m_size INTEGER,pri INTEGER,rr INTEGER,rpt_a INTEGER,resp_st INTEGER,st INTEGER,tr_id TEXT,retr_st INTEGER,retr_txt TEXT,retr_txt_cs INTEGER,read_status INTEGER,ct_cls INTEGER,resp_txt TEXT,d_tm INTEGER,d_rpt INTEGER,locked INTEGER DEFAULT 0,seen INTEGER DEFAULT 0,sort_index INTEGER DEFAULT 0);"
+    .line 587
+    const-string v0, "CREATE TABLE pdu (_id INTEGER PRIMARY KEY,thread_id INTEGER,date INTEGER,msg_box INTEGER,read INTEGER DEFAULT 0,m_id TEXT,sub TEXT,sub_cs INTEGER,ct_t TEXT,ct_l TEXT,exp INTEGER,m_cls TEXT,m_type INTEGER,v INTEGER,m_size INTEGER,pri INTEGER,rr INTEGER,rpt_a INTEGER,resp_st INTEGER,st INTEGER,tr_id TEXT,retr_st INTEGER,retr_txt TEXT,retr_txt_cs INTEGER,read_status INTEGER,ct_cls INTEGER,resp_txt TEXT,d_tm INTEGER,d_rpt INTEGER,locked INTEGER DEFAULT 0,seen INTEGER DEFAULT 0);"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 638
+    .line 621
     const-string v0, "CREATE TABLE addr (_id INTEGER PRIMARY KEY,msg_id INTEGER,contact_id INTEGER,address TEXT,type INTEGER,charset INTEGER);"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 646
+    .line 629
     const-string v0, "CREATE TABLE part (_id INTEGER PRIMARY KEY,mid INTEGER,seq INTEGER DEFAULT 0,ct TEXT,name TEXT,chset INTEGER,cd TEXT,fn TEXT,cid TEXT,cl TEXT,ctt_s INTEGER,ctt_t TEXT,_data TEXT,text TEXT);"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 662
+    .line 645
     const-string v0, "CREATE TABLE rate (sent_time INTEGER);"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 665
+    .line 648
     const-string v0, "CREATE TABLE drm (_id INTEGER PRIMARY KEY,_data TEXT);"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 668
+    .line 651
     return-void
 .end method
 
@@ -260,42 +200,42 @@
     .parameter "db"
 
     .prologue
-    .line 672
+    .line 655
     const-string v0, "CREATE TRIGGER part_cleanup DELETE ON pdu BEGIN   DELETE FROM part  WHERE mid=old._id;END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 679
+    .line 662
     const-string v0, "CREATE TRIGGER addr_cleanup DELETE ON pdu BEGIN   DELETE FROM addr  WHERE msg_id=old._id;END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 687
+    .line 670
     const-string v0, "CREATE TRIGGER cleanup_delivery_and_read_report AFTER DELETE ON pdu WHEN old.m_type=128 BEGIN   DELETE FROM pdu  WHERE (m_type=134    OR m_type=136)    AND m_id=old.m_id; END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 700
+    .line 683
     const-string v0, "CREATE TRIGGER update_threads_on_insert_part  AFTER INSERT ON part  WHEN new.ct != \'text/plain\' AND new.ct != \'application/smil\'  BEGIN   UPDATE threads SET has_attachment=1 WHERE _id IN    (SELECT pdu.thread_id FROM part JOIN pdu ON pdu._id=part.mid      WHERE part._id=new._id LIMIT 1);  END"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 701
+    .line 684
     const-string v0, "CREATE TRIGGER update_threads_on_update_part  AFTER UPDATE of mid ON part  WHEN new.ct != \'text/plain\' AND new.ct != \'application/smil\'  BEGIN   UPDATE threads SET has_attachment=1 WHERE _id IN    (SELECT pdu.thread_id FROM part JOIN pdu ON pdu._id=part.mid      WHERE part._id=new._id LIMIT 1);  END"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 702
-    const-string v0, "CREATE TRIGGER update_threads_on_delete_part  AFTER DELETE ON part  WHEN old.ct != \'text/plain\' AND old.ct != \'application/smil\'  BEGIN   UPDATE threads SET has_attachment =    CASE     (SELECT COUNT(*) FROM part JOIN pdu      WHERE pdu.thread_id = threads._id      AND part.ct != \'text/plain\' AND part.ct != \'application/smil\'      AND part.mid = pdu._id)   WHEN 0 THEN 0    ELSE 1    END WHERE _id = (SELECT thread_id FROM pdu WHERE _id = old.mid);  END"
+    .line 685
+    const-string v0, "CREATE TRIGGER update_threads_on_delete_part  AFTER DELETE ON part  WHEN old.ct != \'text/plain\' AND old.ct != \'application/smil\'  BEGIN   UPDATE threads SET has_attachment =    CASE     (SELECT COUNT(*) FROM part JOIN pdu      WHERE pdu.thread_id = threads._id      AND part.ct != \'text/plain\' AND part.ct != \'application/smil\'      AND part.mid = pdu._id)   WHEN 0 THEN 0    ELSE 1    END;  END"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 703
+    .line 686
     const-string v0, "CREATE TRIGGER update_threads_on_update_pdu  AFTER UPDATE of thread_id ON pdu  BEGIN   UPDATE threads SET has_attachment=1 WHERE _id IN    (SELECT pdu.thread_id FROM part JOIN pdu      WHERE part.ct != \'text/plain\' AND part.ct != \'application/smil\'      AND part.mid = pdu._id); END"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 704
+    .line 687
     return-void
 .end method
 
@@ -304,32 +244,27 @@
     .parameter "db"
 
     .prologue
-    .line 709
-    const-string v0, "CREATE TABLE sms (_id INTEGER PRIMARY KEY,thread_id INTEGER,address TEXT,person INTEGER,date INTEGER,protocol INTEGER,read INTEGER DEFAULT 0,priority INTEGER DEFAULT 0,status INTEGER DEFAULT -1,type INTEGER,callback_number TEXT,reply_path_present INTEGER,subject TEXT,body TEXT,service_center TEXT,failure_cause INTEGER DEFAULT -1,locked INTEGER DEFAULT 0,error_code INTEGER DEFAULT -33001,stack_type INTEGER DEFAULT 0,seen INTEGER DEFAULT 0,sort_index INTEGER DEFAULT 0 );"
+    .line 692
+    const-string v0, "CREATE TABLE sms (_id INTEGER PRIMARY KEY,thread_id INTEGER,address TEXT,person INTEGER,date INTEGER,protocol INTEGER,read INTEGER DEFAULT 0,status INTEGER DEFAULT -1,type INTEGER,reply_path_present INTEGER,subject TEXT,body TEXT,service_center TEXT,locked INTEGER DEFAULT 0,error_code INTEGER DEFAULT 0,seen INTEGER DEFAULT 0,sub_id INTEGER);"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 758
+    .line 719
     const-string v0, "CREATE TABLE raw (_id INTEGER PRIMARY KEY,date INTEGER,reference_number INTEGER,count INTEGER,sequence INTEGER,destination_port INTEGER,address TEXT,pdu TEXT);"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 768
+    .line 729
     const-string v0, "CREATE TABLE attachments (sms_id INTEGER,content_url TEXT,offset INTEGER);"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 777
+    .line 738
     const-string v0, "CREATE TABLE sr_pending (reference_number INTEGER,action TEXT,data TEXT);"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 785
-    const-string v0, "CREATE TABLE message_pending (_id INTEGER PRIMARY KEY,msg_id INTEGER DEFAULT -1,address TEXT,retry_count INTEGER DEFAULT 0,total_segments INTEGER DEFAULT 0,total_destinations INTEGER DEFAULT 0,destinations_set_id INTEGER,error_code INTEGER DEFAULT -33001);"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 797
+    .line 742
     return-void
 .end method
 
@@ -338,7 +273,7 @@
     .parameter "db"
 
     .prologue
-    .line 589
+    .line 577
     :try_start_0
     const-string v1, "CREATE INDEX IF NOT EXISTS typeThreadIdIndex ON sms (type, thread_id);"
 
@@ -346,17 +281,17 @@
     :try_end_0
     .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
 
-    .line 594
+    .line 582
     :goto_0
     return-void
 
-    .line 591
+    .line 579
     :catch_0
     move-exception v1
 
     move-object v0, v1
 
-    .line 592
+    .line 580
     .local v0, ex:Ljava/lang/Exception;
     const-string v1, "MmsSmsDatabaseHelper"
 
@@ -387,53 +322,120 @@
     goto :goto_0
 .end method
 
+.method private createUpdateThreadUnreadCountOnPduDeleteTrigger(Landroid/database/sqlite/SQLiteDatabase;)V
+    .locals 1
+    .parameter "db"
+
+    .prologue
+    .line 1292
+    const-string v0, "CREATE TRIGGER pdu_update_thread_read_on_delete AFTER DELETE ON pdu BEGIN  UPDATE threads SET unread_count=(SELECT COUNT(*) FROM sms WHERE read=0 AND thread_id=threads._id) + (SELECT COUNT(*) FROM pdu WHERE read=0 AND thread_id=threads._id AND (m_type=132 OR m_type=130 OR m_type=128))  WHERE threads._id = old.thread_id;   UPDATE threads SET read =     CASE unread_count      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = old.thread_id; END;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1304
+    return-void
+.end method
+
+.method private createUpdateThreadsDateOnPduTrigger(Landroid/database/sqlite/SQLiteDatabase;)V
+    .locals 1
+    .parameter "db"
+
+    .prologue
+    .line 1245
+    const-string v0, "CREATE TRIGGER pdu_update_thread_on_insert AFTER INSERT ON pdu   WHEN new.m_type=132    OR new.m_type=130    OR new.m_type=128 BEGIN  UPDATE threads SET    date = new.date * 1000,     snippet = new.sub,     snippet_cs = new.sub_cs  WHERE threads._id = new.thread_id;   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id;  UPDATE threads SET unread_count=(SELECT COUNT(*) FROM sms WHERE read=0 AND thread_id=threads._id) + (SELECT COUNT(*) FROM pdu WHERE read=0 AND thread_id=threads._id AND (m_type=132 OR m_type=130 OR m_type=128)) WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE unread_count      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1251
+    const-string v0, "CREATE TRIGGER pdu_update_thread_date_subject_on_update AFTER  UPDATE OF date, sub, msg_box  ON pdu   WHEN new.m_type=132    OR new.m_type=130    OR new.m_type=128 BEGIN  UPDATE threads SET    date = new.date * 1000,     snippet = new.sub,     snippet_cs = new.sub_cs  WHERE threads._id = new.thread_id;   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id;  UPDATE threads SET unread_count=(SELECT COUNT(*) FROM sms WHERE read=0 AND thread_id=threads._id) + (SELECT COUNT(*) FROM pdu WHERE read=0 AND thread_id=threads._id AND (m_type=132 OR m_type=130 OR m_type=128)) WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE unread_count      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1258
+    const-string v0, "CREATE TRIGGER pdu_update_thread_on_delete AFTER DELETE ON pdu BEGIN   UPDATE threads SET date =    (SELECT date FROM        (SELECT date * 1000 AS date, thread_id FROM pdu         UNION SELECT date, thread_id FROM sms)    WHERE thread_id = old.thread_id ORDER BY date DESC LIMIT 1)  WHERE threads._id = old.thread_id;  UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = old.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = old.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = old.thread_id;   UPDATE threads SET snippet =    (SELECT snippet FROM     (SELECT date * 1000 AS date, sub AS snippet, thread_id FROM pdu      UNION SELECT date, body AS snippet, thread_id FROM sms)    WHERE thread_id = OLD.thread_id ORDER BY date DESC LIMIT 1)   WHERE threads._id = OLD.thread_id;   UPDATE threads SET snippet_cs =    (SELECT snippet_cs FROM     (SELECT date * 1000 AS date, sub_cs AS snippet_cs, thread_id FROM pdu      UNION SELECT date, 0 AS snippet_cs, thread_id FROM sms)    WHERE thread_id = OLD.thread_id ORDER BY date DESC LIMIT 1)   WHERE threads._id = OLD.thread_id; END;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1259
+    return-void
+.end method
+
+.method private createUpdateThreadsDateTrigger(Landroid/database/sqlite/SQLiteDatabase;)V
+    .locals 1
+    .parameter "db"
+
+    .prologue
+    .line 1263
+    const-string v0, "CREATE TRIGGER pdu_update_thread_on_insert AFTER INSERT ON pdu   WHEN new.m_type=132    OR new.m_type=130    OR new.m_type=128 BEGIN  UPDATE threads SET    date = new.date * 1000,     snippet = new.sub,     snippet_cs = new.sub_cs  WHERE threads._id = new.thread_id;   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id;  UPDATE threads SET unread_count=(SELECT COUNT(*) FROM sms WHERE read=0 AND thread_id=threads._id) + (SELECT COUNT(*) FROM pdu WHERE read=0 AND thread_id=threads._id AND (m_type=132 OR m_type=130 OR m_type=128)) WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE unread_count      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1269
+    const-string v0, "CREATE TRIGGER sms_update_thread_on_insert AFTER INSERT ON sms BEGIN  UPDATE threads SET    date = new.date,     snippet = new.body,     snippet_cs = 0  WHERE threads._id = new.thread_id;   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id;  UPDATE threads SET unread_count=(SELECT COUNT(*) FROM sms WHERE read=0 AND thread_id=threads._id) + (SELECT COUNT(*) FROM pdu WHERE read=0 AND thread_id=threads._id AND (m_type=132 OR m_type=130 OR m_type=128)) WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE unread_count      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1273
+    const-string v0, "CREATE TRIGGER pdu_update_thread_date_subject_on_update AFTER  UPDATE OF date, sub, msg_box  ON pdu   WHEN new.m_type=132    OR new.m_type=130    OR new.m_type=128 BEGIN  UPDATE threads SET    date = new.date * 1000,     snippet = new.sub,     snippet_cs = new.sub_cs  WHERE threads._id = new.thread_id;   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id;  UPDATE threads SET unread_count=(SELECT COUNT(*) FROM sms WHERE read=0 AND thread_id=threads._id) + (SELECT COUNT(*) FROM pdu WHERE read=0 AND thread_id=threads._id AND (m_type=132 OR m_type=130 OR m_type=128)) WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE unread_count      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1280
+    const-string v0, "CREATE TRIGGER sms_update_thread_date_subject_on_update AFTER  UPDATE OF date, body, type  ON sms BEGIN  UPDATE threads SET    date = new.date,     snippet = new.body,     snippet_cs = 0  WHERE threads._id = new.thread_id;   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id;  UPDATE threads SET unread_count=(SELECT COUNT(*) FROM sms WHERE read=0 AND thread_id=threads._id) + (SELECT COUNT(*) FROM pdu WHERE read=0 AND thread_id=threads._id AND (m_type=132 OR m_type=130 OR m_type=128)) WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE unread_count      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1284
+    return-void
+.end method
+
 .method private createWordsTables(Landroid/database/sqlite/SQLiteDatabase;)V
     .locals 4
     .parameter "db"
 
     .prologue
-    .line 557
+    .line 545
     :try_start_0
     const-string v1, "CREATE VIRTUAL TABLE words USING FTS3 (_id INTEGER PRIMARY KEY, index_text TEXT, source_id INTEGER, table_to_use INTEGER);"
 
     invoke-virtual {p1, v1}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 564
+    .line 552
     const-string v1, "CREATE TRIGGER sms_words_update AFTER UPDATE ON sms BEGIN UPDATE words  SET index_text = NEW.body WHERE (source_id=NEW._id AND table_to_use=1);  END;"
 
     invoke-virtual {p1, v1}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 567
+    .line 555
     const-string v1, "CREATE TRIGGER sms_words_delete AFTER DELETE ON sms BEGIN DELETE FROM   words WHERE source_id = OLD._id AND table_to_use = 1; END;"
 
     invoke-virtual {p1, v1}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 571
+    .line 559
     const-string v1, "CREATE TRIGGER mms_words_update AFTER UPDATE ON part BEGIN UPDATE words  SET index_text = NEW.text WHERE (source_id=NEW._id AND table_to_use=2);  END;"
 
     invoke-virtual {p1, v1}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 574
+    .line 562
     const-string v1, "CREATE TRIGGER mms_words_delete AFTER DELETE ON part BEGIN DELETE FROM  words WHERE source_id = OLD._id AND table_to_use = 2; END;"
 
     invoke-virtual {p1, v1}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 577
+    .line 565
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->populateWordsTable(Landroid/database/sqlite/SQLiteDatabase;)V
     :try_end_0
     .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
 
-    .line 581
+    .line 569
     :goto_0
     return-void
 
-    .line 578
+    .line 566
     :catch_0
     move-exception v1
 
     move-object v0, v1
 
-    .line 579
+    .line 567
     .local v0, ex:Ljava/lang/Exception;
     const-string v1, "MmsSmsDatabaseHelper"
 
@@ -464,26 +466,456 @@
     goto :goto_0
 .end method
 
-.method public static deleteOneSms(Landroid/database/sqlite/SQLiteDatabase;I)I
-    .locals 13
+.method public static deleteObsoleteThread(Landroid/content/Context;Landroid/database/sqlite/SQLiteDatabase;J)Z
+    .locals 8
+    .parameter "context"
+    .parameter "db"
+    .parameter "threadId"
+
+    .prologue
+    const/4 v7, 0x1
+
+    const/4 v6, 0x0
+
+    .line 419
+    const-string v2, "threads"
+
+    const-string v3, "_id = ? AND _id NOT IN          (SELECT thread_id FROM sms            UNION SELECT thread_id FROM pdu)"
+
+    new-array v4, v7, [Ljava/lang/String;
+
+    invoke-static {p2, p3}, Ljava/lang/String;->valueOf(J)Ljava/lang/String;
+
+    move-result-object v5
+
+    aput-object v5, v4, v6
+
+    invoke-virtual {p1, v2, v3, v4}, Landroid/database/sqlite/SQLiteDatabase;->delete(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;)I
+
+    move-result v0
+
+    .line 424
+    .local v0, count:I
+    if-lez v0, :cond_0
+
+    .line 425
+    const-string v2, "MmsSmsDatabaseHelper"
+
+    const-string v3, "obsoleted thread %d"
+
+    new-array v4, v7, [Ljava/lang/Object;
+
+    invoke-static {p2, p3}, Ljava/lang/Long;->valueOf(J)Ljava/lang/Long;
+
+    move-result-object v5
+
+    aput-object v5, v4, v6
+
+    invoke-static {v3, v4}, Ljava/lang/String;->format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+
+    move-result-object v3
+
+    invoke-static {v2, v3}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
+
+    .line 426
+    new-instance v1, Landroid/content/Intent;
+
+    const-string v2, "android.intent.action.SMS_THREADS_OBSOLETED_ACTION"
+
+    invoke-direct {v1, v2}, Landroid/content/Intent;-><init>(Ljava/lang/String;)V
+
+    .line 427
+    .local v1, intent:Landroid/content/Intent;
+    const-string v2, "_id"
+
+    new-array v3, v7, [J
+
+    aput-wide p2, v3, v6
+
+    invoke-virtual {v1, v2, v3}, Landroid/content/Intent;->putExtra(Ljava/lang/String;[J)Landroid/content/Intent;
+
+    .line 428
+    invoke-virtual {p0, v1}, Landroid/content/Context;->sendBroadcast(Landroid/content/Intent;)V
+
+    move v2, v7
+
+    .line 431
+    .end local v1           #intent:Landroid/content/Intent;
+    :goto_0
+    return v2
+
+    :cond_0
+    move v2, v6
+
+    goto :goto_0
+.end method
+
+.method public static deleteObsoleteThreads(Landroid/content/Context;Landroid/database/sqlite/SQLiteDatabase;)I
+    .locals 14
+    .parameter "context"
+    .parameter "db"
+
+    .prologue
+    const/4 v12, 0x1
+
+    const/4 v11, 0x0
+
+    const-string v0, "threads"
+
+    const-string v13, "_id"
+
+    .line 384
+    const-string v3, "_id NOT IN (SELECT DISTINCT thread_id FROM sms UNION SELECT DISTINCT thread_id FROM pdu)"
+
+    .line 386
+    .local v3, where:Ljava/lang/String;
+    const/4 v8, 0x0
+
+    .line 387
+    .local v8, cursor:Landroid/database/Cursor;
+    const/4 v10, 0x0
+
+    .line 389
+    .local v10, threadIds:[J
+    :try_start_0
+    const-string v1, "threads"
+
+    const/4 v0, 0x1
+
+    new-array v2, v0, [Ljava/lang/String;
+
+    const/4 v0, 0x0
+
+    const-string v4, "_id"
+
+    aput-object v4, v2, v0
+
+    const/4 v4, 0x0
+
+    const/4 v5, 0x0
+
+    const/4 v6, 0x0
+
+    const/4 v7, 0x0
+
+    move-object v0, p1
+
+    invoke-virtual/range {v0 .. v7}, Landroid/database/sqlite/SQLiteDatabase;->query(Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Landroid/database/Cursor;
+
+    move-result-object v8
+
+    .line 391
+    if-eqz v8, :cond_1
+
+    invoke-interface {v8}, Landroid/database/Cursor;->getCount()I
+
+    move-result v0
+
+    if-lez v0, :cond_1
+
+    .line 392
+    invoke-interface {v8}, Landroid/database/Cursor;->getCount()I
+
+    move-result v0
+
+    new-array v10, v0, [J
+
+    .line 393
+    const/4 v0, -0x1
+
+    invoke-interface {v8, v0}, Landroid/database/Cursor;->moveToPosition(I)Z
+
+    .line 394
+    :goto_0
+    invoke-interface {v8}, Landroid/database/Cursor;->moveToNext()Z
+
+    move-result v0
+
+    if-eqz v0, :cond_1
+
+    .line 395
+    invoke-interface {v8}, Landroid/database/Cursor;->getPosition()I
+
+    move-result v0
+
+    const/4 v1, 0x0
+
+    invoke-interface {v8, v1}, Landroid/database/Cursor;->getLong(I)J
+
+    move-result-wide v1
+
+    aput-wide v1, v10, v0
+    :try_end_0
+    .catchall {:try_start_0 .. :try_end_0} :catchall_0
+
+    goto :goto_0
+
+    .line 402
+    :catchall_0
+    move-exception v0
+
+    if-eqz v8, :cond_0
+
+    .line 403
+    invoke-interface {v8}, Landroid/database/Cursor;->close()V
+
+    :cond_0
+    throw v0
+
+    .line 398
+    :cond_1
+    :try_start_1
+    const-string v0, "threads"
+
+    const-string v1, "_id NOT IN (SELECT DISTINCT thread_id FROM sms UNION SELECT DISTINCT thread_id FROM pdu)"
+
+    const/4 v2, 0x0
+
+    invoke-virtual {p1, v0, v1, v2}, Landroid/database/sqlite/SQLiteDatabase;->delete(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;)I
+    :try_end_1
+    .catchall {:try_start_1 .. :try_end_1} :catchall_0
+
+    .line 402
+    if-eqz v8, :cond_2
+
+    .line 403
+    invoke-interface {v8}, Landroid/database/Cursor;->close()V
+
+    .line 407
+    :cond_2
+    if-nez v10, :cond_3
+
+    move v0, v11
+
+    .line 415
+    :goto_1
+    return v0
+
+    .line 411
+    :cond_3
+    const-string v0, "MmsSmsDatabaseHelper"
+
+    const-string v1, "obsoleted threads: %s"
+
+    new-array v2, v12, [Ljava/lang/Object;
+
+    aput-object v10, v2, v11
+
+    invoke-static {v1, v2}, Ljava/lang/String;->format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+
+    move-result-object v1
+
+    invoke-static {v0, v1}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
+
+    .line 412
+    new-instance v9, Landroid/content/Intent;
+
+    const-string v0, "android.intent.action.SMS_THREADS_OBSOLETED_ACTION"
+
+    invoke-direct {v9, v0}, Landroid/content/Intent;-><init>(Ljava/lang/String;)V
+
+    .line 413
+    .local v9, intent:Landroid/content/Intent;
+    const-string v0, "_id"
+
+    invoke-virtual {v9, v13, v10}, Landroid/content/Intent;->putExtra(Ljava/lang/String;[J)Landroid/content/Intent;
+
+    .line 414
+    invoke-virtual {p0, v9}, Landroid/content/Context;->sendBroadcast(Landroid/content/Intent;)V
+
+    .line 415
+    array-length v0, v10
+
+    goto :goto_1
+.end method
+
+.method public static deleteOneSms(Landroid/content/Context;Landroid/database/sqlite/SQLiteDatabase;I)I
+    .locals 6
+    .parameter "context"
     .parameter "db"
     .parameter "message_id"
 
     .prologue
-    const/4 v11, 0x0
+    .line 435
+    invoke-static {p1, p2}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->getThreadIdFromMsgId(Landroid/database/sqlite/SQLiteDatabase;I)J
+
+    move-result-wide v1
+
+    .line 438
+    .local v1, thread_id:J
+    const-string v3, "sms"
+
+    new-instance v4, Ljava/lang/StringBuilder;
+
+    invoke-direct {v4}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string v5, "_id="
+
+    invoke-virtual {v4, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v4
+
+    invoke-virtual {v4, p2}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+
+    move-result-object v4
+
+    invoke-virtual {v4}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v4
+
+    const/4 v5, 0x0
+
+    invoke-virtual {p1, v3, v4, v5}, Landroid/database/sqlite/SQLiteDatabase;->delete(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;)I
+
+    move-result v0
+
+    .line 439
+    .local v0, rows:I
+    const-wide/16 v3, 0x0
+
+    cmp-long v3, v1, v3
+
+    if-lez v3, :cond_0
+
+    .line 441
+    invoke-static {p0, p1, v1, v2}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->updateThread(Landroid/content/Context;Landroid/database/sqlite/SQLiteDatabase;J)V
+
+    .line 443
+    :cond_0
+    return v0
+.end method
+
+.method private dropAll(Landroid/database/sqlite/SQLiteDatabase;)V
+    .locals 1
+    .parameter "db"
+
+    .prologue
+    .line 1310
+    const-string v0, "DROP TABLE IF EXISTS canonical_addresses"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1311
+    const-string v0, "DROP TABLE IF EXISTS threads"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1312
+    const-string v0, "DROP TABLE IF EXISTS pending_msgs"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1313
+    const-string v0, "DROP TABLE IF EXISTS sms"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1314
+    const-string v0, "DROP TABLE IF EXISTS raw"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1315
+    const-string v0, "DROP TABLE IF EXISTS attachments"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1316
+    const-string v0, "DROP TABLE IF EXISTS thread_ids"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1317
+    const-string v0, "DROP TABLE IF EXISTS sr_pending"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1318
+    const-string v0, "DROP TABLE IF EXISTS pdu;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1319
+    const-string v0, "DROP TABLE IF EXISTS addr;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1320
+    const-string v0, "DROP TABLE IF EXISTS part;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1321
+    const-string v0, "DROP TABLE IF EXISTS rate;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1322
+    const-string v0, "DROP TABLE IF EXISTS drm;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1323
+    return-void
+.end method
+
+.method static declared-synchronized getInstance(Landroid/content/Context;)Lcom/android/providers/telephony/MmsSmsDatabaseHelper;
+    .locals 2
+    .parameter "context"
+
+    .prologue
+    .line 272
+    const-class v0, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;
+
+    monitor-enter v0
+
+    :try_start_0
+    sget-object v1, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->mInstance:Lcom/android/providers/telephony/MmsSmsDatabaseHelper;
+
+    if-nez v1, :cond_0
+
+    .line 273
+    new-instance v1, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;
+
+    invoke-direct {v1, p0}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;-><init>(Landroid/content/Context;)V
+
+    sput-object v1, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->mInstance:Lcom/android/providers/telephony/MmsSmsDatabaseHelper;
+
+    .line 275
+    :cond_0
+    sget-object v1, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->mInstance:Lcom/android/providers/telephony/MmsSmsDatabaseHelper;
+    :try_end_0
+    .catchall {:try_start_0 .. :try_end_0} :catchall_0
+
+    monitor-exit v0
+
+    return-object v1
+
+    .line 272
+    :catchall_0
+    move-exception v1
+
+    monitor-exit v0
+
+    throw v1
+.end method
+
+.method public static getThreadIdFromMsgId(Landroid/database/sqlite/SQLiteDatabase;I)J
+    .locals 11
+    .parameter "db"
+    .parameter "message_id"
+
+    .prologue
+    const/4 v10, 0x0
 
     const/4 v4, 0x0
 
+    .line 447
+    const/4 v9, -0x1
+
+    .line 449
+    .local v9, thread_id:I
     const-string v1, "sms"
-
-    const-string v12, "_id="
-
-    .line 453
-    const/4 v10, -0x1
-
-    .line 455
-    .local v10, thread_id:I
-    const-string v0, "sms"
 
     const/4 v0, 0x1
 
@@ -491,7 +923,7 @@
 
     const-string v0, "thread_id"
 
-    aput-object v0, v2, v11
+    aput-object v0, v2, v10
 
     new-instance v0, Ljava/lang/StringBuilder;
 
@@ -499,7 +931,7 @@
 
     const-string v3, "_id="
 
-    invoke-virtual {v0, v12}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    invoke-virtual {v0, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
     move-result-object v0
 
@@ -523,184 +955,31 @@
 
     move-result-object v8
 
-    .line 457
+    .line 451
     .local v8, c:Landroid/database/Cursor;
     if-eqz v8, :cond_1
 
-    .line 458
+    .line 452
     invoke-interface {v8}, Landroid/database/Cursor;->moveToFirst()Z
 
     move-result v0
 
     if-eqz v0, :cond_0
 
-    .line 459
-    invoke-interface {v8, v11}, Landroid/database/Cursor;->getInt(I)I
-
-    move-result v10
-
-    .line 461
-    :cond_0
-    invoke-interface {v8}, Landroid/database/Cursor;->close()V
-
-    .line 465
-    :cond_1
-    const-string v0, "sms"
-
-    new-instance v0, Ljava/lang/StringBuilder;
-
-    invoke-direct {v0}, Ljava/lang/StringBuilder;-><init>()V
-
-    const-string v2, "_id="
-
-    invoke-virtual {v0, v12}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    invoke-virtual {v0, p1}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
-
-    move-result-object v0
-
-    invoke-virtual {p0, v1, v0, v4}, Landroid/database/sqlite/SQLiteDatabase;->delete(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;)I
+    .line 453
+    invoke-interface {v8, v10}, Landroid/database/Cursor;->getInt(I)I
 
     move-result v9
 
-    .line 466
-    .local v9, rows:I
-    if-lez v10, :cond_2
-
-    .line 468
-    int-to-long v0, v10
-
-    invoke-static {p0, v0, v1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->updateThread(Landroid/database/sqlite/SQLiteDatabase;J)V
-
-    .line 470
-    :cond_2
-    return v9
-.end method
-
-.method private dropAll(Landroid/database/sqlite/SQLiteDatabase;)V
-    .locals 1
-    .parameter "db"
-
-    .prologue
-    .line 1333
-    const-string v0, "DROP TABLE IF EXISTS canonical_addresses"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1334
-    const-string v0, "DROP TABLE IF EXISTS threads"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1335
-    const-string v0, "DROP TABLE IF EXISTS pending_msgs"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1336
-    const-string v0, "DROP TABLE IF EXISTS sms"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1337
-    const-string v0, "DROP TABLE IF EXISTS raw"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1338
-    const-string v0, "DROP TABLE IF EXISTS attachments"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1339
-    const-string v0, "DROP TABLE IF EXISTS thread_ids"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1340
-    const-string v0, "DROP TABLE IF EXISTS sr_pending"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1341
-    const-string v0, "DROP TABLE IF EXISTS pdu;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1342
-    const-string v0, "DROP TABLE IF EXISTS addr;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1343
-    const-string v0, "DROP TABLE IF EXISTS part;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1344
-    const-string v0, "DROP TABLE IF EXISTS rate;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1345
-    const-string v0, "DROP TABLE IF EXISTS drm;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1347
-    const-string v0, "DROP TABLE IF EXISTS message_pending"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1349
-    return-void
-.end method
-
-.method static declared-synchronized getInstance(Landroid/content/Context;)Lcom/android/providers/telephony/MmsSmsDatabaseHelper;
-    .locals 2
-    .parameter "context"
-
-    .prologue
-    .line 305
-    const-class v0, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;
-
-    monitor-enter v0
-
-    :try_start_0
-    sget-object v1, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->mInstance:Lcom/android/providers/telephony/MmsSmsDatabaseHelper;
-
-    if-nez v1, :cond_0
-
-    .line 306
-    new-instance v1, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;
-
-    invoke-direct {v1, p0}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;-><init>(Landroid/content/Context;)V
-
-    sput-object v1, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->mInstance:Lcom/android/providers/telephony/MmsSmsDatabaseHelper;
-
-    .line 308
+    .line 455
     :cond_0
-    sget-object v1, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->mInstance:Lcom/android/providers/telephony/MmsSmsDatabaseHelper;
-    :try_end_0
-    .catchall {:try_start_0 .. :try_end_0} :catchall_0
+    invoke-interface {v8}, Landroid/database/Cursor;->close()V
 
-    monitor-exit v0
+    .line 458
+    :cond_1
+    int-to-long v0, v9
 
-    return-object v1
-
-    .line 305
-    :catchall_0
-    move-exception v1
-
-    monitor-exit v0
-
-    throw v1
+    return-wide v0
 .end method
 
 .method private populateWordsTable(Landroid/database/sqlite/SQLiteDatabase;)V
@@ -708,10 +987,10 @@
     .parameter "db"
 
     .prologue
-    .line 487
+    .line 475
     const-string v12, "words"
 
-    .line 489
+    .line 477
     .local v12, TABLE_WORDS:Ljava/lang/String;
     const-string v5, "sms"
 
@@ -747,11 +1026,11 @@
 
     move-result-object v18
 
-    .line 498
+    .line 486
     .local v18, smsRows:Landroid/database/Cursor;
     if-eqz v18, :cond_1
 
-    .line 499
+    .line 487
     const/4 v4, -0x1
 
     :try_start_0
@@ -761,12 +1040,12 @@
 
     invoke-interface {v0, v1}, Landroid/database/Cursor;->moveToPosition(I)Z
 
-    .line 500
+    .line 488
     new-instance v14, Landroid/content/ContentValues;
 
     invoke-direct {v14}, Landroid/content/ContentValues;-><init>()V
 
-    .line 501
+    .line 489
     .local v14, cv:Landroid/content/ContentValues;
     :goto_0
     invoke-interface/range {v18 .. v18}, Landroid/database/Cursor;->moveToNext()Z
@@ -775,10 +1054,10 @@
 
     if-eqz v4, :cond_1
 
-    .line 502
+    .line 490
     invoke-virtual {v14}, Landroid/content/ContentValues;->clear()V
 
-    .line 504
+    .line 492
     const/4 v4, 0x0
 
     move-object/from16 v0, v18
@@ -789,7 +1068,7 @@
 
     move-result-wide v15
 
-    .line 505
+    .line 493
     .local v15, id:J
     const/4 v4, 0x1
 
@@ -801,7 +1080,7 @@
 
     move-result-object v13
 
-    .line 507
+    .line 495
     .local v13, body:Ljava/lang/String;
     const-string v4, "_id"
 
@@ -811,12 +1090,12 @@
 
     invoke-virtual {v14, v4, v5}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/Long;)V
 
-    .line 508
+    .line 496
     const-string v4, "index_text"
 
     invoke-virtual {v14, v4, v13}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/String;)V
 
-    .line 509
+    .line 497
     const-string v4, "source_id"
 
     invoke-static/range {v15 .. v16}, Ljava/lang/Long;->valueOf(J)Ljava/lang/Long;
@@ -825,7 +1104,7 @@
 
     invoke-virtual {v14, v4, v5}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/Long;)V
 
-    .line 510
+    .line 498
     const-string v4, "table_to_use"
 
     const/4 v5, 0x1
@@ -836,7 +1115,7 @@
 
     invoke-virtual {v14, v4, v5}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/Integer;)V
 
-    .line 511
+    .line 499
     const-string v4, "words"
 
     const-string v5, "index_text"
@@ -855,7 +1134,7 @@
 
     goto :goto_0
 
-    .line 515
+    .line 503
     .end local v13           #body:Ljava/lang/String;
     .end local v14           #cv:Landroid/content/ContentValues;
     .end local v15           #id:J
@@ -864,20 +1143,20 @@
 
     if-eqz v18, :cond_0
 
-    .line 516
+    .line 504
     invoke-interface/range {v18 .. v18}, Landroid/database/Cursor;->close()V
 
     :cond_0
     throw v4
 
-    .line 515
+    .line 503
     :cond_1
     if-eqz v18, :cond_2
 
-    .line 516
+    .line 504
     invoke-interface/range {v18 .. v18}, Landroid/database/Cursor;->close()V
 
-    .line 522
+    .line 510
     :cond_2
     const-string v5, "part"
 
@@ -913,11 +1192,11 @@
 
     move-result-object v17
 
-    .line 531
+    .line 519
     .local v17, mmsRows:Landroid/database/Cursor;
     if-eqz v17, :cond_4
 
-    .line 532
+    .line 520
     const/4 v4, -0x1
 
     :try_start_1
@@ -927,12 +1206,12 @@
 
     invoke-interface {v0, v1}, Landroid/database/Cursor;->moveToPosition(I)Z
 
-    .line 533
+    .line 521
     new-instance v14, Landroid/content/ContentValues;
 
     invoke-direct {v14}, Landroid/content/ContentValues;-><init>()V
 
-    .line 534
+    .line 522
     .restart local v14       #cv:Landroid/content/ContentValues;
     :goto_1
     invoke-interface/range {v17 .. v17}, Landroid/database/Cursor;->moveToNext()Z
@@ -941,10 +1220,10 @@
 
     if-eqz v4, :cond_4
 
-    .line 535
+    .line 523
     invoke-virtual {v14}, Landroid/content/ContentValues;->clear()V
 
-    .line 537
+    .line 525
     const/4 v4, 0x0
 
     move-object/from16 v0, v17
@@ -955,7 +1234,7 @@
 
     move-result-wide v15
 
-    .line 538
+    .line 526
     .restart local v15       #id:J
     const/4 v4, 0x1
 
@@ -967,7 +1246,7 @@
 
     move-result-object v13
 
-    .line 540
+    .line 528
     .restart local v13       #body:Ljava/lang/String;
     const-string v4, "_id"
 
@@ -977,12 +1256,12 @@
 
     invoke-virtual {v14, v4, v5}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/Long;)V
 
-    .line 541
+    .line 529
     const-string v4, "index_text"
 
     invoke-virtual {v14, v4, v13}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/String;)V
 
-    .line 542
+    .line 530
     const-string v4, "source_id"
 
     invoke-static/range {v15 .. v16}, Ljava/lang/Long;->valueOf(J)Ljava/lang/Long;
@@ -991,7 +1270,7 @@
 
     invoke-virtual {v14, v4, v5}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/Long;)V
 
-    .line 543
+    .line 531
     const-string v4, "table_to_use"
 
     const/4 v5, 0x1
@@ -1002,7 +1281,7 @@
 
     invoke-virtual {v14, v4, v5}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/Integer;)V
 
-    .line 544
+    .line 532
     const-string v4, "words"
 
     const-string v5, "index_text"
@@ -1021,7 +1300,7 @@
 
     goto :goto_1
 
-    .line 548
+    .line 536
     .end local v13           #body:Ljava/lang/String;
     .end local v14           #cv:Landroid/content/ContentValues;
     .end local v15           #id:J
@@ -1030,52 +1309,27 @@
 
     if-eqz v17, :cond_3
 
-    .line 549
+    .line 537
     invoke-interface/range {v17 .. v17}, Landroid/database/Cursor;->close()V
 
     :cond_3
     throw v4
 
-    .line 548
+    .line 536
     :cond_4
     if-eqz v17, :cond_5
 
-    .line 549
+    .line 537
     invoke-interface/range {v17 .. v17}, Landroid/database/Cursor;->close()V
 
-    .line 553
+    .line 541
     :cond_5
     return-void
 .end method
 
-.method private recreateOnPartDeleteTriggerFromVersion43To54(Landroid/database/sqlite/SQLiteDatabase;)V
-    .locals 2
-    .parameter "db"
-
-    .prologue
-    .line 1429
-    const-string v0, "MmsSmsDatabaseHelper"
-
-    const-string v1, "recreateOnPartDeleteTriggerFromVersion43To54."
-
-    invoke-static {v0, v1}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
-
-    .line 1430
-    const-string v0, "DROP TRIGGER IF EXISTS update_threads_on_delete_part;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1431
-    const-string v0, "CREATE TRIGGER update_threads_on_delete_part  AFTER DELETE ON part  WHEN old.ct != \'text/plain\' AND old.ct != \'application/smil\'  BEGIN   UPDATE threads SET has_attachment =    CASE     (SELECT COUNT(*) FROM part JOIN pdu      WHERE pdu.thread_id = threads._id      AND part.ct != \'text/plain\' AND part.ct != \'application/smil\'      AND part.mid = pdu._id)   WHEN 0 THEN 0    ELSE 1    END WHERE _id = (SELECT thread_id FROM pdu WHERE _id = old.mid);  END"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1432
-    return-void
-.end method
-
-.method public static updateAllThreads(Landroid/database/sqlite/SQLiteDatabase;Ljava/lang/String;[Ljava/lang/String;)I
+.method public static updateAllThreads(Landroid/content/Context;Landroid/database/sqlite/SQLiteDatabase;Ljava/lang/String;[Ljava/lang/String;)V
     .locals 5
+    .parameter "context"
     .parameter "db"
     .parameter "where"
     .parameter "whereArgs"
@@ -1083,13 +1337,13 @@
     .prologue
     const-string v4, ")"
 
-    .line 427
-    if-nez p1, :cond_0
+    .line 362
+    if-nez p2, :cond_0
 
-    .line 428
-    const-string p1, ""
+    .line 363
+    const-string p2, ""
 
-    .line 432
+    .line 367
     :goto_0
     new-instance v2, Ljava/lang/StringBuilder;
 
@@ -1101,7 +1355,7 @@
 
     move-result-object v2
 
-    invoke-virtual {v2, p1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    invoke-virtual {v2, p2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
     move-result-object v2
 
@@ -1115,17 +1369,17 @@
 
     move-result-object v1
 
-    .line 434
+    .line 369
     .local v1, query:Ljava/lang/String;
-    invoke-virtual {p0, v1, p2}, Landroid/database/sqlite/SQLiteDatabase;->rawQuery(Ljava/lang/String;[Ljava/lang/String;)Landroid/database/Cursor;
+    invoke-virtual {p1, v1, p3}, Landroid/database/sqlite/SQLiteDatabase;->rawQuery(Ljava/lang/String;[Ljava/lang/String;)Landroid/database/Cursor;
 
     move-result-object v0
 
-    .line 435
+    .line 370
     .local v0, c:Landroid/database/Cursor;
-    if-eqz v0, :cond_2
+    if-eqz p0, :cond_2
 
-    .line 437
+    .line 372
     :goto_1
     :try_start_0
     invoke-interface {v0}, Landroid/database/Cursor;->moveToNext()Z
@@ -1134,7 +1388,7 @@
 
     if-eqz v2, :cond_1
 
-    .line 438
+    .line 373
     const/4 v2, 0x0
 
     invoke-interface {v0, v2}, Landroid/database/Cursor;->getInt(I)I
@@ -1143,13 +1397,13 @@
 
     int-to-long v2, v2
 
-    invoke-static {p0, v2, v3}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->updateThread(Landroid/database/sqlite/SQLiteDatabase;J)V
+    invoke-static {p0, p1, v2, v3}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->updateThread(Landroid/content/Context;Landroid/database/sqlite/SQLiteDatabase;J)V
     :try_end_0
     .catchall {:try_start_0 .. :try_end_0} :catchall_0
 
     goto :goto_1
 
-    .line 441
+    .line 376
     :catchall_0
     move-exception v2
 
@@ -1157,7 +1411,7 @@
 
     throw v2
 
-    .line 430
+    .line 365
     .end local v0           #c:Landroid/database/Cursor;
     .end local v1           #query:Ljava/lang/String;
     :cond_0
@@ -1171,7 +1425,7 @@
 
     move-result-object v2
 
-    invoke-virtual {v2, p1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    invoke-virtual {v2, p2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
     move-result-object v2
 
@@ -1183,673 +1437,488 @@
 
     invoke-virtual {v2}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
 
-    move-result-object p1
+    move-result-object p2
 
     goto :goto_0
 
-    .line 441
+    .line 376
     .restart local v0       #c:Landroid/database/Cursor;
     .restart local v1       #query:Ljava/lang/String;
     :cond_1
     invoke-interface {v0}, Landroid/database/Cursor;->close()V
 
-    .line 446
+    .line 380
     :cond_2
-    const-string v2, "threads"
+    invoke-static {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->deleteObsoleteThreads(Landroid/content/Context;Landroid/database/sqlite/SQLiteDatabase;)I
 
-    const-string v3, "_id NOT IN (SELECT DISTINCT thread_id FROM sms UNION SELECT DISTINCT thread_id FROM pdu)"
-
-    const/4 v4, 0x0
-
-    invoke-virtual {p0, v2, v3, v4}, Landroid/database/sqlite/SQLiteDatabase;->delete(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;)I
-
-    move-result v2
-
-    return v2
-.end method
-
-.method public static updateAllThreads(Landroid/database/sqlite/SQLiteDatabase;Ljava/util/Collection;)V
-    .locals 4
-    .parameter "db"
-    .parameter
-    .annotation system Ldalvik/annotation/Signature;
-        value = {
-            "(",
-            "Landroid/database/sqlite/SQLiteDatabase;",
-            "Ljava/util/Collection",
-            "<",
-            "Ljava/lang/Long;",
-            ">;)V"
-        }
-    .end annotation
-
-    .prologue
-    .line 417
-    .local p1, thread_ids:Ljava/util/Collection;,"Ljava/util/Collection<Ljava/lang/Long;>;"
-    invoke-interface {p1}, Ljava/util/Collection;->iterator()Ljava/util/Iterator;
-
-    move-result-object v0
-
-    .local v0, i$:Ljava/util/Iterator;
-    :goto_0
-    invoke-interface {v0}, Ljava/util/Iterator;->hasNext()Z
-
-    move-result v2
-
-    if-eqz v2, :cond_0
-
-    invoke-interface {v0}, Ljava/util/Iterator;->next()Ljava/lang/Object;
-
-    move-result-object v1
-
-    check-cast v1, Ljava/lang/Long;
-
-    .line 418
-    .local v1, l:Ljava/lang/Long;
-    invoke-virtual {v1}, Ljava/lang/Long;->longValue()J
-
-    move-result-wide v2
-
-    invoke-static {p0, v2, v3}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->updateThread(Landroid/database/sqlite/SQLiteDatabase;J)V
-
-    goto :goto_0
-
-    .line 420
-    .end local v1           #l:Ljava/lang/Long;
-    :cond_0
+    .line 381
     return-void
 .end method
 
-.method public static updateThread(Landroid/database/sqlite/SQLiteDatabase;J)V
-    .locals 5
+.method public static updateThread(Landroid/content/Context;Landroid/database/sqlite/SQLiteDatabase;J)V
+    .locals 12
+    .parameter "context"
     .parameter "db"
     .parameter "thread_id"
 
     .prologue
-    .line 312
-    const-wide/16 v0, 0x0
+    const/4 v7, 0x0
 
-    cmp-long v0, p1, v0
+    const-string v11, ";"
 
-    if-gez v0, :cond_1
+    const-string v10, " ORDER BY date DESC LIMIT 1),"
 
-    .line 313
-    const/4 p1, 0x0
+    const-string v9, "  WHERE threads._id = "
 
-    const/4 p2, 0x0
+    const-string v8, "     WHERE thread_id = "
 
-    invoke-static {p0, p1, p2}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->updateAllThreads(Landroid/database/sqlite/SQLiteDatabase;Ljava/lang/String;[Ljava/lang/String;)I
+    .line 279
+    const-wide/16 v5, 0x0
 
-    .line 413
-    .end local p1
+    cmp-long v5, p2, v5
+
+    if-gez v5, :cond_1
+
+    .line 280
+    invoke-static {p0, p1, v7, v7}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->updateAllThreads(Landroid/content/Context;Landroid/database/sqlite/SQLiteDatabase;Ljava/lang/String;[Ljava/lang/String;)V
+
+    .line 359
     :cond_0
     :goto_0
     return-void
 
-    .line 320
-    .restart local p1
+    .line 285
     :cond_1
-    const-string v0, "threads"
+    invoke-static {p0, p1, p2, p3}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->deleteObsoleteThread(Landroid/content/Context;Landroid/database/sqlite/SQLiteDatabase;J)Z
 
-    const-string v1, "_id = ? AND _id NOT IN          (SELECT thread_id FROM sms            UNION SELECT thread_id FROM pdu)"
+    move-result v5
 
-    const/4 v2, 0x1
+    if-nez v5, :cond_0
 
-    new-array v2, v2, [Ljava/lang/String;
+    .line 290
+    new-instance v5, Ljava/lang/StringBuilder;
 
-    const/4 v3, 0x0
+    invoke-direct {v5}, Ljava/lang/StringBuilder;-><init>()V
 
-    invoke-static {p1, p2}, Ljava/lang/String;->valueOf(J)Ljava/lang/String;
+    const-string v6, "  UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = "
 
-    move-result-object v4
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
-    aput-object v4, v2, v3
+    move-result-object v5
 
-    invoke-virtual {p0, v0, v1, v2}, Landroid/database/sqlite/SQLiteDatabase;->delete(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;)I
+    invoke-virtual {v5, p2, p3}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
 
-    move-result v0
+    move-result-object v5
 
-    .line 325
-    .local v0, rows:I
-    if-gtz v0, :cond_0
+    const-string v6, "        AND sms."
 
-    .line 331
-    new-instance v0, Ljava/lang/StringBuilder;
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
-    .end local v0           #rows:I
-    invoke-direct {v0}, Ljava/lang/StringBuilder;-><init>()V
+    move-result-object v5
 
-    const-string v1, "  UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = "
+    const-string v6, "type"
 
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, " != 3) + "
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "     (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads "
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "      ON threads._id = "
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "thread_id"
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "      WHERE "
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "thread_id"
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, " = "
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    invoke-virtual {v5, p2, p3}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "        AND (m_type=132 OR m_type=130 OR m_type=128)"
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "        AND "
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "msg_box"
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, " != 3) "
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "  WHERE threads._id = "
+
+    invoke-virtual {v5, v9}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    invoke-virtual {v5, p2, p3}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, ";"
+
+    invoke-virtual {v5, v11}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    invoke-virtual {v5}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v5
+
+    invoke-virtual {p1, v5}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 306
+    new-instance v5, Ljava/lang/StringBuilder;
+
+    invoke-direct {v5}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string v6, "  UPDATE threads  SET  date =    (SELECT date FROM        (SELECT date * 1000 AS date, thread_id FROM pdu         UNION SELECT date, thread_id FROM sms)     WHERE thread_id = "
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    invoke-virtual {v5, p2, p3}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, " ORDER BY date DESC LIMIT 1),"
+
+    invoke-virtual {v5, v10}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "  snippet ="
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "    (SELECT snippet FROM"
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "        (SELECT date * 1000 AS date, sub AS snippet, thread_id FROM pdu"
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "         UNION SELECT date, body AS snippet, thread_id FROM sms)"
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "     WHERE thread_id = "
+
+    invoke-virtual {v5, v8}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    invoke-virtual {v5, p2, p3}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, " ORDER BY date DESC LIMIT 1),"
+
+    invoke-virtual {v5, v10}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "  snippet_cs ="
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "    (SELECT snippet_cs FROM"
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "        (SELECT date * 1000 AS date, sub_cs AS snippet_cs, thread_id FROM pdu"
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "         UNION SELECT date, 0 AS snippet_cs, thread_id FROM sms)"
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "     WHERE thread_id = "
+
+    invoke-virtual {v5, v8}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    invoke-virtual {v5, p2, p3}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, " ORDER BY date DESC LIMIT 1)"
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, "  WHERE threads._id = "
+
+    invoke-virtual {v5, v9}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    invoke-virtual {v5, p2, p3}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, ";"
+
+    invoke-virtual {v5, v11}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    invoke-virtual {v5}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v5
+
+    invoke-virtual {p1, v5}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 329
+    new-instance v5, Ljava/lang/StringBuilder;
+
+    invoke-direct {v5}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string v6, "SELECT thread_id FROM sms WHERE type=5 AND thread_id = "
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    invoke-virtual {v5, p2, p3}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    const-string v6, " LIMIT 1"
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    invoke-virtual {v5}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v3
+
+    .line 333
+    .local v3, query:Ljava/lang/String;
+    const/4 v4, 0x0
+
+    .line 334
+    .local v4, setError:I
+    invoke-virtual {p1, v3, v7}, Landroid/database/sqlite/SQLiteDatabase;->rawQuery(Ljava/lang/String;[Ljava/lang/String;)Landroid/database/Cursor;
 
     move-result-object v0
 
-    invoke-virtual {v0, p1, p2}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "        AND sms."
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "type"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, " != 3) + "
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "     (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads "
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "      ON threads._id = "
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "thread_id"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "      WHERE "
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "thread_id"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, " = "
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    invoke-virtual {v0, p1, p2}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "        AND (m_type=132 OR m_type=130 OR m_type=128)"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "        AND "
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "msg_box"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, " != 3) "
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "  WHERE threads._id = "
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    invoke-virtual {v0, p1, p2}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, ";"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
-
-    move-result-object v0
-
-    invoke-virtual {p0, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 350
-    new-instance v0, Ljava/lang/StringBuilder;
-
-    invoke-direct {v0}, Ljava/lang/StringBuilder;-><init>()V
-
-    const-string v1, "  UPDATE threads  SET  date =    (SELECT date FROM        (SELECT date * 1000 AS date, thread_id, sort_index FROM pdu         UNION SELECT date, thread_id, sort_index FROM sms)     WHERE thread_id = "
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    invoke-virtual {v0, p1, p2}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, " ORDER BY sort_index DESC LIMIT 1),"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "  sort_index ="
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "    (SELECT sort_index FROM"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "        (SELECT thread_id, sort_index FROM pdu"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "         UNION SELECT thread_id, sort_index FROM sms)"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "     WHERE thread_id = "
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    invoke-virtual {v0, p1, p2}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, " ORDER BY sort_index DESC LIMIT 1),"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "  snippet ="
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "    (SELECT snippet FROM"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "        (SELECT sub AS snippet, thread_id, sort_index FROM pdu"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "         UNION SELECT body AS snippet, thread_id, sort_index FROM sms)"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "     WHERE thread_id = "
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    invoke-virtual {v0, p1, p2}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, " ORDER BY sort_index DESC LIMIT 1),"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "  snippet_cs ="
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "    (SELECT snippet_cs FROM"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "        (SELECT sub_cs AS snippet_cs, thread_id, sort_index FROM pdu"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "         UNION SELECT 0 AS snippet_cs, thread_id, sort_index FROM sms)"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "     WHERE thread_id = "
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    invoke-virtual {v0, p1, p2}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, " ORDER BY sort_index DESC LIMIT 1)"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, "  WHERE threads._id = "
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    invoke-virtual {v0, p1, p2}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, ";"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
-
-    move-result-object v0
-
-    invoke-virtual {p0, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 383
-    new-instance v0, Ljava/lang/StringBuilder;
-
-    invoke-direct {v0}, Ljava/lang/StringBuilder;-><init>()V
-
-    const-string v1, "SELECT thread_id FROM sms WHERE type=5 AND thread_id = "
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    invoke-virtual {v0, p1, p2}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    const-string v1, " LIMIT 1"
-
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    move-result-object v0
-
-    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
-
-    move-result-object v0
-
-    .line 387
-    .local v0, query:Ljava/lang/String;
-    const/4 v1, 0x0
-
-    .line 388
-    .local v1, setError:I
-    const/4 v2, 0x0
-
-    invoke-virtual {p0, v0, v2}, Landroid/database/sqlite/SQLiteDatabase;->rawQuery(Ljava/lang/String;[Ljava/lang/String;)Landroid/database/Cursor;
-
-    move-result-object v0
-
-    .line 389
+    .line 335
     .local v0, c:Landroid/database/Cursor;
-    if-eqz v0, :cond_3
+    if-eqz v0, :cond_2
 
-    .line 391
+    .line 337
     :try_start_0
     invoke-interface {v0}, Landroid/database/Cursor;->getCount()I
     :try_end_0
     .catchall {:try_start_0 .. :try_end_0} :catchall_0
 
-    move-result v1
+    move-result v4
 
-    .line 393
+    .line 339
     invoke-interface {v0}, Landroid/database/Cursor;->close()V
 
-    move v2, v1
+    .line 343
+    :cond_2
+    new-instance v5, Ljava/lang/StringBuilder;
 
-    .line 397
-    .end local v1           #setError:I
-    .local v2, setError:I
-    :goto_1
-    new-instance v0, Ljava/lang/StringBuilder;
+    invoke-direct {v5}, Ljava/lang/StringBuilder;-><init>()V
 
-    .end local v0           #c:Landroid/database/Cursor;
-    invoke-direct {v0}, Ljava/lang/StringBuilder;-><init>()V
+    const-string v6, "SELECT error FROM threads WHERE _id = "
 
-    const-string v1, "SELECT error FROM threads WHERE _id = "
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    move-result-object v5
 
-    move-result-object v0
+    invoke-virtual {v5, p2, p3}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
 
-    invoke-virtual {v0, p1, p2}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
+    move-result-object v5
 
-    move-result-object v0
+    invoke-virtual {v5}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
 
-    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+    move-result-object v2
 
-    move-result-object v0
-
-    .line 398
-    .local v0, errorQuery:Ljava/lang/String;
-    const/4 v1, 0x0
-
-    invoke-virtual {p0, v0, v1}, Landroid/database/sqlite/SQLiteDatabase;->rawQuery(Ljava/lang/String;[Ljava/lang/String;)Landroid/database/Cursor;
+    .line 344
+    .local v2, errorQuery:Ljava/lang/String;
+    invoke-virtual {p1, v2, v7}, Landroid/database/sqlite/SQLiteDatabase;->rawQuery(Ljava/lang/String;[Ljava/lang/String;)Landroid/database/Cursor;
 
     move-result-object v0
 
-    .line 399
-    .local v0, c:Landroid/database/Cursor;
+    .line 345
     if-eqz v0, :cond_0
 
-    .line 401
+    .line 347
     :try_start_1
     invoke-interface {v0}, Landroid/database/Cursor;->moveToNext()Z
 
+    move-result v5
+
+    if-eqz v5, :cond_3
+
+    .line 348
+    const/4 v5, 0x0
+
+    invoke-interface {v0, v5}, Landroid/database/Cursor;->getInt(I)I
+
     move-result v1
 
-    if-eqz v1, :cond_2
-
-    .line 402
-    const/4 v1, 0x0
-
-    invoke-interface {v0, v1}, Landroid/database/Cursor;->getInt(I)I
-
-    move-result v1
-
-    .line 403
+    .line 349
     .local v1, curError:I
-    if-eq v1, v2, :cond_2
+    if-eq v1, v4, :cond_3
 
-    .line 405
-    new-instance v1, Ljava/lang/StringBuilder;
+    .line 351
+    new-instance v5, Ljava/lang/StringBuilder;
 
-    .end local v1           #curError:I
-    invoke-direct {v1}, Ljava/lang/StringBuilder;-><init>()V
+    invoke-direct {v5}, Ljava/lang/StringBuilder;-><init>()V
 
-    const-string v3, "UPDATE threads SET error="
+    const-string v6, "UPDATE threads SET error="
 
-    invoke-virtual {v1, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
-    move-result-object v1
+    move-result-object v5
 
-    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+    invoke-virtual {v5, v4}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
 
-    move-result-object v1
+    move-result-object v5
 
-    const-string v2, " WHERE _id = "
+    const-string v6, " WHERE _id = "
 
-    .end local v2           #setError:I
-    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
-    move-result-object v1
+    move-result-object v5
 
-    invoke-virtual {v1, p1, p2}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
+    invoke-virtual {v5, p2, p3}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
 
-    move-result-object p1
+    move-result-object v5
 
-    .end local p1
-    invoke-virtual {p1}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+    invoke-virtual {v5}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
 
-    move-result-object p1
+    move-result-object v5
 
-    invoke-virtual {p0, p1}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+    invoke-virtual {p1, v5}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
     :try_end_1
     .catchall {:try_start_1 .. :try_end_1} :catchall_1
 
-    .line 410
-    :cond_2
+    .line 356
+    .end local v1           #curError:I
+    :cond_3
     invoke-interface {v0}, Landroid/database/Cursor;->close()V
 
     goto/16 :goto_0
 
-    .line 393
-    .local v1, setError:I
-    .restart local p1
+    .line 339
+    .end local v2           #errorQuery:Ljava/lang/String;
     :catchall_0
-    move-exception p0
+    move-exception v5
 
-    .end local p0
     invoke-interface {v0}, Landroid/database/Cursor;->close()V
 
-    throw p0
+    throw v5
 
-    .line 410
-    .end local v1           #setError:I
-    .end local p1
-    .restart local p0
+    .line 356
+    .restart local v2       #errorQuery:Ljava/lang/String;
     :catchall_1
-    move-exception p0
+    move-exception v5
 
-    .end local p0
     invoke-interface {v0}, Landroid/database/Cursor;->close()V
 
-    throw p0
-
-    .restart local v1       #setError:I
-    .restart local p0
-    .restart local p1
-    :cond_3
-    move v2, v1
-
-    .end local v1           #setError:I
-    .restart local v2       #setError:I
-    goto :goto_1
+    throw v5
 .end method
 
 .method private updateThreadsAttachmentColumn(Landroid/database/sqlite/SQLiteDatabase;)V
     .locals 1
-    .parameter "db"
+    .parameter
 
     .prologue
-    .line 1543
+    .line 1518
     const-string v0, "UPDATE threads SET has_attachment=1 WHERE _id IN   (SELECT DISTINCT pdu.thread_id FROM part    JOIN pdu ON pdu._id=part.mid    WHERE part.ct != \'text/plain\' AND part.ct != \'application/smil\')"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1547
+    .line 1522
     return-void
 .end method
 
-.method private updateTriggers(Landroid/database/sqlite/SQLiteDatabase;)V
+.method private updateThreadsUnreadColumn(Landroid/database/sqlite/SQLiteDatabase;)V
     .locals 1
-    .parameter "db"
+    .parameter
 
     .prologue
-    .line 1553
-    const-string v0, "DROP TRIGGER IF EXISTS pdu_update_thread_on_insert"
+    .line 1525
+    const-string v0, " UPDATE threads SET unread_count=(SELECT COUNT(*) FROM sms WHERE read=0 AND thread_id=threads._id) + (SELECT COUNT(*) FROM pdu WHERE read=0 AND thread_id=threads._id AND (m_type=132 OR m_type=130 OR m_type=128)); "
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1554
-    const-string v0, "CREATE TRIGGER pdu_update_thread_on_insert AFTER INSERT ON pdu   WHEN new.m_type=132    OR new.m_type=130    OR new.m_type=128 BEGIN  UPDATE threads SET    sort_index = new.sort_index  WHERE threads._id = new.thread_id    AND threads.sort_index < new.sort_index;   UPDATE threads SET    date = new.date* 1000,     snippet = new.sub,     snippet_cs = new.sub_cs  WHERE threads._id = new.thread_id    AND threads.date < (new.date* 1000);   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE (SELECT COUNT(*)          FROM pdu          WHERE read = 0            AND thread_id = threads._id             AND (m_type=132 OR m_type=130 OR m_type=128))       WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1560
-    const-string v0, "DROP TRIGGER IF EXISTS sms_update_thread_on_insert"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1561
-    const-string v0, "CREATE TRIGGER sms_update_thread_on_insert AFTER INSERT ON sms BEGIN  UPDATE threads SET    sort_index = new.sort_index  WHERE threads._id = new.thread_id    AND threads.sort_index < new.sort_index;   UPDATE threads SET    date = new.date,     snippet = new.body,     snippet_cs = 0  WHERE threads._id = new.thread_id    AND threads.date < new.date;   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE (SELECT COUNT(*)          FROM sms          WHERE read = 0            AND thread_id = threads._id)      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1565
-    const-string v0, "DROP TRIGGER IF EXISTS pdu_update_thread_date_subject_on_update"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1566
-    const-string v0, "CREATE TRIGGER pdu_update_thread_date_subject_on_update AFTER  UPDATE OF date, sub, msg_box  ON pdu   WHEN new.m_type=132    OR new.m_type=130    OR new.m_type=128 BEGIN  UPDATE threads SET    sort_index = new.sort_index  WHERE threads._id = new.thread_id    AND threads.sort_index < new.sort_index;   UPDATE threads SET    date = new.date* 1000,     snippet = new.sub,     snippet_cs = new.sub_cs  WHERE threads._id = new.thread_id    AND threads.date < (new.date* 1000);   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE (SELECT COUNT(*)          FROM pdu          WHERE read = 0            AND thread_id = threads._id             AND (m_type=132 OR m_type=130 OR m_type=128))       WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1573
-    const-string v0, "DROP TRIGGER IF EXISTS sms_update_thread_date_subject_on_update"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1574
-    const-string v0, "CREATE TRIGGER sms_update_thread_date_subject_on_update AFTER  UPDATE OF date, body, type  ON sms BEGIN  UPDATE threads SET    sort_index = new.sort_index  WHERE threads._id = new.thread_id    AND threads.sort_index < new.sort_index;   UPDATE threads SET    date = new.date,     snippet = new.body,     snippet_cs = 0  WHERE threads._id = new.thread_id    AND threads.date < new.date;   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = new.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE (SELECT COUNT(*)          FROM sms          WHERE read = 0            AND thread_id = threads._id)      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1580
-    const-string v0, "DROP TRIGGER IF EXISTS pdu_update_thread_on_delete"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1581
-    const-string v0, "CREATE TRIGGER pdu_update_thread_on_delete AFTER DELETE ON pdu BEGIN   UPDATE threads SET date =    (SELECT date FROM        (SELECT date * 1000 AS date, thread_id, sort_index FROM pdu         UNION SELECT date, thread_id, sort_index FROM sms)     WHERE thread_id=old.thread_id ORDER BY sort_index DESC LIMIT 1)  WHERE threads._id = old.thread_id;   UPDATE threads SET message_count =      (SELECT COUNT(sms._id) FROM sms LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = old.thread_id        AND sms.type != 3) +      (SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads       ON threads._id = thread_id      WHERE thread_id = old.thread_id        AND (m_type=132 OR m_type=130 OR m_type=128)        AND msg_box != 3)   WHERE threads._id = old.thread_id;   UPDATE threads SET snippet =    (SELECT snippet FROM     (SELECT sub AS snippet, thread_id, sort_index FROM pdu      UNION SELECT body AS snippet, thread_id, sort_index FROM sms)    WHERE thread_id = OLD.thread_id ORDER BY sort_index DESC LIMIT 1)   WHERE threads._id = OLD.thread_id;   UPDATE threads SET sort_index =    (SELECT sort_index FROM     (SELECT thread_id, sort_index FROM pdu      UNION SELECT thread_id, sort_index FROM sms)    WHERE thread_id = OLD.thread_id ORDER BY sort_index DESC LIMIT 1)   WHERE threads._id = OLD.thread_id;   UPDATE threads SET snippet_cs =    (SELECT snippet_cs FROM     (SELECT sub_cs AS snippet_cs, thread_id, sort_index FROM pdu      UNION SELECT 0 AS snippet_cs, thread_id, sort_index FROM sms)    WHERE thread_id = OLD.thread_id ORDER BY sort_index DESC LIMIT 1)   WHERE threads._id = OLD.thread_id; END;"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1595
+    .line 1526
     return-void
 .end method
 
@@ -1858,17 +1927,17 @@
     .parameter "db"
 
     .prologue
-    .line 1352
+    .line 1326
     const-string v0, "DROP TRIGGER IF EXISTS update_threads_error_on_move_mms"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1353
+    .line 1327
     const-string v0, "CREATE TRIGGER update_threads_error_on_move_mms   BEFORE UPDATE OF msg_box ON pdu   WHEN (OLD.msg_box = 4 AND NEW.msg_box != 4)   AND (OLD._id IN (SELECT DISTINCT msg_id                   FROM pending_msgs                   WHERE err_type >= 10)) BEGIN   UPDATE threads SET error = error - 1  WHERE _id = OLD.thread_id; END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1363
+    .line 1337
     return-void
 .end method
 
@@ -1877,22 +1946,22 @@
     .parameter "db"
 
     .prologue
-    .line 1366
+    .line 1340
     const-string v0, "DROP TRIGGER IF EXISTS sms_update_thread_on_delete"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1367
+    .line 1341
     const-string v0, "DROP TRIGGER IF EXISTS delete_obsolete_threads_sms"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1368
+    .line 1342
     const-string v0, "DROP TRIGGER IF EXISTS update_threads_error_on_delete_sms"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1369
+    .line 1343
     return-void
 .end method
 
@@ -1901,25 +1970,25 @@
     .parameter "db"
 
     .prologue
-    .line 1373
+    .line 1347
     const-string v0, "ALTER TABLE threads ADD COLUMN has_attachment INTEGER DEFAULT 0"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1375
+    .line 1349
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->updateThreadsAttachmentColumn(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1378
+    .line 1352
     const-string v0, "CREATE TRIGGER update_threads_on_insert_part  AFTER INSERT ON part  WHEN new.ct != \'text/plain\' AND new.ct != \'application/smil\'  BEGIN   UPDATE threads SET has_attachment=1 WHERE _id IN    (SELECT pdu.thread_id FROM part JOIN pdu ON pdu._id=part.mid      WHERE part._id=new._id LIMIT 1);  END"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1379
-    const-string v0, "CREATE TRIGGER update_threads_on_delete_part  AFTER DELETE ON part  WHEN old.ct != \'text/plain\' AND old.ct != \'application/smil\'  BEGIN   UPDATE threads SET has_attachment =    CASE     (SELECT COUNT(*) FROM part JOIN pdu      WHERE pdu.thread_id = threads._id      AND part.ct != \'text/plain\' AND part.ct != \'application/smil\'      AND part.mid = pdu._id)   WHEN 0 THEN 0    ELSE 1    END WHERE _id = (SELECT thread_id FROM pdu WHERE _id = old.mid);  END"
+    .line 1353
+    const-string v0, "CREATE TRIGGER update_threads_on_delete_part  AFTER DELETE ON part  WHEN old.ct != \'text/plain\' AND old.ct != \'application/smil\'  BEGIN   UPDATE threads SET has_attachment =    CASE     (SELECT COUNT(*) FROM part JOIN pdu      WHERE pdu.thread_id = threads._id      AND part.ct != \'text/plain\' AND part.ct != \'application/smil\'      AND part.mid = pdu._id)   WHEN 0 THEN 0    ELSE 1    END;  END"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1380
+    .line 1354
     return-void
 .end method
 
@@ -1928,15 +1997,15 @@
     .parameter "db"
 
     .prologue
-    .line 1383
+    .line 1357
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->updateThreadsAttachmentColumn(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1386
+    .line 1360
     const-string v0, "CREATE TRIGGER update_threads_on_update_part  AFTER UPDATE of mid ON part  WHEN new.ct != \'text/plain\' AND new.ct != \'application/smil\'  BEGIN   UPDATE threads SET has_attachment=1 WHERE _id IN    (SELECT pdu.thread_id FROM part JOIN pdu ON pdu._id=part.mid      WHERE part._id=new._id LIMIT 1);  END"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1387
+    .line 1361
     return-void
 .end method
 
@@ -1945,17 +2014,17 @@
     .parameter "db"
 
     .prologue
-    .line 1391
+    .line 1365
     const-string v0, "ALTER TABLE sms ADD COLUMN locked INTEGER DEFAULT 0"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1394
+    .line 1368
     const-string v0, "ALTER TABLE pdu ADD COLUMN locked INTEGER DEFAULT 0"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1395
+    .line 1369
     return-void
 .end method
 
@@ -1964,7 +2033,7 @@
     .parameter "db"
 
     .prologue
-    .line 1437
+    .line 1381
     const-string v3, "ALTER TABLE part ADD COLUMN text TEXT"
 
     move-object/from16 v0, p1
@@ -1973,7 +2042,7 @@
 
     invoke-virtual {v0, v1}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1439
+    .line 1383
     const-string v4, "part"
 
     const/4 v3, 0x3
@@ -2014,17 +2083,17 @@
 
     move-result-object v22
 
-    .line 1447
+    .line 1391
     .local v22, textRows:Landroid/database/Cursor;
     new-instance v14, Ljava/util/ArrayList;
 
     invoke-direct {v14}, Ljava/util/ArrayList;-><init>()V
 
-    .line 1449
+    .line 1393
     .local v14, filesToDelete:Ljava/util/ArrayList;,"Ljava/util/ArrayList<Ljava/lang/String;>;"
-    if-eqz v22, :cond_2
+    if-eqz v22, :cond_1
 
-    .line 1450
+    .line 1394
     :try_start_0
     const-string v3, "_id"
 
@@ -2036,7 +2105,7 @@
 
     move-result v18
 
-    .line 1451
+    .line 1395
     .local v18, partIdColumn:I
     const-string v3, "_data"
 
@@ -2048,7 +2117,7 @@
 
     move-result v17
 
-    .line 1452
+    .line 1396
     .local v17, partDataColumn:I
     const-string v3, "text"
 
@@ -2060,7 +2129,7 @@
 
     move-result v19
 
-    .line 1458
+    .line 1402
     .local v19, partTextColumn:I
     :cond_0
     :goto_0
@@ -2068,9 +2137,9 @@
 
     move-result v3
 
-    if-eqz v3, :cond_2
+    if-eqz v3, :cond_1
 
-    .line 1459
+    .line 1403
     move-object/from16 v0, v22
 
     move/from16 v1, v17
@@ -2081,11 +2150,11 @@
 
     move-result-object v20
 
-    .line 1460
+    .line 1404
     .local v20, path:Ljava/lang/String;
     if-eqz v20, :cond_0
 
-    .line 1462
+    .line 1406
     :try_start_1
     new-instance v16, Ljava/io/FileInputStream;
 
@@ -2095,7 +2164,7 @@
 
     invoke-direct {v0, v1}, Ljava/io/FileInputStream;-><init>(Ljava/lang/String;)V
 
-    .line 1463
+    .line 1407
     .local v16, is:Ljava/io/InputStream;
     invoke-virtual/range {v16 .. v16}, Ljava/io/InputStream;->available()I
 
@@ -2103,7 +2172,7 @@
 
     new-array v11, v3, [B
 
-    .line 1464
+    .line 1408
     .local v11, data:[B
     move-object/from16 v0, v16
 
@@ -2111,7 +2180,7 @@
 
     invoke-virtual {v0, v1}, Ljava/io/InputStream;->read([B)I
 
-    .line 1465
+    .line 1409
     new-instance v23, Lcom/google/android/mms/pdu/EncodedStringValue;
 
     move-object/from16 v0, v23
@@ -2120,7 +2189,7 @@
 
     invoke-direct {v0, v1}, Lcom/google/android/mms/pdu/EncodedStringValue;-><init>([B)V
 
-    .line 1466
+    .line 1410
     .local v23, v:Lcom/google/android/mms/pdu/EncodedStringValue;
     invoke-virtual/range {v23 .. v23}, Lcom/google/android/mms/pdu/EncodedStringValue;->getString()Ljava/lang/String;
 
@@ -2134,17 +2203,17 @@
 
     invoke-interface {v0, v1, v2}, Landroid/database/Cursor;->updateString(ILjava/lang/String;)Z
 
-    .line 1467
+    .line 1411
     move-object/from16 v0, v22
 
     move/from16 v1, v17
 
     invoke-interface {v0, v1}, Landroid/database/Cursor;->updateToNull(I)Z
 
-    .line 1468
+    .line 1412
     invoke-virtual/range {v16 .. v16}, Ljava/io/InputStream;->close()V
 
-    .line 1469
+    .line 1413
     move-object v0, v14
 
     move-object/from16 v1, v20
@@ -2156,7 +2225,7 @@
 
     goto :goto_0
 
-    .line 1470
+    .line 1414
     .end local v11           #data:[B
     .end local v16           #is:Ljava/io/InputStream;
     .end local v23           #v:Lcom/google/android/mms/pdu/EncodedStringValue;
@@ -2165,7 +2234,7 @@
 
     move-object v12, v3
 
-    .line 1472
+    .line 1416
     .local v12, e:Ljava/io/IOException;
     :try_start_2
     invoke-virtual {v12}, Ljava/io/IOException;->printStackTrace()V
@@ -2174,7 +2243,7 @@
 
     goto :goto_0
 
-    .line 1480
+    .line 1422
     .end local v12           #e:Ljava/io/IOException;
     .end local v17           #partDataColumn:I
     .end local v18           #partIdColumn:I
@@ -2183,13 +2252,9 @@
     :catchall_0
     move-exception v3
 
-    if-eqz v22, :cond_1
-
-    .line 1481
     invoke-interface/range {v22 .. v22}, Landroid/database/Cursor;->commitUpdates()Z
 
-    .line 1485
-    :cond_1
+    .line 1423
     invoke-virtual {v14}, Ljava/util/ArrayList;->iterator()Ljava/util/Iterator;
 
     move-result-object v15
@@ -2200,7 +2265,7 @@
 
     move-result v4
 
-    if-eqz v4, :cond_6
+    if-eqz v4, :cond_4
 
     invoke-interface {v15}, Ljava/util/Iterator;->next()Ljava/lang/Object;
 
@@ -2208,7 +2273,7 @@
 
     check-cast v21, Ljava/lang/String;
 
-    .line 1487
+    .line 1425
     .local v21, pathToDelete:Ljava/lang/String;
     :try_start_3
     new-instance v4, Ljava/io/File;
@@ -2225,13 +2290,13 @@
 
     goto :goto_1
 
-    .line 1488
+    .line 1426
     :catch_1
     move-exception v4
 
     move-object v13, v4
 
-    .line 1489
+    .line 1427
     .local v13, ex:Ljava/lang/SecurityException;
     const-string v4, "MmsSmsDatabaseHelper"
 
@@ -2261,18 +2326,14 @@
 
     goto :goto_1
 
-    .line 1480
+    .line 1422
     .end local v13           #ex:Ljava/lang/SecurityException;
     .end local v15           #i$:Ljava/util/Iterator;
     .end local v21           #pathToDelete:Ljava/lang/String;
-    :cond_2
-    if-eqz v22, :cond_3
-
-    .line 1481
+    :cond_1
     invoke-interface/range {v22 .. v22}, Landroid/database/Cursor;->commitUpdates()Z
 
-    .line 1485
-    :cond_3
+    .line 1423
     invoke-virtual {v14}, Ljava/util/ArrayList;->iterator()Ljava/util/Iterator;
 
     move-result-object v15
@@ -2283,7 +2344,7 @@
 
     move-result v3
 
-    if-eqz v3, :cond_4
+    if-eqz v3, :cond_2
 
     invoke-interface {v15}, Ljava/util/Iterator;->next()Ljava/lang/Object;
 
@@ -2291,7 +2352,7 @@
 
     check-cast v21, Ljava/lang/String;
 
-    .line 1487
+    .line 1425
     .restart local v21       #pathToDelete:Ljava/lang/String;
     :try_start_4
     new-instance v3, Ljava/io/File;
@@ -2308,13 +2369,13 @@
 
     goto :goto_2
 
-    .line 1488
+    .line 1426
     :catch_2
     move-exception v3
 
     move-object v13, v3
 
-    .line 1489
+    .line 1427
     .restart local v13       #ex:Ljava/lang/SecurityException;
     const-string v3, "MmsSmsDatabaseHelper"
 
@@ -2344,27 +2405,27 @@
 
     goto :goto_2
 
-    .line 1492
+    .line 1430
     .end local v13           #ex:Ljava/lang/SecurityException;
     .end local v21           #pathToDelete:Ljava/lang/String;
+    :cond_2
+    if-eqz v22, :cond_3
+
+    .line 1431
+    invoke-interface/range {v22 .. v22}, Landroid/database/Cursor;->close()V
+
+    .line 1434
+    :cond_3
+    return-void
+
+    .line 1430
     :cond_4
     if-eqz v22, :cond_5
 
-    .line 1493
+    .line 1431
     invoke-interface/range {v22 .. v22}, Landroid/database/Cursor;->close()V
 
-    .line 1496
     :cond_5
-    return-void
-
-    .line 1492
-    :cond_6
-    if-eqz v22, :cond_7
-
-    .line 1493
-    invoke-interface/range {v22 .. v22}, Landroid/database/Cursor;->close()V
-
-    :cond_7
     throw v3
 .end method
 
@@ -2373,25 +2434,15 @@
     .parameter "db"
 
     .prologue
-    .line 1499
+    .line 1437
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->updateThreadsAttachmentColumn(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1502
+    .line 1440
     const-string v0, "CREATE TRIGGER update_threads_on_update_pdu  AFTER UPDATE of thread_id ON pdu  BEGIN   UPDATE threads SET has_attachment=1 WHERE _id IN    (SELECT pdu.thread_id FROM part JOIN pdu      WHERE part.ct != \'text/plain\' AND part.ct != \'application/smil\'      AND part.mid = pdu._id); END"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1507
-    const-string v0, "ALTER TABLE sms ADD COLUMN sort_index INTEGER DEFAULT 0"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1510
-    const-string v0, "ALTER TABLE pdu ADD COLUMN sort_index INTEGER DEFAULT 0"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1513
+    .line 1441
     return-void
 .end method
 
@@ -2400,12 +2451,12 @@
     .parameter "db"
 
     .prologue
-    .line 1517
+    .line 1445
     const-string v0, "ALTER TABLE sms ADD COLUMN error_code INTEGER DEFAULT 0"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1518
+    .line 1446
     return-void
 .end method
 
@@ -2420,23 +2471,23 @@
 
     const-string v6, "MmsSmsDatabaseHelper"
 
-    .line 1521
+    .line 1449
     const-string v3, "ALTER TABLE sms add COLUMN seen INTEGER DEFAULT 0"
 
     invoke-virtual {p1, v3}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1522
+    .line 1450
     const-string v3, "ALTER TABLE pdu add COLUMN seen INTEGER DEFAULT 0"
 
     invoke-virtual {p1, v3}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1527
+    .line 1455
     :try_start_0
     new-instance v0, Landroid/content/ContentValues;
 
     invoke-direct {v0}, Landroid/content/ContentValues;-><init>()V
 
-    .line 1528
+    .line 1456
     .local v0, contentValues:Landroid/content/ContentValues;
     const-string v3, "seen"
 
@@ -2448,7 +2499,7 @@
 
     invoke-virtual {v0, v3, v4}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/Integer;)V
 
-    .line 1529
+    .line 1457
     const-string v3, "sms"
 
     const-string v4, "read=1"
@@ -2459,7 +2510,7 @@
 
     move-result v1
 
-    .line 1530
+    .line 1458
     .local v1, count:I
     const-string v3, "MmsSmsDatabaseHelper"
 
@@ -2489,7 +2540,7 @@
 
     invoke-static {v3, v4}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
 
-    .line 1532
+    .line 1460
     const-string v3, "pdu"
 
     const-string v4, "read=1"
@@ -2500,7 +2551,7 @@
 
     move-result v1
 
-    .line 1533
+    .line 1461
     const-string v3, "MmsSmsDatabaseHelper"
 
     new-instance v4, Ljava/lang/StringBuilder;
@@ -2531,19 +2582,19 @@
     :try_end_0
     .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
 
-    .line 1538
+    .line 1466
     .end local v0           #contentValues:Landroid/content/ContentValues;
     .end local v1           #count:I
     :goto_0
     return-void
 
-    .line 1535
+    .line 1463
     :catch_0
     move-exception v3
 
     move-object v2, v3
 
-    .line 1536
+    .line 1464
     .local v2, ex:Ljava/lang/Exception;
     const-string v3, "MmsSmsDatabaseHelper"
 
@@ -2559,25 +2610,17 @@
     .parameter "db"
 
     .prologue
-    .line 1398
+    .line 1372
     const-string v0, "DROP TRIGGER IF EXISTS pdu_update_thread_read_on_update"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1401
-    const-string v0, "CREATE TRIGGER pdu_update_thread_read_on_update AFTER  UPDATE OF read  ON pdu   WHEN new.m_type=132    OR new.m_type=130    OR new.m_type=128 BEGIN   UPDATE threads SET read =     CASE (SELECT COUNT(*)          FROM pdu          WHERE read = 0            AND thread_id = threads._id             AND (m_type=132 OR m_type=130 OR m_type=128))       WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
+    .line 1375
+    const-string v0, "CREATE TRIGGER pdu_update_thread_read_on_update AFTER  UPDATE OF read  ON pdu   WHEN new.m_type=132    OR new.m_type=130    OR new.m_type=128 BEGIN  UPDATE threads SET unread_count=(SELECT COUNT(*) FROM sms WHERE read=0 AND thread_id=threads._id) + (SELECT COUNT(*) FROM pdu WHERE read=0 AND thread_id=threads._id AND (m_type=132 OR m_type=130 OR m_type=128)) WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE unread_count      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id;  END;"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1412
-    const-string v0, "UPDATE threads SET sort_index = date"
-
-    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1413
-    invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->updateTriggers(Landroid/database/sqlite/SQLiteDatabase;)V
-
-    .line 1416
+    .line 1376
     return-void
 .end method
 
@@ -2586,159 +2629,176 @@
     .parameter "db"
 
     .prologue
-    .line 1422
-    const-string v0, "ALTER TABLE sms ADD COLUMN stack_type INTEGER DEFAULT 0"
+    .line 1470
+    const-string v0, "ALTER TABLE threads ADD COLUMN unread_count INTEGER DEFAULT 0"
 
     invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
 
-    .line 1423
+    .line 1473
+    const-string v0, "DROP TRIGGER IF EXISTS pdu_update_thread_read_on_update"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1474
+    const-string v0, "DROP TRIGGER IF EXISTS sms_update_thread_read_on_update"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1477
+    const-string v0, "CREATE TRIGGER pdu_update_thread_read_on_update AFTER  UPDATE OF read  ON pdu   WHEN new.m_type=132    OR new.m_type=130    OR new.m_type=128 BEGIN  UPDATE threads SET unread_count=(SELECT COUNT(*) FROM sms WHERE read=0 AND thread_id=threads._id) + (SELECT COUNT(*) FROM pdu WHERE read=0 AND thread_id=threads._id AND (m_type=132 OR m_type=130 OR m_type=128)) WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE unread_count      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id;  END;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1478
+    const-string v0, "CREATE TRIGGER sms_update_thread_read_on_update AFTER  UPDATE OF read  ON sms BEGIN  UPDATE threads SET unread_count=(SELECT COUNT(*) FROM sms WHERE read=0 AND thread_id=threads._id) + (SELECT COUNT(*) FROM pdu WHERE read=0 AND thread_id=threads._id AND (m_type=132 OR m_type=130 OR m_type=128)) WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE unread_count      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1480
+    invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->updateThreadsUnreadColumn(Landroid/database/sqlite/SQLiteDatabase;)V
+
+    .line 1481
+    return-void
+.end method
+
+.method private upgradeDatabaseToVersion57(Landroid/database/sqlite/SQLiteDatabase;)V
+    .locals 1
+    .parameter "db"
+
+    .prologue
+    .line 1488
+    const-string v0, "ALTER TABLE threads ADD COLUMN state INTEGER DEFAULT 0 "
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1490
+    return-void
+.end method
+
+.method private upgradeDatabaseToVersion58(Landroid/database/sqlite/SQLiteDatabase;)V
+    .locals 1
+    .parameter
+
+    .prologue
+    .line 1493
+    const-string v0, "DROP TRIGGER IF EXISTS pdu_update_thread_read_on_update"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1494
+    const-string v0, "DROP TRIGGER IF EXISTS sms_update_thread_read_on_update"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1495
+    const-string v0, "DROP TRIGGER IF EXISTS pdu_update_thread_on_insert"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1496
+    const-string v0, "DROP TRIGGER IF EXISTS sms_update_thread_on_insert"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1497
+    const-string v0, "DROP TRIGGER IF EXISTS pdu_update_thread_date_subject_on_update"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1498
+    const-string v0, "DROP TRIGGER IF EXISTS sms_update_thread_date_subject_on_update"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1500
+    const-string v0, "CREATE TRIGGER pdu_update_thread_read_on_update AFTER  UPDATE OF read  ON pdu   WHEN new.m_type=132    OR new.m_type=130    OR new.m_type=128 BEGIN  UPDATE threads SET unread_count=(SELECT COUNT(*) FROM sms WHERE read=0 AND thread_id=threads._id) + (SELECT COUNT(*) FROM pdu WHERE read=0 AND thread_id=threads._id AND (m_type=132 OR m_type=130 OR m_type=128)) WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE unread_count      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id;  END;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1501
+    const-string v0, "CREATE TRIGGER sms_update_thread_read_on_update AFTER  UPDATE OF read  ON sms BEGIN  UPDATE threads SET unread_count=(SELECT COUNT(*) FROM sms WHERE read=0 AND thread_id=threads._id) + (SELECT COUNT(*) FROM pdu WHERE read=0 AND thread_id=threads._id AND (m_type=132 OR m_type=130 OR m_type=128)) WHERE threads._id = new.thread_id;   UPDATE threads SET read =     CASE unread_count      WHEN 0 THEN 1      ELSE 0    END  WHERE threads._id = new.thread_id; END;"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1503
+    invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->createUpdateThreadsDateTrigger(Landroid/database/sqlite/SQLiteDatabase;)V
+
+    .line 1504
+    invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->createUpdateThreadUnreadCountOnPduDeleteTrigger(Landroid/database/sqlite/SQLiteDatabase;)V
+
+    .line 1505
+    return-void
+.end method
+
+.method private upgradeDatabaseToVersion59(Landroid/database/sqlite/SQLiteDatabase;)V
+    .locals 1
+    .parameter
+
+    .prologue
+    .line 1508
+    const-string v0, "DROP TRIGGER IF EXISTS pdu_update_thread_on_insert"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1509
+    const-string v0, "DROP TRIGGER IF EXISTS pdu_update_thread_date_subject_on_update"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1510
+    const-string v0, "DROP TRIGGER IF EXISTS pdu_update_thread_on_delete"
+
+    invoke-virtual {p1, v0}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
+
+    .line 1512
+    invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->createUpdateThreadsDateOnPduTrigger(Landroid/database/sqlite/SQLiteDatabase;)V
+
+    .line 1513
     return-void
 .end method
 
 
 # virtual methods
-.method public declared-synchronized checkConsistency()V
-    .locals 4
-
-    .prologue
-    const-string v2, "MmsSmsDatabaseHelper"
-
-    .line 1600
-    monitor-enter p0
-
-    :try_start_0
-    iget-boolean v2, p0, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->mHasCheckedConsistency:Z
-    :try_end_0
-    .catchall {:try_start_0 .. :try_end_0} :catchall_0
-
-    if-eqz v2, :cond_0
-
-    .line 1614
-    :goto_0
-    monitor-exit p0
-
-    return-void
-
-    .line 1603
-    :cond_0
-    :try_start_1
-    const-string v2, "MmsSmsDatabaseHelper"
-
-    const-string v3, "beg of check consistency"
-
-    invoke-static {v2, v3}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
-    :try_end_1
-    .catchall {:try_start_1 .. :try_end_1} :catchall_0
-
-    .line 1605
-    :try_start_2
-    invoke-virtual {p0}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->getWritableDatabase()Landroid/database/sqlite/SQLiteDatabase;
-
-    move-result-object v0
-
-    .line 1606
-    .local v0, db:Landroid/database/sqlite/SQLiteDatabase;
-    const-string v2, "delete from sms where thread_id NOT IN (select _id from threads);"
-
-    invoke-virtual {v0, v2}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-
-    .line 1607
-    const-string v2, "delete from pdu where thread_id NOT IN (select _id from threads);"
-
-    invoke-virtual {v0, v2}, Landroid/database/sqlite/SQLiteDatabase;->execSQL(Ljava/lang/String;)V
-    :try_end_2
-    .catchall {:try_start_2 .. :try_end_2} :catchall_0
-    .catch Ljava/lang/Exception; {:try_start_2 .. :try_end_2} :catch_0
-
-    .line 1611
-    .end local v0           #db:Landroid/database/sqlite/SQLiteDatabase;
-    :goto_1
-    const/4 v2, 0x1
-
-    :try_start_3
-    iput-boolean v2, p0, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->mHasCheckedConsistency:Z
-
-    .line 1613
-    const-string v2, "MmsSmsDatabaseHelper"
-
-    const-string v3, "end of check consistency"
-
-    invoke-static {v2, v3}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
-    :try_end_3
-    .catchall {:try_start_3 .. :try_end_3} :catchall_0
-
-    goto :goto_0
-
-    .line 1600
-    :catchall_0
-    move-exception v2
-
-    monitor-exit p0
-
-    throw v2
-
-    .line 1608
-    :catch_0
-    move-exception v2
-
-    move-object v1, v2
-
-    .line 1609
-    .local v1, ex:Ljava/lang/Exception;
-    :try_start_4
-    const-string v2, "MmsSmsDatabaseHelper"
-
-    const-string v3, "exception in checkConsistency():"
-
-    invoke-static {v2, v3, v1}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-    :try_end_4
-    .catchall {:try_start_4 .. :try_end_4} :catchall_0
-
-    goto :goto_1
-.end method
-
 .method public onCreate(Landroid/database/sqlite/SQLiteDatabase;)V
     .locals 0
     .parameter "db"
 
     .prologue
-    .line 475
+    .line 463
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->createMmsTables(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 476
+    .line 464
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->createSmsTables(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 477
+    .line 465
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->createCommonTables(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 478
+    .line 466
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->createCommonTriggers(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 479
+    .line 467
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->createMmsTriggers(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 480
+    .line 468
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->createWordsTables(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 481
+    .line 469
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->createIndices(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 482
+    .line 470
     return-void
 .end method
 
 .method public onUpgrade(Landroid/database/sqlite/SQLiteDatabase;II)V
-    .locals 5
+    .locals 4
     .parameter "db"
     .parameter "oldVersion"
     .parameter "currentVersion"
 
     .prologue
-    const/16 v4, 0x2b
-
     const-string v3, "MmsSmsDatabaseHelper"
 
-    .line 1090
+    .line 960
     const-string v1, "MmsSmsDatabaseHelper"
 
     new-instance v1, Ljava/lang/StringBuilder;
@@ -2777,427 +2837,408 @@
 
     invoke-static {v3, v1}, Landroid/util/Log;->w(Ljava/lang/String;Ljava/lang/String;)I
 
-    .line 1094
-    if-lt p2, v4, :cond_0
-
-    const/16 v1, 0x36
-
-    if-gt p2, v1, :cond_0
-
-    .line 1096
-    :try_start_0
-    invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->recreateOnPartDeleteTriggerFromVersion43To54(Landroid/database/sqlite/SQLiteDatabase;)V
-    :try_end_0
-    .catch Ljava/lang/Throwable; {:try_start_0 .. :try_end_0} :catch_0
-
-    .line 1102
-    :cond_0
-    :goto_0
+    .line 963
     packed-switch p2, :pswitch_data_0
 
-    .line 1324
-    :goto_1
+    .line 1238
+    :goto_0
     const-string v1, "MmsSmsDatabaseHelper"
 
     const-string v1, "Destroying all old data."
 
     invoke-static {v3, v1}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
 
-    .line 1325
+    .line 1239
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->dropAll(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1326
+    .line 1240
     invoke-virtual {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->onCreate(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1327
-    :cond_1
-    :goto_2
+    .line 1241
+    :cond_0
+    :goto_1
     return-void
 
-    .line 1097
-    :catch_0
-    move-exception v0
-
-    .line 1098
-    .local v0, ex:Ljava/lang/Throwable;
-    const-string v1, "MmsSmsDatabaseHelper"
-
-    invoke-virtual {v0}, Ljava/lang/Throwable;->getMessage()Ljava/lang/String;
-
-    move-result-object v1
-
-    invoke-static {v3, v1, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-
-    goto :goto_0
-
-    .line 1104
-    .end local v0           #ex:Ljava/lang/Throwable;
+    .line 965
     :pswitch_0
     const/16 v1, 0x28
 
-    if-le p3, v1, :cond_1
+    if-le p3, v1, :cond_0
 
-    .line 1108
+    .line 969
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->beginTransaction()V
 
-    .line 1110
-    :try_start_1
+    .line 971
+    :try_start_0
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->upgradeDatabaseToVersion41(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1111
+    .line 972
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful()V
-    :try_end_1
-    .catchall {:try_start_1 .. :try_end_1} :catchall_0
-    .catch Ljava/lang/Throwable; {:try_start_1 .. :try_end_1} :catch_1
+    :try_end_0
+    .catchall {:try_start_0 .. :try_end_0} :catchall_0
+    .catch Ljava/lang/Throwable; {:try_start_0 .. :try_end_0} :catch_0
 
-    .line 1116
+    .line 977
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    .line 1120
+    .line 981
     :pswitch_1
     const/16 v1, 0x29
 
-    if-le p3, v1, :cond_1
+    if-le p3, v1, :cond_0
 
-    .line 1124
+    .line 985
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->beginTransaction()V
 
-    .line 1126
-    :try_start_2
+    .line 987
+    :try_start_1
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->upgradeDatabaseToVersion42(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1127
+    .line 988
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful()V
-    :try_end_2
-    .catchall {:try_start_2 .. :try_end_2} :catchall_1
-    .catch Ljava/lang/Throwable; {:try_start_2 .. :try_end_2} :catch_2
+    :try_end_1
+    .catchall {:try_start_1 .. :try_end_1} :catchall_1
+    .catch Ljava/lang/Throwable; {:try_start_1 .. :try_end_1} :catch_1
 
-    .line 1132
+    .line 993
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    .line 1136
+    .line 997
     :pswitch_2
     const/16 v1, 0x2a
 
-    if-le p3, v1, :cond_1
+    if-le p3, v1, :cond_0
 
-    .line 1140
+    .line 1001
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->beginTransaction()V
 
-    .line 1142
-    :try_start_3
+    .line 1003
+    :try_start_2
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->upgradeDatabaseToVersion43(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1143
+    .line 1004
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful()V
-    :try_end_3
-    .catchall {:try_start_3 .. :try_end_3} :catchall_2
-    .catch Ljava/lang/Throwable; {:try_start_3 .. :try_end_3} :catch_3
+    :try_end_2
+    .catchall {:try_start_2 .. :try_end_2} :catchall_2
+    .catch Ljava/lang/Throwable; {:try_start_2 .. :try_end_2} :catch_2
 
-    .line 1148
+    .line 1009
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    .line 1152
+    .line 1013
     :pswitch_3
-    if-le p3, v4, :cond_1
+    const/16 v1, 0x2b
 
-    .line 1156
+    if-le p3, v1, :cond_0
+
+    .line 1017
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->beginTransaction()V
 
-    .line 1158
-    :try_start_4
+    .line 1019
+    :try_start_3
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->upgradeDatabaseToVersion44(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1159
+    .line 1020
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful()V
-    :try_end_4
-    .catchall {:try_start_4 .. :try_end_4} :catchall_3
-    .catch Ljava/lang/Throwable; {:try_start_4 .. :try_end_4} :catch_4
+    :try_end_3
+    .catchall {:try_start_3 .. :try_end_3} :catchall_3
+    .catch Ljava/lang/Throwable; {:try_start_3 .. :try_end_3} :catch_3
 
-    .line 1164
+    .line 1025
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    .line 1168
+    .line 1029
     :pswitch_4
     const/16 v1, 0x2c
 
-    if-le p3, v1, :cond_1
+    if-le p3, v1, :cond_0
 
-    .line 1172
+    .line 1033
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->beginTransaction()V
 
-    .line 1174
-    :try_start_5
+    .line 1035
+    :try_start_4
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->upgradeDatabaseToVersion45(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1175
+    .line 1036
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful()V
-    :try_end_5
-    .catchall {:try_start_5 .. :try_end_5} :catchall_4
-    .catch Ljava/lang/Throwable; {:try_start_5 .. :try_end_5} :catch_5
+    :try_end_4
+    .catchall {:try_start_4 .. :try_end_4} :catchall_4
+    .catch Ljava/lang/Throwable; {:try_start_4 .. :try_end_4} :catch_4
 
-    .line 1180
+    .line 1041
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    .line 1184
+    .line 1045
     :pswitch_5
     const/16 v1, 0x2d
 
-    if-le p3, v1, :cond_1
+    if-le p3, v1, :cond_0
 
-    .line 1187
+    .line 1048
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->beginTransaction()V
 
-    .line 1189
-    :try_start_6
+    .line 1050
+    :try_start_5
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->upgradeDatabaseToVersion46(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1190
+    .line 1051
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful()V
-    :try_end_6
-    .catchall {:try_start_6 .. :try_end_6} :catchall_5
-    .catch Ljava/lang/Throwable; {:try_start_6 .. :try_end_6} :catch_6
+    :try_end_5
+    .catchall {:try_start_5 .. :try_end_5} :catchall_5
+    .catch Ljava/lang/Throwable; {:try_start_5 .. :try_end_5} :catch_5
 
-    .line 1195
+    .line 1056
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    .line 1199
+    .line 1060
     :pswitch_6
     const/16 v1, 0x2e
 
-    if-le p3, v1, :cond_1
+    if-le p3, v1, :cond_0
 
-    .line 1203
+    .line 1064
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->beginTransaction()V
 
-    .line 1205
-    :try_start_7
+    .line 1066
+    :try_start_6
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->upgradeDatabaseToVersion47(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1206
+    .line 1067
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful()V
-    :try_end_7
-    .catchall {:try_start_7 .. :try_end_7} :catchall_6
-    .catch Ljava/lang/Throwable; {:try_start_7 .. :try_end_7} :catch_7
+    :try_end_6
+    .catchall {:try_start_6 .. :try_end_6} :catchall_6
+    .catch Ljava/lang/Throwable; {:try_start_6 .. :try_end_6} :catch_6
 
-    .line 1211
+    .line 1072
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    .line 1215
+    .line 1076
     :pswitch_7
     const/16 v1, 0x2f
 
-    if-le p3, v1, :cond_1
+    if-le p3, v1, :cond_0
 
-    .line 1219
+    .line 1080
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->beginTransaction()V
 
-    .line 1221
-    :try_start_8
+    .line 1082
+    :try_start_7
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->upgradeDatabaseToVersion48(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1222
+    .line 1083
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful()V
-    :try_end_8
-    .catchall {:try_start_8 .. :try_end_8} :catchall_7
-    .catch Ljava/lang/Throwable; {:try_start_8 .. :try_end_8} :catch_8
+    :try_end_7
+    .catchall {:try_start_7 .. :try_end_7} :catchall_7
+    .catch Ljava/lang/Throwable; {:try_start_7 .. :try_end_7} :catch_7
 
-    .line 1227
+    .line 1088
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    .line 1231
+    .line 1092
     :pswitch_8
     const/16 v1, 0x30
 
-    if-le p3, v1, :cond_1
+    if-le p3, v1, :cond_0
 
-    .line 1235
+    .line 1096
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->beginTransaction()V
 
-    .line 1237
-    :try_start_9
+    .line 1098
+    :try_start_8
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->createWordsTables(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1238
+    .line 1099
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful()V
-    :try_end_9
-    .catchall {:try_start_9 .. :try_end_9} :catchall_8
-    .catch Ljava/lang/Throwable; {:try_start_9 .. :try_end_9} :catch_9
+    :try_end_8
+    .catchall {:try_start_8 .. :try_end_8} :catchall_8
+    .catch Ljava/lang/Throwable; {:try_start_8 .. :try_end_8} :catch_8
 
-    .line 1243
+    .line 1104
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    .line 1247
+    .line 1108
     :pswitch_9
     const/16 v1, 0x31
 
-    if-le p3, v1, :cond_1
+    if-le p3, v1, :cond_0
 
-    .line 1250
+    .line 1111
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->beginTransaction()V
 
-    .line 1252
-    :try_start_a
+    .line 1113
+    :try_start_9
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->createThreadIdIndex(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1253
+    .line 1114
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful()V
-    :try_end_a
-    .catchall {:try_start_a .. :try_end_a} :catchall_9
-    .catch Ljava/lang/Throwable; {:try_start_a .. :try_end_a} :catch_a
+    :try_end_9
+    .catchall {:try_start_9 .. :try_end_9} :catchall_9
+    .catch Ljava/lang/Throwable; {:try_start_9 .. :try_end_9} :catch_9
 
-    .line 1258
+    .line 1119
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    .line 1262
+    .line 1123
     :pswitch_a
     const/16 v1, 0x32
 
-    if-le p3, v1, :cond_1
+    if-le p3, v1, :cond_0
 
-    .line 1266
+    .line 1127
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->beginTransaction()V
 
-    .line 1268
-    :try_start_b
+    .line 1129
+    :try_start_a
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->upgradeDatabaseToVersion51(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1269
+    .line 1130
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful()V
-    :try_end_b
-    .catchall {:try_start_b .. :try_end_b} :catchall_a
-    .catch Ljava/lang/Throwable; {:try_start_b .. :try_end_b} :catch_b
+    :try_end_a
+    .catchall {:try_start_a .. :try_end_a} :catchall_a
+    .catch Ljava/lang/Throwable; {:try_start_a .. :try_end_a} :catch_a
 
-    .line 1274
+    .line 1135
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    .line 1278
+    .line 1139
     :pswitch_b
     const/16 v1, 0x33
 
-    if-le p3, v1, :cond_1
+    if-le p3, v1, :cond_0
 
-    .line 1284
+    .line 1145
     :pswitch_c
     const/16 v1, 0x34
 
-    if-le p3, v1, :cond_1
+    if-le p3, v1, :cond_0
 
-    .line 1288
+    .line 1149
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->beginTransaction()V
 
-    .line 1290
-    :try_start_c
+    .line 1151
+    :try_start_b
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->upgradeDatabaseToVersion53(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1291
+    .line 1152
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful()V
-    :try_end_c
-    .catchall {:try_start_c .. :try_end_c} :catchall_b
-    .catch Ljava/lang/Throwable; {:try_start_c .. :try_end_c} :catch_c
+    :try_end_b
+    .catchall {:try_start_b .. :try_end_b} :catchall_b
+    .catch Ljava/lang/Throwable; {:try_start_b .. :try_end_b} :catch_b
 
-    .line 1296
+    .line 1157
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    .line 1302
+    .line 1161
     :pswitch_d
     const/16 v1, 0x35
 
-    if-le p3, v1, :cond_1
+    if-le p3, v1, :cond_0
 
-    .line 1306
+    .line 1165
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->beginTransaction()V
 
-    .line 1308
-    :try_start_d
+    .line 1167
+    :try_start_c
     invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->upgradeDatabaseToVersion54(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    .line 1311
-    invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->createWordsTables(Landroid/database/sqlite/SQLiteDatabase;)V
+    .line 1168
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful()V
+    :try_end_c
+    .catchall {:try_start_c .. :try_end_c} :catchall_c
+    .catch Ljava/lang/Throwable; {:try_start_c .. :try_end_c} :catch_c
 
-    .line 1313
+    .line 1173
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
+
+    .line 1177
+    :pswitch_e
+    const/16 v1, 0x36
+
+    if-le p3, v1, :cond_0
+
+    .line 1183
+    :pswitch_f
+    const/16 v1, 0x37
+
+    if-le p3, v1, :cond_0
+
+    .line 1189
+    :pswitch_10
+    const/16 v1, 0x38
+
+    if-le p3, v1, :cond_0
+
+    .line 1193
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->beginTransaction()V
+
+    .line 1195
+    :try_start_d
+    invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->upgradeDatabaseToVersion57(Landroid/database/sqlite/SQLiteDatabase;)V
+
+    .line 1196
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful()V
     :try_end_d
-    .catchall {:try_start_d .. :try_end_d} :catchall_c
+    .catchall {:try_start_d .. :try_end_d} :catchall_d
     .catch Ljava/lang/Throwable; {:try_start_d .. :try_end_d} :catch_d
 
-    .line 1318
+    .line 1201
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    goto/16 :goto_2
+    .line 1205
+    :pswitch_11
+    const/16 v1, 0x39
 
-    .line 1112
-    :catch_1
-    move-exception v1
+    if-le p3, v1, :cond_0
 
-    move-object v0, v1
+    .line 1209
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->beginTransaction()V
 
-    .line 1113
-    .restart local v0       #ex:Ljava/lang/Throwable;
+    .line 1211
     :try_start_e
-    const-string v1, "MmsSmsDatabaseHelper"
+    invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->upgradeDatabaseToVersion58(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    invoke-virtual {v0}, Ljava/lang/Throwable;->getMessage()Ljava/lang/String;
-
-    move-result-object v2
-
-    invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+    .line 1212
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful()V
     :try_end_e
-    .catchall {:try_start_e .. :try_end_e} :catchall_0
+    .catchall {:try_start_e .. :try_end_e} :catchall_e
+    .catch Ljava/lang/Throwable; {:try_start_e .. :try_end_e} :catch_e
 
-    .line 1116
+    .line 1217
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    goto/16 :goto_1
+    .line 1221
+    :pswitch_12
+    const/16 v1, 0x3a
 
-    .end local v0           #ex:Ljava/lang/Throwable;
-    :catchall_0
-    move-exception v1
+    if-le p3, v1, :cond_0
 
-    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
+    .line 1225
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->beginTransaction()V
 
-    throw v1
-
-    .line 1128
-    :catch_2
-    move-exception v1
-
-    move-object v0, v1
-
-    .line 1129
-    .restart local v0       #ex:Ljava/lang/Throwable;
+    .line 1227
     :try_start_f
-    const-string v1, "MmsSmsDatabaseHelper"
+    invoke-direct {p0, p1}, Lcom/android/providers/telephony/MmsSmsDatabaseHelper;->upgradeDatabaseToVersion59(Landroid/database/sqlite/SQLiteDatabase;)V
 
-    invoke-virtual {v0}, Ljava/lang/Throwable;->getMessage()Ljava/lang/String;
-
-    move-result-object v2
-
-    invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+    .line 1228
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->setTransactionSuccessful()V
     :try_end_f
-    .catchall {:try_start_f .. :try_end_f} :catchall_1
+    .catchall {:try_start_f .. :try_end_f} :catchall_f
+    .catch Ljava/lang/Throwable; {:try_start_f .. :try_end_f} :catch_f
 
-    .line 1132
+    .line 1233
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
     goto/16 :goto_1
 
-    .end local v0           #ex:Ljava/lang/Throwable;
-    :catchall_1
-    move-exception v1
-
-    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
-
-    throw v1
-
-    .line 1144
-    :catch_3
+    .line 973
+    :catch_0
     move-exception v1
 
     move-object v0, v1
 
-    .line 1145
-    .restart local v0       #ex:Ljava/lang/Throwable;
+    .line 974
+    .local v0, ex:Ljava/lang/Throwable;
     :try_start_10
     const-string v1, "MmsSmsDatabaseHelper"
 
@@ -3207,28 +3248,28 @@
 
     invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
     :try_end_10
-    .catchall {:try_start_10 .. :try_end_10} :catchall_2
+    .catchall {:try_start_10 .. :try_end_10} :catchall_0
 
-    .line 1148
+    .line 977
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    goto/16 :goto_1
+    goto/16 :goto_0
 
     .end local v0           #ex:Ljava/lang/Throwable;
-    :catchall_2
+    :catchall_0
     move-exception v1
 
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
     throw v1
 
-    .line 1160
-    :catch_4
+    .line 989
+    :catch_1
     move-exception v1
 
     move-object v0, v1
 
-    .line 1161
+    .line 990
     .restart local v0       #ex:Ljava/lang/Throwable;
     :try_start_11
     const-string v1, "MmsSmsDatabaseHelper"
@@ -3239,28 +3280,28 @@
 
     invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
     :try_end_11
-    .catchall {:try_start_11 .. :try_end_11} :catchall_3
+    .catchall {:try_start_11 .. :try_end_11} :catchall_1
 
-    .line 1164
+    .line 993
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    goto/16 :goto_1
+    goto/16 :goto_0
 
     .end local v0           #ex:Ljava/lang/Throwable;
-    :catchall_3
+    :catchall_1
     move-exception v1
 
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
     throw v1
 
-    .line 1176
-    :catch_5
+    .line 1005
+    :catch_2
     move-exception v1
 
     move-object v0, v1
 
-    .line 1177
+    .line 1006
     .restart local v0       #ex:Ljava/lang/Throwable;
     :try_start_12
     const-string v1, "MmsSmsDatabaseHelper"
@@ -3271,28 +3312,28 @@
 
     invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
     :try_end_12
-    .catchall {:try_start_12 .. :try_end_12} :catchall_4
+    .catchall {:try_start_12 .. :try_end_12} :catchall_2
 
-    .line 1180
+    .line 1009
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    goto/16 :goto_1
+    goto/16 :goto_0
 
     .end local v0           #ex:Ljava/lang/Throwable;
-    :catchall_4
+    :catchall_2
     move-exception v1
 
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
     throw v1
 
-    .line 1191
-    :catch_6
+    .line 1021
+    :catch_3
     move-exception v1
 
     move-object v0, v1
 
-    .line 1192
+    .line 1022
     .restart local v0       #ex:Ljava/lang/Throwable;
     :try_start_13
     const-string v1, "MmsSmsDatabaseHelper"
@@ -3303,28 +3344,28 @@
 
     invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
     :try_end_13
-    .catchall {:try_start_13 .. :try_end_13} :catchall_5
+    .catchall {:try_start_13 .. :try_end_13} :catchall_3
 
-    .line 1195
+    .line 1025
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    goto/16 :goto_1
+    goto/16 :goto_0
 
     .end local v0           #ex:Ljava/lang/Throwable;
-    :catchall_5
+    :catchall_3
     move-exception v1
 
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
     throw v1
 
-    .line 1207
-    :catch_7
+    .line 1037
+    :catch_4
     move-exception v1
 
     move-object v0, v1
 
-    .line 1208
+    .line 1038
     .restart local v0       #ex:Ljava/lang/Throwable;
     :try_start_14
     const-string v1, "MmsSmsDatabaseHelper"
@@ -3335,28 +3376,28 @@
 
     invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
     :try_end_14
-    .catchall {:try_start_14 .. :try_end_14} :catchall_6
+    .catchall {:try_start_14 .. :try_end_14} :catchall_4
 
-    .line 1211
+    .line 1041
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    goto/16 :goto_1
+    goto/16 :goto_0
 
     .end local v0           #ex:Ljava/lang/Throwable;
-    :catchall_6
+    :catchall_4
     move-exception v1
 
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
     throw v1
 
-    .line 1223
-    :catch_8
+    .line 1052
+    :catch_5
     move-exception v1
 
     move-object v0, v1
 
-    .line 1224
+    .line 1053
     .restart local v0       #ex:Ljava/lang/Throwable;
     :try_start_15
     const-string v1, "MmsSmsDatabaseHelper"
@@ -3367,28 +3408,28 @@
 
     invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
     :try_end_15
-    .catchall {:try_start_15 .. :try_end_15} :catchall_7
+    .catchall {:try_start_15 .. :try_end_15} :catchall_5
 
-    .line 1227
+    .line 1056
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    goto/16 :goto_1
+    goto/16 :goto_0
 
     .end local v0           #ex:Ljava/lang/Throwable;
-    :catchall_7
+    :catchall_5
     move-exception v1
 
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
     throw v1
 
-    .line 1239
-    :catch_9
+    .line 1068
+    :catch_6
     move-exception v1
 
     move-object v0, v1
 
-    .line 1240
+    .line 1069
     .restart local v0       #ex:Ljava/lang/Throwable;
     :try_start_16
     const-string v1, "MmsSmsDatabaseHelper"
@@ -3399,28 +3440,28 @@
 
     invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
     :try_end_16
-    .catchall {:try_start_16 .. :try_end_16} :catchall_8
+    .catchall {:try_start_16 .. :try_end_16} :catchall_6
 
-    .line 1243
+    .line 1072
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    goto/16 :goto_1
+    goto/16 :goto_0
 
     .end local v0           #ex:Ljava/lang/Throwable;
-    :catchall_8
+    :catchall_6
     move-exception v1
 
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
     throw v1
 
-    .line 1254
-    :catch_a
+    .line 1084
+    :catch_7
     move-exception v1
 
     move-object v0, v1
 
-    .line 1255
+    .line 1085
     .restart local v0       #ex:Ljava/lang/Throwable;
     :try_start_17
     const-string v1, "MmsSmsDatabaseHelper"
@@ -3431,28 +3472,28 @@
 
     invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
     :try_end_17
-    .catchall {:try_start_17 .. :try_end_17} :catchall_9
+    .catchall {:try_start_17 .. :try_end_17} :catchall_7
 
-    .line 1258
+    .line 1088
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    goto/16 :goto_1
+    goto/16 :goto_0
 
     .end local v0           #ex:Ljava/lang/Throwable;
-    :catchall_9
+    :catchall_7
     move-exception v1
 
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
     throw v1
 
-    .line 1270
-    :catch_b
+    .line 1100
+    :catch_8
     move-exception v1
 
     move-object v0, v1
 
-    .line 1271
+    .line 1101
     .restart local v0       #ex:Ljava/lang/Throwable;
     :try_start_18
     const-string v1, "MmsSmsDatabaseHelper"
@@ -3463,28 +3504,28 @@
 
     invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
     :try_end_18
-    .catchall {:try_start_18 .. :try_end_18} :catchall_a
+    .catchall {:try_start_18 .. :try_end_18} :catchall_8
 
-    .line 1274
+    .line 1104
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    goto/16 :goto_1
+    goto/16 :goto_0
 
     .end local v0           #ex:Ljava/lang/Throwable;
-    :catchall_a
+    :catchall_8
     move-exception v1
 
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
     throw v1
 
-    .line 1292
-    :catch_c
+    .line 1115
+    :catch_9
     move-exception v1
 
     move-object v0, v1
 
-    .line 1293
+    .line 1116
     .restart local v0       #ex:Ljava/lang/Throwable;
     :try_start_19
     const-string v1, "MmsSmsDatabaseHelper"
@@ -3495,28 +3536,28 @@
 
     invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
     :try_end_19
-    .catchall {:try_start_19 .. :try_end_19} :catchall_b
+    .catchall {:try_start_19 .. :try_end_19} :catchall_9
 
-    .line 1296
+    .line 1119
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    goto/16 :goto_1
+    goto/16 :goto_0
 
     .end local v0           #ex:Ljava/lang/Throwable;
-    :catchall_b
+    :catchall_9
     move-exception v1
 
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
     throw v1
 
-    .line 1314
-    :catch_d
+    .line 1131
+    :catch_a
     move-exception v1
 
     move-object v0, v1
 
-    .line 1315
+    .line 1132
     .restart local v0       #ex:Ljava/lang/Throwable;
     :try_start_1a
     const-string v1, "MmsSmsDatabaseHelper"
@@ -3527,12 +3568,76 @@
 
     invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
     :try_end_1a
-    .catchall {:try_start_1a .. :try_end_1a} :catchall_c
+    .catchall {:try_start_1a .. :try_end_1a} :catchall_a
 
-    .line 1318
+    .line 1135
     invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
 
-    goto/16 :goto_1
+    goto/16 :goto_0
+
+    .end local v0           #ex:Ljava/lang/Throwable;
+    :catchall_a
+    move-exception v1
+
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
+
+    throw v1
+
+    .line 1153
+    :catch_b
+    move-exception v1
+
+    move-object v0, v1
+
+    .line 1154
+    .restart local v0       #ex:Ljava/lang/Throwable;
+    :try_start_1b
+    const-string v1, "MmsSmsDatabaseHelper"
+
+    invoke-virtual {v0}, Ljava/lang/Throwable;->getMessage()Ljava/lang/String;
+
+    move-result-object v2
+
+    invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+    :try_end_1b
+    .catchall {:try_start_1b .. :try_end_1b} :catchall_b
+
+    .line 1157
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
+
+    goto/16 :goto_0
+
+    .end local v0           #ex:Ljava/lang/Throwable;
+    :catchall_b
+    move-exception v1
+
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
+
+    throw v1
+
+    .line 1169
+    :catch_c
+    move-exception v1
+
+    move-object v0, v1
+
+    .line 1170
+    .restart local v0       #ex:Ljava/lang/Throwable;
+    :try_start_1c
+    const-string v1, "MmsSmsDatabaseHelper"
+
+    invoke-virtual {v0}, Ljava/lang/Throwable;->getMessage()Ljava/lang/String;
+
+    move-result-object v2
+
+    invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+    :try_end_1c
+    .catchall {:try_start_1c .. :try_end_1c} :catchall_c
+
+    .line 1173
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
+
+    goto/16 :goto_0
 
     .end local v0           #ex:Ljava/lang/Throwable;
     :catchall_c
@@ -3542,7 +3647,103 @@
 
     throw v1
 
-    .line 1102
+    .line 1197
+    :catch_d
+    move-exception v1
+
+    move-object v0, v1
+
+    .line 1198
+    .restart local v0       #ex:Ljava/lang/Throwable;
+    :try_start_1d
+    const-string v1, "MmsSmsDatabaseHelper"
+
+    invoke-virtual {v0}, Ljava/lang/Throwable;->getMessage()Ljava/lang/String;
+
+    move-result-object v2
+
+    invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+    :try_end_1d
+    .catchall {:try_start_1d .. :try_end_1d} :catchall_d
+
+    .line 1201
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
+
+    goto/16 :goto_0
+
+    .end local v0           #ex:Ljava/lang/Throwable;
+    :catchall_d
+    move-exception v1
+
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
+
+    throw v1
+
+    .line 1213
+    :catch_e
+    move-exception v1
+
+    move-object v0, v1
+
+    .line 1214
+    .restart local v0       #ex:Ljava/lang/Throwable;
+    :try_start_1e
+    const-string v1, "MmsSmsDatabaseHelper"
+
+    invoke-virtual {v0}, Ljava/lang/Throwable;->getMessage()Ljava/lang/String;
+
+    move-result-object v2
+
+    invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+    :try_end_1e
+    .catchall {:try_start_1e .. :try_end_1e} :catchall_e
+
+    .line 1217
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
+
+    goto/16 :goto_0
+
+    .end local v0           #ex:Ljava/lang/Throwable;
+    :catchall_e
+    move-exception v1
+
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
+
+    throw v1
+
+    .line 1229
+    :catch_f
+    move-exception v1
+
+    move-object v0, v1
+
+    .line 1230
+    .restart local v0       #ex:Ljava/lang/Throwable;
+    :try_start_1f
+    const-string v1, "MmsSmsDatabaseHelper"
+
+    invoke-virtual {v0}, Ljava/lang/Throwable;->getMessage()Ljava/lang/String;
+
+    move-result-object v2
+
+    invoke-static {v1, v2, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+    :try_end_1f
+    .catchall {:try_start_1f .. :try_end_1f} :catchall_f
+
+    .line 1233
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
+
+    goto/16 :goto_0
+
+    .end local v0           #ex:Ljava/lang/Throwable;
+    :catchall_f
+    move-exception v1
+
+    invoke-virtual {p1}, Landroid/database/sqlite/SQLiteDatabase;->endTransaction()V
+
+    throw v1
+
+    .line 963
     nop
 
     :pswitch_data_0
@@ -3561,5 +3762,10 @@
         :pswitch_b
         :pswitch_c
         :pswitch_d
+        :pswitch_e
+        :pswitch_f
+        :pswitch_10
+        :pswitch_11
+        :pswitch_12
     .end packed-switch
 .end method
