@@ -1841,8 +1841,6 @@
     :sswitch_data_0
     .sparse-switch
         0x4 -> :sswitch_0
-        0x18 -> :sswitch_0
-        0x19 -> :sswitch_0
         0x1b -> :sswitch_0
         0x4f -> :sswitch_0
         0x52 -> :sswitch_0
