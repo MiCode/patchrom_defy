@@ -1015,6 +1015,10 @@
 
     move-result-object v3
 
+    invoke-virtual {p0, v3}, Landroid/text/format/Time;->getAMPMString(Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v3
+
     monitor-exit v2
 
     return-object v3
@@ -1153,6 +1157,108 @@
     move-object v4, v5
 
     goto :goto_1
+.end method
+
+.method public getAMPMString(Ljava/lang/String;)Ljava/lang/String;
+    .locals 3
+
+    const/4 v0, 0x0
+
+    invoke-static {}, Ljava/util/Locale;->getDefault()Ljava/util/Locale;
+
+    move-result-object v1
+
+    invoke-virtual {v1}, Ljava/util/Locale;->toString()Ljava/lang/String;
+
+    move-result-object v1
+
+    const-string v2, "zh"
+
+    invoke-virtual {v1, v2}, Ljava/lang/String;->startsWith(Ljava/lang/String;)Z
+
+    move-result v1
+
+    if-eqz v1, :cond_0
+
+    iget v1, p0, Landroid/text/format/Time;->hour:I
+
+    packed-switch v1, :pswitch_data_0
+
+    :goto_0
+    :pswitch_0
+    if-eqz v0, :cond_0
+
+    iget v1, p0, Landroid/text/format/Time;->hour:I
+
+    const/16 v2, 0xc
+
+    if-lt v1, v2, :cond_1
+
+    sget-object v1, Landroid/text/format/Time;->sPm:Ljava/lang/String;
+
+    :goto_1
+    invoke-virtual {p1, v1, v0}, Ljava/lang/String;->replace(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String;
+
+    :cond_0
+    return-object p1
+
+    :pswitch_1
+    const-string v0, "\u534a\u591c"
+
+    goto :goto_0
+
+    :pswitch_2
+    const-string v0, "\u51cc\u6668"
+
+    goto :goto_0
+
+    :pswitch_3
+    const-string v0, "\u4e2d\u5348"
+
+    goto :goto_0
+
+    :pswitch_4
+    const-string v0, "\u508d\u665a"
+
+    goto :goto_0
+
+    :pswitch_5
+    const-string v0, "\u665a\u4e0a"
+
+    goto :goto_0
+
+    :cond_1
+    sget-object v1, Landroid/text/format/Time;->sAm:Ljava/lang/String;
+
+    goto :goto_1
+
+    :pswitch_data_0
+    .packed-switch 0x0
+        :pswitch_1
+        :pswitch_2
+        :pswitch_2
+        :pswitch_2
+        :pswitch_2
+        :pswitch_2
+        :pswitch_0
+        :pswitch_0
+        :pswitch_0
+        :pswitch_0
+        :pswitch_0
+        :pswitch_0
+        :pswitch_3
+        :pswitch_0
+        :pswitch_0
+        :pswitch_0
+        :pswitch_0
+        :pswitch_0
+        :pswitch_4
+        :pswitch_5
+        :pswitch_5
+        :pswitch_5
+        :pswitch_5
+        :pswitch_5
+    .end packed-switch
 .end method
 
 .method public getActualMaximum(I)I

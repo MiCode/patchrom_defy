@@ -1828,6 +1828,152 @@
     goto :goto_0
 .end method
 
+.method private callVibrate(Z)V
+    .locals 11
+
+    const/4 v10, 0x0
+
+    const/4 v9, 0x1
+
+    :try_start_0
+    iget-object v7, p0, Lcom/android/phone/CallNotifier;->mApplication:Lcom/android/phone/PhoneApp;
+
+    iget-object v7, v7, Lcom/android/phone/PhoneApp;->phone:Lcom/android/internal/telephony/Phone;
+
+    invoke-interface {v7}, Lcom/android/internal/telephony/Phone;->getForegroundCall()Lcom/android/internal/telephony/Call;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lcom/android/internal/telephony/Call;->getLatestConnection()Lcom/android/internal/telephony/Connection;
+
+    move-result-object v1
+
+    iget-object v7, p0, Lcom/android/phone/CallNotifier;->mApplication:Lcom/android/phone/PhoneApp;
+
+    invoke-virtual {v7}, Lcom/android/phone/PhoneApp;->getContentResolver()Landroid/content/ContentResolver;
+
+    move-result-object v4
+
+    const/4 v6, 0x0
+
+    invoke-virtual {v1}, Lcom/android/internal/telephony/Connection;->getDurationMillis()J
+
+    move-result-wide v2
+
+    if-eqz p1, :cond_2
+
+    const-wide/16 v7, 0x0
+
+    cmp-long v7, v2, v7
+
+    if-lez v7, :cond_1
+
+    const-string v7, "hungup_vibrator"
+
+    const/4 v8, 0x1
+
+    invoke-static {v4, v7, v8}, Landroid/provider/Settings$System;->getInt(Landroid/content/ContentResolver;Ljava/lang/String;I)I
+
+    move-result v7
+
+    if-ne v7, v9, :cond_1
+
+    move v6, v9
+
+    :goto_0
+    if-eqz v6, :cond_0
+
+    iget-object v7, p0, Lcom/android/phone/CallNotifier;->mApplication:Lcom/android/phone/PhoneApp;
+
+    const-string v8, "vibrator"
+
+    invoke-virtual {v7, v8}, Lcom/android/phone/PhoneApp;->getSystemService(Ljava/lang/String;)Ljava/lang/Object;
+
+    move-result-object v5
+
+    check-cast v5, Landroid/os/Vibrator;
+
+    const-wide/16 v7, 0x64
+
+    invoke-virtual {v5, v7, v8}, Landroid/os/Vibrator;->vibrate(J)V
+
+    :cond_0
+    :goto_1
+    return-void
+
+    :cond_1
+    move v6, v10
+
+    goto :goto_0
+
+    :cond_2
+    invoke-virtual {v1}, Lcom/android/internal/telephony/Connection;->isIncoming()Z
+
+    move-result v7
+
+    if-nez v7, :cond_3
+
+    const-wide/16 v7, 0xc8
+
+    cmp-long v7, v2, v7
+
+    if-gez v7, :cond_3
+
+    invoke-virtual {v0}, Lcom/android/internal/telephony/Call;->getState()Lcom/android/internal/telephony/Call$State;
+
+    move-result-object v7
+
+    sget-object v8, Lcom/android/internal/telephony/Call$State;->ACTIVE:Lcom/android/internal/telephony/Call$State;
+
+    if-ne v7, v8, :cond_3
+
+    const-string v7, "outgoing_vibrator"
+
+    const/4 v8, 0x1
+
+    invoke-static {v4, v7, v8}, Landroid/provider/Settings$System;->getInt(Landroid/content/ContentResolver;Ljava/lang/String;I)I
+    :try_end_0
+    .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
+
+    move-result v7
+
+    if-ne v7, v9, :cond_3
+
+    move v6, v9
+
+    goto :goto_0
+
+    :cond_3
+    move v6, v10
+
+    goto :goto_0
+
+    :catch_0
+    move-exception v7
+
+    goto :goto_1
+.end method
+
+.method private callVibrateHungup()V
+    .locals 1
+
+    const/4 v0, 0x1
+
+    invoke-direct {p0, v0}, Lcom/android/phone/CallNotifier;->callVibrate(Z)V
+
+    return-void
+.end method
+
+.method private callVibrateOutgoing()V
+    .locals 1
+
+    const/4 v0, 0x0
+
+    invoke-direct {p0, v0}, Lcom/android/phone/CallNotifier;->callVibrate(Z)V
+
+    return-void
+.end method
+
 .method private getCallerInfoFromConnection(Lcom/android/internal/telephony/Connection;)Lcom/android/internal/telephony/CallerInfo;
     .locals 4
     .parameter "conn"
@@ -3347,6 +3493,8 @@
     .parameter "r"
 
     .prologue
+    invoke-direct/range {p0 .. p0}, Lcom/android/phone/CallNotifier;->callVibrateHungup()V
+
     .line 1738
     sget-boolean v4, Lcom/android/phone/CallNotifier;->DBG:Z
 
@@ -6830,6 +6978,8 @@
     .parameter "r"
 
     .prologue
+    invoke-direct {p0}, Lcom/android/phone/CallNotifier;->callVibrateOutgoing()V
+
     .line 1165
     iget-object v10, p0, Lcom/android/phone/CallNotifier;->mCM:Lcom/android/internal/telephony/CallManager;
 

@@ -10,6 +10,7 @@
 # annotations
 .annotation system Ldalvik/annotation/MemberClasses;
     value = {
+        Lcom/android/internal/policy/impl/GlobalActions$Helper;,
         Lcom/android/internal/policy/impl/GlobalActions$ToggleAction;,
         Lcom/android/internal/policy/impl/GlobalActions$SinglePressAction;,
         Lcom/android/internal/policy/impl/GlobalActions$Action;,
@@ -669,6 +670,10 @@
     move-result-object v0
 
     iput-object v0, p0, Lcom/android/internal/policy/impl/GlobalActions;->mItems:Ljava/util/ArrayList;
+
+    iget-object v1, p0, Lcom/android/internal/policy/impl/GlobalActions;->mContext:Landroid/content/Context;
+
+    invoke-static {v1, v0}, Lcom/android/internal/policy/impl/GlobalActions$Helper;->addActions(Landroid/content/Context;Ljava/util/ArrayList;)Ljava/util/ArrayList;
 
     goto :goto_0
 .end method

@@ -264,11 +264,7 @@
 
     .end local v4           #replacement:Ljava/lang/String;
     :sswitch_0
-    invoke-virtual {p1, v8}, Ljava/util/Calendar;->get(I)I
-
-    move-result v7
-
-    invoke-static {v7}, Landroid/text/format/DateUtils;->getAMPMString(I)Ljava/lang/String;
+    invoke-static {p1}, Landroid/text/format/DateFormat;->getAMPMString(Ljava/util/Calendar;)Ljava/lang/String;
 
     move-result-object v4
 
@@ -277,11 +273,7 @@
 
     .end local v4           #replacement:Ljava/lang/String;
     :sswitch_1
-    invoke-virtual {p1, v8}, Ljava/util/Calendar;->get(I)I
-
-    move-result v7
-
-    invoke-static {v7}, Landroid/text/format/DateUtils;->getAMPMString(I)Ljava/lang/String;
+    invoke-static {p1}, Landroid/text/format/DateFormat;->getAMPMString(Ljava/util/Calendar;)Ljava/lang/String;
 
     move-result-object v4
 
@@ -544,6 +536,26 @@
     invoke-virtual {v2, v4, v3}, Ljava/lang/StringBuilder;->insert(ILjava/lang/String;)Ljava/lang/StringBuilder;
 
     goto :goto_0
+.end method
+
+.method public static getAMPMString(Ljava/util/Calendar;)Ljava/lang/String;
+    .locals 1
+
+    const/16 v0, 0x9
+
+    invoke-virtual {p0, v0}, Ljava/util/Calendar;->get(I)I
+
+    move-result v0
+
+    invoke-static {v0}, Landroid/text/format/DateUtils;->getAMPMString(I)Ljava/lang/String;
+
+    move-result-object v0
+
+    invoke-static {p0, v0}, Ljava/text/SimpleDateFormat;->getAMPMString(Ljava/util/Calendar;Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v0
+
+    return-object v0
 .end method
 
 .method public static final getDateFormat(Landroid/content/Context;)Ljava/text/DateFormat;
