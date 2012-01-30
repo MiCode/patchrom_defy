@@ -25,7 +25,7 @@ local-miui-apps     :=  ContactsProvider Mms ThemeManager  DownloadProvider \
 # All apps need to be removed from original ZIP file
 local-remove-apps   := Alipay BeeNews BlurHome BlurSNMessagingEngine BlurEmail \
 ContactsProvider2_0 BlurContacts BlurContactsSync BlurDialer ContactsData \
-Conversations blur_email QuickContactWidget QuickSms \
+Conversations blur_email QuickContactWidget QuickSms QuickSearchBox PimBackup\
 DianPing FriendFeed Firewall MapbarMap MSExchangeService \
 MessagesWidget Messaging blur_yahoo blur_sohu blur_skyrock \
 blur_sinamicroblog blur_sina_vip blur_sina blur_renren blur_qzone \
