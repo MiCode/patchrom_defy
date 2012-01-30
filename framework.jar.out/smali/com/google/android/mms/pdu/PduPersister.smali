@@ -4337,7 +4337,7 @@
 .end method
 
 .method public persist(Lcom/google/android/mms/pdu/GenericPdu;Landroid/net/Uri;)Landroid/net/Uri;
-    .locals 39
+    .locals 42
     .parameter "pdu"
     .parameter "uri"
     .annotation system Ldalvik/annotation/Throws;
@@ -4349,42 +4349,42 @@
     .prologue
     if-nez p2, :cond_0
 
-    new-instance v37, Lcom/google/android/mms/MmsException;
+    new-instance v5, Lcom/google/android/mms/MmsException;
 
-    const-string v38, "Uri may not be null."
+    const-string v6, "Uri may not be null."
 
-    invoke-direct/range {v37 .. v38}, Lcom/google/android/mms/MmsException;-><init>(Ljava/lang/String;)V
+    invoke-direct {v5, v6}, Lcom/google/android/mms/MmsException;-><init>(Ljava/lang/String;)V
 
-    throw v37
+    throw v5
 
     :cond_0
-    sget-object v37, Lcom/google/android/mms/pdu/PduPersister;->MESSAGE_BOX_MAP:Ljava/util/HashMap;
+    sget-object v5, Lcom/google/android/mms/pdu/PduPersister;->MESSAGE_BOX_MAP:Ljava/util/HashMap;
 
-    move-object/from16 v0, v37
+    move-object v0, v5
 
     move-object/from16 v1, p2
 
     invoke-virtual {v0, v1}, Ljava/util/HashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
 
-    move-result-object v23
+    move-result-object v29
 
-    check-cast v23, Ljava/lang/Integer;
+    check-cast v29, Ljava/lang/Integer;
 
-    .local v23, msgBox:Ljava/lang/Integer;
-    if-nez v23, :cond_1
+    .local v29, msgBox:Ljava/lang/Integer;
+    if-nez v29, :cond_1
 
-    new-instance v37, Lcom/google/android/mms/MmsException;
+    new-instance v5, Lcom/google/android/mms/MmsException;
 
-    const-string v38, "Bad destination, must be one of content://mms/inbox, content://mms/sent, content://mms/drafts, content://mms/outbox, content://mms/temp."
+    const-string v6, "Bad destination, must be one of content://mms/inbox, content://mms/sent, content://mms/drafts, content://mms/outbox, content://mms/temp."
 
-    invoke-direct/range {v37 .. v38}, Lcom/google/android/mms/MmsException;-><init>(Ljava/lang/String;)V
+    invoke-direct {v5, v6}, Lcom/google/android/mms/MmsException;-><init>(Ljava/lang/String;)V
 
-    throw v37
+    throw v5
 
     :cond_1
-    sget-object v37, Lcom/google/android/mms/pdu/PduPersister;->PDU_CACHE_INSTANCE:Lcom/google/android/mms/util/PduCache;
+    sget-object v5, Lcom/google/android/mms/pdu/PduPersister;->PDU_CACHE_INSTANCE:Lcom/google/android/mms/util/PduCache;
 
-    move-object/from16 v0, v37
+    move-object v0, v5
 
     move-object/from16 v1, p2
 
@@ -4392,45 +4392,45 @@
 
     invoke-virtual/range {p1 .. p1}, Lcom/google/android/mms/pdu/GenericPdu;->getPduHeaders()Lcom/google/android/mms/pdu/PduHeaders;
 
-    move-result-object v17
+    move-result-object v23
 
-    .local v17, header:Lcom/google/android/mms/pdu/PduHeaders;
-    const/4 v10, 0x0
+    .local v23, header:Lcom/google/android/mms/pdu/PduHeaders;
+    const/16 v16, 0x0
 
-    .local v10, body:Lcom/google/android/mms/pdu/PduBody;
-    new-instance v36, Landroid/content/ContentValues;
+    .local v16, body:Lcom/google/android/mms/pdu/PduBody;
+    new-instance v8, Landroid/content/ContentValues;
 
-    invoke-direct/range {v36 .. v36}, Landroid/content/ContentValues;-><init>()V
+    invoke-direct {v8}, Landroid/content/ContentValues;-><init>()V
 
-    .local v36, values:Landroid/content/ContentValues;
-    sget-object v37, Lcom/google/android/mms/pdu/PduPersister;->ENCODED_STRING_COLUMN_NAME_MAP:Ljava/util/HashMap;
+    .local v8, values:Landroid/content/ContentValues;
+    sget-object v5, Lcom/google/android/mms/pdu/PduPersister;->ENCODED_STRING_COLUMN_NAME_MAP:Ljava/util/HashMap;
 
-    invoke-virtual/range {v37 .. v37}, Ljava/util/HashMap;->entrySet()Ljava/util/Set;
+    invoke-virtual {v5}, Ljava/util/HashMap;->entrySet()Ljava/util/Set;
 
-    move-result-object v31
+    move-result-object v37
 
-    .local v31, set:Ljava/util/Set;,"Ljava/util/Set<Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;>;"
-    invoke-interface/range {v31 .. v31}, Ljava/util/Set;->iterator()Ljava/util/Iterator;
+    .local v37, set:Ljava/util/Set;,"Ljava/util/Set<Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;>;"
+    invoke-interface/range {v37 .. v37}, Ljava/util/Set;->iterator()Ljava/util/Iterator;
 
-    move-result-object v19
+    move-result-object v25
 
-    .local v19, i$:Ljava/util/Iterator;
+    .local v25, i$:Ljava/util/Iterator;
     :cond_2
     :goto_0
-    invoke-interface/range {v19 .. v19}, Ljava/util/Iterator;->hasNext()Z
+    invoke-interface/range {v25 .. v25}, Ljava/util/Iterator;->hasNext()Z
 
-    move-result v37
+    move-result v5
 
-    if-eqz v37, :cond_3
+    if-eqz v5, :cond_3
 
-    invoke-interface/range {v19 .. v19}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+    invoke-interface/range {v25 .. v25}, Ljava/util/Iterator;->next()Ljava/lang/Object;
 
-    move-result-object v14
+    move-result-object v20
 
-    check-cast v14, Ljava/util/Map$Entry;
+    check-cast v20, Ljava/util/Map$Entry;
 
-    .local v14, e:Ljava/util/Map$Entry;,"Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;"
-    invoke-interface {v14}, Ljava/util/Map$Entry;->getKey()Ljava/lang/Object;
+    .local v20, e:Ljava/util/Map$Entry;,"Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;"
+    invoke-interface/range {v20 .. v20}, Ljava/util/Map$Entry;->getKey()Ljava/lang/Object;
 
     move-result-object v5
 
@@ -4438,173 +4438,98 @@
 
     invoke-virtual {v5}, Ljava/lang/Integer;->intValue()I
 
-    move-result v16
+    move-result v22
 
-    .local v16, field:I
-    move-object/from16 v0, v17
+    .local v22, field:I
+    move-object/from16 v0, v23
 
-    move/from16 v1, v16
+    move/from16 v1, v22
 
     invoke-virtual {v0, v1}, Lcom/google/android/mms/pdu/PduHeaders;->getEncodedStringValue(I)Lcom/google/android/mms/pdu/EncodedStringValue;
 
-    move-result-object v15
+    move-result-object v21
 
-    .local v15, encodedString:Lcom/google/android/mms/pdu/EncodedStringValue;
-    if-eqz v15, :cond_2
+    .local v21, encodedString:Lcom/google/android/mms/pdu/EncodedStringValue;
+    if-eqz v21, :cond_2
 
-    sget-object v37, Lcom/google/android/mms/pdu/PduPersister;->CHARSET_COLUMN_NAME_MAP:Ljava/util/HashMap;
+    sget-object v5, Lcom/google/android/mms/pdu/PduPersister;->CHARSET_COLUMN_NAME_MAP:Ljava/util/HashMap;
 
-    invoke-static/range {v16 .. v16}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+    invoke-static/range {v22 .. v22}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
 
-    move-result-object v38
+    move-result-object v6
 
-    invoke-virtual/range {v37 .. v38}, Ljava/util/HashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
+    invoke-virtual {v5, v6}, Ljava/util/HashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
 
-    move-result-object v11
+    move-result-object v17
 
-    check-cast v11, Ljava/lang/String;
+    check-cast v17, Ljava/lang/String;
 
-    .local v11, charsetColumn:Ljava/lang/String;
-    invoke-interface {v14}, Ljava/util/Map$Entry;->getValue()Ljava/lang/Object;
+    .local v17, charsetColumn:Ljava/lang/String;
+    invoke-interface/range {v20 .. v20}, Ljava/util/Map$Entry;->getValue()Ljava/lang/Object;
 
     move-result-object v5
 
     check-cast v5, Ljava/lang/String;
 
-    invoke-virtual {v15}, Lcom/google/android/mms/pdu/EncodedStringValue;->getTextString()[B
+    invoke-virtual/range {v21 .. v21}, Lcom/google/android/mms/pdu/EncodedStringValue;->getTextString()[B
 
-    move-result-object v37
+    move-result-object v6
 
-    invoke-static/range {v37 .. v37}, Lcom/google/android/mms/pdu/PduPersister;->toIsoString([B)Ljava/lang/String;
+    invoke-static {v6}, Lcom/google/android/mms/pdu/PduPersister;->toIsoString([B)Ljava/lang/String;
 
-    move-result-object v37
+    move-result-object v6
 
-    move-object/from16 v0, v36
+    invoke-virtual {v8, v5, v6}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/String;)V
 
-    move-object v1, v5
+    invoke-virtual/range {v21 .. v21}, Lcom/google/android/mms/pdu/EncodedStringValue;->getCharacterSet()I
 
-    move-object/from16 v2, v37
+    move-result v5
 
-    invoke-virtual {v0, v1, v2}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/String;)V
+    invoke-static {v5}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
 
-    invoke-virtual {v15}, Lcom/google/android/mms/pdu/EncodedStringValue;->getCharacterSet()I
+    move-result-object v5
 
-    move-result v37
+    move-object v0, v8
 
-    invoke-static/range {v37 .. v37}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+    move-object/from16 v1, v17
 
-    move-result-object v37
-
-    move-object/from16 v0, v36
-
-    move-object v1, v11
-
-    move-object/from16 v2, v37
+    move-object v2, v5
 
     invoke-virtual {v0, v1, v2}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/Integer;)V
 
     goto :goto_0
 
-    .end local v11           #charsetColumn:Ljava/lang/String;
-    .end local v14           #e:Ljava/util/Map$Entry;,"Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;"
-    .end local v15           #encodedString:Lcom/google/android/mms/pdu/EncodedStringValue;
-    .end local v16           #field:I
+    .end local v17           #charsetColumn:Ljava/lang/String;
+    .end local v20           #e:Ljava/util/Map$Entry;,"Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;"
+    .end local v21           #encodedString:Lcom/google/android/mms/pdu/EncodedStringValue;
+    .end local v22           #field:I
     :cond_3
-    sget-object v37, Lcom/google/android/mms/pdu/PduPersister;->TEXT_STRING_COLUMN_NAME_MAP:Ljava/util/HashMap;
+    sget-object v5, Lcom/google/android/mms/pdu/PduPersister;->TEXT_STRING_COLUMN_NAME_MAP:Ljava/util/HashMap;
 
-    invoke-virtual/range {v37 .. v37}, Ljava/util/HashMap;->entrySet()Ljava/util/Set;
+    invoke-virtual {v5}, Ljava/util/HashMap;->entrySet()Ljava/util/Set;
 
-    move-result-object v31
+    move-result-object v37
 
-    invoke-interface/range {v31 .. v31}, Ljava/util/Set;->iterator()Ljava/util/Iterator;
+    invoke-interface/range {v37 .. v37}, Ljava/util/Set;->iterator()Ljava/util/Iterator;
 
-    move-result-object v19
+    move-result-object v25
 
     :cond_4
     :goto_1
-    invoke-interface/range {v19 .. v19}, Ljava/util/Iterator;->hasNext()Z
+    invoke-interface/range {v25 .. v25}, Ljava/util/Iterator;->hasNext()Z
 
-    move-result v37
+    move-result v5
 
-    if-eqz v37, :cond_5
+    if-eqz v5, :cond_5
 
-    invoke-interface/range {v19 .. v19}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+    invoke-interface/range {v25 .. v25}, Ljava/util/Iterator;->next()Ljava/lang/Object;
 
-    move-result-object v14
+    move-result-object v20
 
-    check-cast v14, Ljava/util/Map$Entry;
+    check-cast v20, Ljava/util/Map$Entry;
 
-    .restart local v14       #e:Ljava/util/Map$Entry;,"Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;"
-    invoke-interface {v14}, Ljava/util/Map$Entry;->getKey()Ljava/lang/Object;
-
-    move-result-object v5
-
-    check-cast v5, Ljava/lang/Integer;
-
-    invoke-virtual {v5}, Ljava/lang/Integer;->intValue()I
-
-    move-result v37
-
-    move-object/from16 v0, v17
-
-    move/from16 v1, v37
-
-    invoke-virtual {v0, v1}, Lcom/google/android/mms/pdu/PduHeaders;->getTextString(I)[B
-
-    move-result-object v32
-
-    .local v32, text:[B
-    if-eqz v32, :cond_4
-
-    invoke-interface {v14}, Ljava/util/Map$Entry;->getValue()Ljava/lang/Object;
-
-    move-result-object v5
-
-    check-cast v5, Ljava/lang/String;
-
-    invoke-static/range {v32 .. v32}, Lcom/google/android/mms/pdu/PduPersister;->toIsoString([B)Ljava/lang/String;
-
-    move-result-object v37
-
-    move-object/from16 v0, v36
-
-    move-object v1, v5
-
-    move-object/from16 v2, v37
-
-    invoke-virtual {v0, v1, v2}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/String;)V
-
-    goto :goto_1
-
-    .end local v14           #e:Ljava/util/Map$Entry;,"Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;"
-    .end local v32           #text:[B
-    :cond_5
-    sget-object v37, Lcom/google/android/mms/pdu/PduPersister;->OCTET_COLUMN_NAME_MAP:Ljava/util/HashMap;
-
-    invoke-virtual/range {v37 .. v37}, Ljava/util/HashMap;->entrySet()Ljava/util/Set;
-
-    move-result-object v31
-
-    invoke-interface/range {v31 .. v31}, Ljava/util/Set;->iterator()Ljava/util/Iterator;
-
-    move-result-object v19
-
-    :cond_6
-    :goto_2
-    invoke-interface/range {v19 .. v19}, Ljava/util/Iterator;->hasNext()Z
-
-    move-result v37
-
-    if-eqz v37, :cond_7
-
-    invoke-interface/range {v19 .. v19}, Ljava/util/Iterator;->next()Ljava/lang/Object;
-
-    move-result-object v14
-
-    check-cast v14, Ljava/util/Map$Entry;
-
-    .restart local v14       #e:Ljava/util/Map$Entry;,"Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;"
-    invoke-interface {v14}, Ljava/util/Map$Entry;->getKey()Ljava/lang/Object;
+    .restart local v20       #e:Ljava/util/Map$Entry;,"Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;"
+    invoke-interface/range {v20 .. v20}, Ljava/util/Map$Entry;->getKey()Ljava/lang/Object;
 
     move-result-object v5
 
@@ -4612,582 +4537,654 @@
 
     invoke-virtual {v5}, Ljava/lang/Integer;->intValue()I
 
-    move-result v37
+    move-result v5
 
-    move-object/from16 v0, v17
-
-    move/from16 v1, v37
-
-    invoke-virtual {v0, v1}, Lcom/google/android/mms/pdu/PduHeaders;->getOctet(I)I
-
-    move-result v9
-
-    .local v9, b:I
-    if-eqz v9, :cond_6
-
-    invoke-interface {v14}, Ljava/util/Map$Entry;->getValue()Ljava/lang/Object;
-
-    move-result-object v5
-
-    check-cast v5, Ljava/lang/String;
-
-    invoke-static {v9}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
-
-    move-result-object v37
-
-    move-object/from16 v0, v36
-
-    move-object v1, v5
-
-    move-object/from16 v2, v37
-
-    invoke-virtual {v0, v1, v2}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/Integer;)V
-
-    goto :goto_2
-
-    .end local v9           #b:I
-    .end local v14           #e:Ljava/util/Map$Entry;,"Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;"
-    :cond_7
-    sget-object v37, Lcom/google/android/mms/pdu/PduPersister;->LONG_COLUMN_NAME_MAP:Ljava/util/HashMap;
-
-    invoke-virtual/range {v37 .. v37}, Ljava/util/HashMap;->entrySet()Ljava/util/Set;
-
-    move-result-object v31
-
-    invoke-interface/range {v31 .. v31}, Ljava/util/Set;->iterator()Ljava/util/Iterator;
-
-    move-result-object v19
-
-    :cond_8
-    :goto_3
-    invoke-interface/range {v19 .. v19}, Ljava/util/Iterator;->hasNext()Z
-
-    move-result v37
-
-    if-eqz v37, :cond_9
-
-    invoke-interface/range {v19 .. v19}, Ljava/util/Iterator;->next()Ljava/lang/Object;
-
-    move-result-object v14
-
-    check-cast v14, Ljava/util/Map$Entry;
-
-    .restart local v14       #e:Ljava/util/Map$Entry;,"Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;"
-    invoke-interface {v14}, Ljava/util/Map$Entry;->getKey()Ljava/lang/Object;
-
-    move-result-object v5
-
-    check-cast v5, Ljava/lang/Integer;
-
-    invoke-virtual {v5}, Ljava/lang/Integer;->intValue()I
-
-    move-result v37
-
-    move-object/from16 v0, v17
-
-    move/from16 v1, v37
-
-    invoke-virtual {v0, v1}, Lcom/google/android/mms/pdu/PduHeaders;->getLongInteger(I)J
-
-    move-result-wide v20
-
-    .local v20, l:J
-    const-wide/16 v37, -0x1
-
-    cmp-long v37, v20, v37
-
-    if-eqz v37, :cond_8
-
-    invoke-interface {v14}, Ljava/util/Map$Entry;->getValue()Ljava/lang/Object;
-
-    move-result-object v5
-
-    check-cast v5, Ljava/lang/String;
-
-    invoke-static/range {v20 .. v21}, Ljava/lang/Long;->valueOf(J)Ljava/lang/Long;
-
-    move-result-object v37
-
-    move-object/from16 v0, v36
-
-    move-object v1, v5
-
-    move-object/from16 v2, v37
-
-    invoke-virtual {v0, v1, v2}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/Long;)V
-
-    goto :goto_3
-
-    .end local v14           #e:Ljava/util/Map$Entry;,"Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;"
-    .end local v20           #l:J
-    :cond_9
-    new-instance v6, Ljava/util/HashMap;
-
-    sget-object v37, Lcom/google/android/mms/pdu/PduPersister;->ADDRESS_FIELDS:[I
-
-    move-object/from16 v0, v37
-
-    array-length v0, v0
-
-    move/from16 v37, v0
-
-    move-object v0, v6
-
-    move/from16 v1, v37
-
-    invoke-direct {v0, v1}, Ljava/util/HashMap;-><init>(I)V
-
-    .local v6, addressMap:Ljava/util/HashMap;,"Ljava/util/HashMap<Ljava/lang/Integer;[Lcom/google/android/mms/pdu/EncodedStringValue;>;"
-    sget-object v7, Lcom/google/android/mms/pdu/PduPersister;->ADDRESS_FIELDS:[I
-
-    .local v7, arr$:[I
-    move-object v0, v7
-
-    array-length v0, v0
-
-    move/from16 v22, v0
-
-    .local v22, len$:I
-    const/16 v19, 0x0
-
-    .local v19, i$:I
-    :goto_4
-    move/from16 v0, v19
-
-    move/from16 v1, v22
-
-    if-ge v0, v1, :cond_c
-
-    aget v5, v7, v19
-
-    .local v5, addrType:I
-    const/4 v8, 0x0
-
-    .local v8, array:[Lcom/google/android/mms/pdu/EncodedStringValue;
-    const/16 v37, 0x89
-
-    move v0, v5
-
-    move/from16 v1, v37
-
-    if-ne v0, v1, :cond_b
-
-    move-object/from16 v0, v17
+    move-object/from16 v0, v23
 
     move v1, v5
 
-    invoke-virtual {v0, v1}, Lcom/google/android/mms/pdu/PduHeaders;->getEncodedStringValue(I)Lcom/google/android/mms/pdu/EncodedStringValue;
+    invoke-virtual {v0, v1}, Lcom/google/android/mms/pdu/PduHeaders;->getTextString(I)[B
 
-    move-result-object v35
+    move-result-object v38
 
-    .local v35, v:Lcom/google/android/mms/pdu/EncodedStringValue;
-    if-eqz v35, :cond_a
+    .local v38, text:[B
+    if-eqz v38, :cond_4
 
-    const/16 v37, 0x1
+    invoke-interface/range {v20 .. v20}, Ljava/util/Map$Entry;->getValue()Ljava/lang/Object;
 
-    move/from16 v0, v37
+    move-result-object v5
 
-    new-array v0, v0, [Lcom/google/android/mms/pdu/EncodedStringValue;
+    check-cast v5, Ljava/lang/String;
 
-    move-object v8, v0
+    invoke-static/range {v38 .. v38}, Lcom/google/android/mms/pdu/PduPersister;->toIsoString([B)Ljava/lang/String;
 
-    const/16 v37, 0x0
+    move-result-object v6
 
-    aput-object v35, v8, v37
+    invoke-virtual {v8, v5, v6}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/String;)V
 
-    .end local v35           #v:Lcom/google/android/mms/pdu/EncodedStringValue;
-    :cond_a
-    :goto_5
-    invoke-static {v5}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+    goto :goto_1
+
+    .end local v20           #e:Ljava/util/Map$Entry;,"Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;"
+    .end local v38           #text:[B
+    :cond_5
+    sget-object v5, Lcom/google/android/mms/pdu/PduPersister;->OCTET_COLUMN_NAME_MAP:Ljava/util/HashMap;
+
+    invoke-virtual {v5}, Ljava/util/HashMap;->entrySet()Ljava/util/Set;
 
     move-result-object v37
 
-    move-object v0, v6
+    invoke-interface/range {v37 .. v37}, Ljava/util/Set;->iterator()Ljava/util/Iterator;
 
-    move-object/from16 v1, v37
+    move-result-object v25
 
-    move-object v2, v8
+    :cond_6
+    :goto_2
+    invoke-interface/range {v25 .. v25}, Ljava/util/Iterator;->hasNext()Z
 
-    invoke-virtual {v0, v1, v2}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+    move-result v5
 
-    add-int/lit8 v19, v19, 0x1
+    if-eqz v5, :cond_7
+
+    invoke-interface/range {v25 .. v25}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+
+    move-result-object v20
+
+    check-cast v20, Ljava/util/Map$Entry;
+
+    .restart local v20       #e:Ljava/util/Map$Entry;,"Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;"
+    invoke-interface/range {v20 .. v20}, Ljava/util/Map$Entry;->getKey()Ljava/lang/Object;
+
+    move-result-object v5
+
+    check-cast v5, Ljava/lang/Integer;
+
+    invoke-virtual {v5}, Ljava/lang/Integer;->intValue()I
+
+    move-result v5
+
+    move-object/from16 v0, v23
+
+    move v1, v5
+
+    invoke-virtual {v0, v1}, Lcom/google/android/mms/pdu/PduHeaders;->getOctet(I)I
+
+    move-result v15
+
+    .local v15, b:I
+    if-eqz v15, :cond_6
+
+    invoke-interface/range {v20 .. v20}, Ljava/util/Map$Entry;->getValue()Ljava/lang/Object;
+
+    move-result-object v5
+
+    check-cast v5, Ljava/lang/String;
+
+    invoke-static {v15}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+
+    move-result-object v6
+
+    invoke-virtual {v8, v5, v6}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/Integer;)V
+
+    goto :goto_2
+
+    .end local v15           #b:I
+    .end local v20           #e:Ljava/util/Map$Entry;,"Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;"
+    :cond_7
+    sget-object v5, Lcom/google/android/mms/pdu/PduPersister;->LONG_COLUMN_NAME_MAP:Ljava/util/HashMap;
+
+    invoke-virtual {v5}, Ljava/util/HashMap;->entrySet()Ljava/util/Set;
+
+    move-result-object v37
+
+    invoke-interface/range {v37 .. v37}, Ljava/util/Set;->iterator()Ljava/util/Iterator;
+
+    move-result-object v25
+
+    :cond_8
+    :goto_3
+    invoke-interface/range {v25 .. v25}, Ljava/util/Iterator;->hasNext()Z
+
+    move-result v5
+
+    if-eqz v5, :cond_9
+
+    invoke-interface/range {v25 .. v25}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+
+    move-result-object v20
+
+    check-cast v20, Ljava/util/Map$Entry;
+
+    .restart local v20       #e:Ljava/util/Map$Entry;,"Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;"
+    invoke-interface/range {v20 .. v20}, Ljava/util/Map$Entry;->getKey()Ljava/lang/Object;
+
+    move-result-object v5
+
+    check-cast v5, Ljava/lang/Integer;
+
+    invoke-virtual {v5}, Ljava/lang/Integer;->intValue()I
+
+    move-result v5
+
+    move-object/from16 v0, v23
+
+    move v1, v5
+
+    invoke-virtual {v0, v1}, Lcom/google/android/mms/pdu/PduHeaders;->getLongInteger(I)J
+
+    move-result-wide v26
+
+    .local v26, l:J
+    const-wide/16 v5, -0x1
+
+    cmp-long v5, v26, v5
+
+    if-eqz v5, :cond_8
+
+    invoke-interface/range {v20 .. v20}, Ljava/util/Map$Entry;->getValue()Ljava/lang/Object;
+
+    move-result-object v5
+
+    check-cast v5, Ljava/lang/String;
+
+    invoke-static/range {v26 .. v27}, Ljava/lang/Long;->valueOf(J)Ljava/lang/Long;
+
+    move-result-object v6
+
+    invoke-virtual {v8, v5, v6}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/Long;)V
+
+    goto :goto_3
+
+    .end local v20           #e:Ljava/util/Map$Entry;,"Ljava/util/Map$Entry<Ljava/lang/Integer;Ljava/lang/String;>;"
+    .end local v26           #l:J
+    :cond_9
+    new-instance v12, Ljava/util/HashMap;
+
+    sget-object v5, Lcom/google/android/mms/pdu/PduPersister;->ADDRESS_FIELDS:[I
+
+    array-length v5, v5
+
+    invoke-direct {v12, v5}, Ljava/util/HashMap;-><init>(I)V
+
+    .local v12, addressMap:Ljava/util/HashMap;,"Ljava/util/HashMap<Ljava/lang/Integer;[Lcom/google/android/mms/pdu/EncodedStringValue;>;"
+    sget-object v13, Lcom/google/android/mms/pdu/PduPersister;->ADDRESS_FIELDS:[I
+
+    .local v13, arr$:[I
+    move-object v0, v13
+
+    array-length v0, v0
+
+    move/from16 v28, v0
+
+    .local v28, len$:I
+    const/16 v25, 0x0
+
+    .local v25, i$:I
+    :goto_4
+    move/from16 v0, v25
+
+    move/from16 v1, v28
+
+    if-ge v0, v1, :cond_c
+
+    aget v11, v13, v25
+
+    .local v11, addrType:I
+    const/4 v14, 0x0
+
+    .local v14, array:[Lcom/google/android/mms/pdu/EncodedStringValue;
+    const/16 v5, 0x89
+
+    if-ne v11, v5, :cond_b
+
+    move-object/from16 v0, v23
+
+    move v1, v11
+
+    invoke-virtual {v0, v1}, Lcom/google/android/mms/pdu/PduHeaders;->getEncodedStringValue(I)Lcom/google/android/mms/pdu/EncodedStringValue;
+
+    move-result-object v41
+
+    .local v41, v:Lcom/google/android/mms/pdu/EncodedStringValue;
+    if-eqz v41, :cond_a
+
+    const/4 v5, 0x1
+
+    new-array v14, v5, [Lcom/google/android/mms/pdu/EncodedStringValue;
+
+    const/4 v5, 0x0
+
+    aput-object v41, v14, v5
+
+    .end local v41           #v:Lcom/google/android/mms/pdu/EncodedStringValue;
+    :cond_a
+    :goto_5
+    invoke-static {v11}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+
+    move-result-object v5
+
+    invoke-virtual {v12, v5, v14}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+
+    add-int/lit8 v25, v25, 0x1
 
     goto :goto_4
 
     :cond_b
-    move-object/from16 v0, v17
+    move-object/from16 v0, v23
 
-    move v1, v5
+    move v1, v11
 
     invoke-virtual {v0, v1}, Lcom/google/android/mms/pdu/PduHeaders;->getEncodedStringValues(I)[Lcom/google/android/mms/pdu/EncodedStringValue;
 
-    move-result-object v8
+    move-result-object v14
 
     goto :goto_5
 
-    .end local v5           #addrType:I
-    .end local v8           #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
+    .end local v11           #addrType:I
+    .end local v14           #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
     :cond_c
-    new-instance v29, Ljava/util/HashSet;
+    new-instance v35, Ljava/util/HashSet;
 
-    invoke-direct/range {v29 .. v29}, Ljava/util/HashSet;-><init>()V
+    invoke-direct/range {v35 .. v35}, Ljava/util/HashSet;-><init>()V
 
-    .local v29, recipients:Ljava/util/HashSet;,"Ljava/util/HashSet<Ljava/lang/String;>;"
-    const-wide v33, 0x7fffffffffffffffL
+    .local v35, recipients:Ljava/util/HashSet;,"Ljava/util/HashSet<Ljava/lang/String;>;"
+    const-wide v39, 0x7fffffffffffffffL
 
-    .local v33, threadId:J
+    .local v39, threadId:J
     invoke-virtual/range {p1 .. p1}, Lcom/google/android/mms/pdu/GenericPdu;->getMessageType()I
 
-    move-result v26
+    move-result v32
 
-    .local v26, msgType:I
-    const/16 v37, 0x82
+    .local v32, msgType:I
+    const/16 v5, 0x82
 
-    move/from16 v0, v26
+    move/from16 v0, v32
 
-    move/from16 v1, v37
-
-    if-eq v0, v1, :cond_d
-
-    const/16 v37, 0x84
-
-    move/from16 v0, v26
-
-    move/from16 v1, v37
+    move v1, v5
 
     if-eq v0, v1, :cond_d
 
-    const/16 v37, 0x80
+    const/16 v5, 0x84
 
-    move/from16 v0, v26
+    move/from16 v0, v32
 
-    move/from16 v1, v37
+    move v1, v5
+
+    if-eq v0, v1, :cond_d
+
+    const/16 v5, 0x80
+
+    move/from16 v0, v32
+
+    move v1, v5
 
     if-ne v0, v1, :cond_10
 
     :cond_d
-    const/4 v8, 0x0
+    const/4 v14, 0x0
 
-    .restart local v8       #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
-    packed-switch v26, :pswitch_data_0
+    .restart local v14       #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
+    packed-switch v32, :pswitch_data_0
 
     :goto_6
     :pswitch_0
-    if-eqz v8, :cond_f
+    if-eqz v14, :cond_f
 
-    move-object v7, v8
+    move-object v13, v14
 
-    .local v7, arr$:[Lcom/google/android/mms/pdu/EncodedStringValue;
-    move-object v0, v7
+    .local v13, arr$:[Lcom/google/android/mms/pdu/EncodedStringValue;
+    move-object v0, v13
 
     array-length v0, v0
 
-    move/from16 v22, v0
+    move/from16 v28, v0
 
-    const/16 v19, 0x0
+    const/16 v25, 0x0
 
     :goto_7
-    move/from16 v0, v19
+    move/from16 v0, v25
 
-    move/from16 v1, v22
+    move/from16 v1, v28
 
     if-ge v0, v1, :cond_f
 
-    aget-object v35, v7, v19
+    aget-object v41, v13, v25
 
-    .restart local v35       #v:Lcom/google/android/mms/pdu/EncodedStringValue;
-    if-eqz v35, :cond_e
+    .restart local v41       #v:Lcom/google/android/mms/pdu/EncodedStringValue;
+    if-eqz v41, :cond_e
 
-    invoke-virtual/range {v35 .. v35}, Lcom/google/android/mms/pdu/EncodedStringValue;->getString()Ljava/lang/String;
+    invoke-virtual/range {v41 .. v41}, Lcom/google/android/mms/pdu/EncodedStringValue;->getString()Ljava/lang/String;
 
-    move-result-object v37
+    move-result-object v5
 
-    move-object/from16 v0, v29
+    move-object/from16 v0, v35
 
-    move-object/from16 v1, v37
+    move-object v1, v5
 
     invoke-virtual {v0, v1}, Ljava/util/HashSet;->add(Ljava/lang/Object;)Z
 
     :cond_e
-    add-int/lit8 v19, v19, 0x1
+    add-int/lit8 v25, v25, 0x1
 
     goto :goto_7
 
-    .end local v35           #v:Lcom/google/android/mms/pdu/EncodedStringValue;
-    .local v7, arr$:[I
+    .end local v41           #v:Lcom/google/android/mms/pdu/EncodedStringValue;
+    .local v13, arr$:[I
     :pswitch_1
-    const/16 v37, 0x89
+    const/16 v5, 0x89
 
-    invoke-static/range {v37 .. v37}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+    invoke-static {v5}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
 
-    move-result-object v37
+    move-result-object v5
 
-    move-object v0, v6
+    invoke-virtual {v12, v5}, Ljava/util/HashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
 
-    move-object/from16 v1, v37
+    move-result-object v14
 
-    invoke-virtual {v0, v1}, Ljava/util/HashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
+    .end local v14           #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
+    check-cast v14, [Lcom/google/android/mms/pdu/EncodedStringValue;
 
-    move-result-object v8
-
-    .end local v8           #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
-    check-cast v8, [Lcom/google/android/mms/pdu/EncodedStringValue;
-
-    .restart local v8       #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
+    .restart local v14       #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
     goto :goto_6
 
     :pswitch_2
-    const/16 v37, 0x97
+    const/16 v5, 0x97
 
-    invoke-static/range {v37 .. v37}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+    invoke-static {v5}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
 
-    move-result-object v37
+    move-result-object v5
 
-    move-object v0, v6
+    invoke-virtual {v12, v5}, Ljava/util/HashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
 
-    move-object/from16 v1, v37
+    move-result-object v14
 
-    invoke-virtual {v0, v1}, Ljava/util/HashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
+    .end local v14           #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
+    check-cast v14, [Lcom/google/android/mms/pdu/EncodedStringValue;
 
-    move-result-object v8
-
-    .end local v8           #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
-    check-cast v8, [Lcom/google/android/mms/pdu/EncodedStringValue;
-
-    .restart local v8       #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
+    .restart local v14       #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
     goto :goto_6
 
-    .end local v7           #arr$:[I
+    .end local v13           #arr$:[I
     :cond_f
     move-object/from16 v0, p0
 
     iget-object v0, v0, Lcom/google/android/mms/pdu/PduPersister;->mContext:Landroid/content/Context;
 
-    move-object/from16 v37, v0
+    move-object v5, v0
 
-    move-object/from16 v0, v37
+    move-object v0, v5
 
-    move-object/from16 v1, v29
+    move-object/from16 v1, v35
 
     invoke-static {v0, v1}, Landroid/provider/Telephony$Threads;->getOrCreateThreadId(Landroid/content/Context;Ljava/util/Set;)J
 
-    move-result-wide v33
+    move-result-wide v39
 
-    .end local v8           #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
+    .end local v14           #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
     :cond_10
-    const-string v37, "thread_id"
+    const-string v5, "thread_id"
 
-    invoke-static/range {v33 .. v34}, Ljava/lang/Long;->valueOf(J)Ljava/lang/Long;
+    invoke-static/range {v39 .. v40}, Ljava/lang/Long;->valueOf(J)Ljava/lang/Long;
 
-    move-result-object v38
+    move-result-object v6
 
-    invoke-virtual/range {v36 .. v38}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/Long;)V
+    invoke-virtual {v8, v5, v6}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/Long;)V
 
     invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
 
-    move-result-wide v12
+    move-result-wide v18
 
-    .local v12, dummyId:J
+    .local v18, dummyId:J
     move-object/from16 v0, p1
 
     instance-of v0, v0, Lcom/google/android/mms/pdu/MultimediaMessagePdu;
 
-    move/from16 v37, v0
+    move v5, v0
 
-    if-eqz v37, :cond_12
+    if-eqz v5, :cond_11
 
     check-cast p1, Lcom/google/android/mms/pdu/MultimediaMessagePdu;
 
     .end local p1
     invoke-virtual/range {p1 .. p1}, Lcom/google/android/mms/pdu/MultimediaMessagePdu;->getBody()Lcom/google/android/mms/pdu/PduBody;
 
-    move-result-object v10
+    move-result-object v16
 
-    if-eqz v10, :cond_12
+    if-eqz v16, :cond_11
 
-    invoke-virtual {v10}, Lcom/google/android/mms/pdu/PduBody;->getPartsNum()I
+    invoke-virtual/range {v16 .. v16}, Lcom/google/android/mms/pdu/PduBody;->getPartsNum()I
 
-    move-result v28
+    move-result v34
 
-    .local v28, partsNum:I
-    const/16 v18, 0x0
+    .local v34, partsNum:I
+    const/16 v24, 0x0
 
-    .local v18, i:I
+    .local v24, i:I
     :goto_8
-    move/from16 v0, v18
+    move/from16 v0, v24
 
-    move/from16 v1, v28
+    move/from16 v1, v34
 
     if-ge v0, v1, :cond_11
 
-    move-object v0, v10
+    move-object/from16 v0, v16
 
-    move/from16 v1, v18
+    move/from16 v1, v24
 
     invoke-virtual {v0, v1}, Lcom/google/android/mms/pdu/PduBody;->getPart(I)Lcom/google/android/mms/pdu/PduPart;
 
-    move-result-object v27
+    move-result-object v33
 
-    .local v27, part:Lcom/google/android/mms/pdu/PduPart;
+    .local v33, part:Lcom/google/android/mms/pdu/PduPart;
     move-object/from16 v0, p0
 
-    move-object/from16 v1, v27
+    move-object/from16 v1, v33
 
-    move-wide v2, v12
+    move-wide/from16 v2, v18
 
     invoke-virtual {v0, v1, v2, v3}, Lcom/google/android/mms/pdu/PduPersister;->persistPart(Lcom/google/android/mms/pdu/PduPart;J)Landroid/net/Uri;
 
-    add-int/lit8 v18, v18, 0x1
+    add-int/lit8 v24, v24, 0x1
 
     goto :goto_8
 
-    .end local v27           #part:Lcom/google/android/mms/pdu/PduPart;
+    .end local v24           #i:I
+    .end local v33           #part:Lcom/google/android/mms/pdu/PduPart;
+    .end local v34           #partsNum:I
     :cond_11
-    if-lez v28, :cond_12
-
-    const-string v37, "dummyId"
-
-    invoke-static {v12, v13}, Ljava/lang/Long;->valueOf(J)Ljava/lang/Long;
-
-    move-result-object v38
-
-    invoke-virtual/range {v36 .. v38}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/Long;)V
-
-    .end local v18           #i:I
-    .end local v28           #partsNum:I
-    :cond_12
     move-object/from16 v0, p0
 
     iget-object v0, v0, Lcom/google/android/mms/pdu/PduPersister;->mContext:Landroid/content/Context;
 
-    move-object/from16 v37, v0
+    move-object v5, v0
 
     move-object/from16 v0, p0
 
     iget-object v0, v0, Lcom/google/android/mms/pdu/PduPersister;->mContentResolver:Landroid/content/ContentResolver;
 
-    move-object/from16 v38, v0
+    move-object v6, v0
 
-    move-object/from16 v0, v37
+    move-object v0, v5
 
-    move-object/from16 v1, v38
+    move-object v1, v6
 
     move-object/from16 v2, p2
 
-    move-object/from16 v3, v36
+    move-object v3, v8
 
     invoke-static {v0, v1, v2, v3}, Lcom/google/android/mms/util/SqliteWrapper;->insert(Landroid/content/Context;Landroid/content/ContentResolver;Landroid/net/Uri;Landroid/content/ContentValues;)Landroid/net/Uri;
 
-    move-result-object v30
+    move-result-object v36
 
-    .local v30, res:Landroid/net/Uri;
-    if-nez v30, :cond_13
+    .local v36, res:Landroid/net/Uri;
+    if-nez v36, :cond_12
 
-    new-instance v37, Lcom/google/android/mms/MmsException;
+    new-instance v5, Lcom/google/android/mms/MmsException;
 
-    const-string v38, "persist() failed: return null."
+    const-string v6, "persist() failed: return null."
 
-    invoke-direct/range {v37 .. v38}, Lcom/google/android/mms/MmsException;-><init>(Ljava/lang/String;)V
+    invoke-direct {v5, v6}, Lcom/google/android/mms/MmsException;-><init>(Ljava/lang/String;)V
 
-    throw v37
+    throw v5
 
-    :cond_13
-    invoke-static/range {v30 .. v30}, Landroid/content/ContentUris;->parseId(Landroid/net/Uri;)J
+    :cond_12
+    invoke-static/range {v36 .. v36}, Landroid/content/ContentUris;->parseId(Landroid/net/Uri;)J
 
-    move-result-wide v24
+    move-result-wide v30
 
-    .local v24, msgId:J
-    new-instance v37, Ljava/lang/StringBuilder;
+    .local v30, msgId:J
+    new-instance v8, Landroid/content/ContentValues;
 
-    invoke-direct/range {v37 .. v37}, Ljava/lang/StringBuilder;-><init>()V
+    .end local v8           #values:Landroid/content/ContentValues;
+    const/4 v5, 0x1
 
-    move-object/from16 v0, v37
+    invoke-direct {v8, v5}, Landroid/content/ContentValues;-><init>(I)V
+
+    .restart local v8       #values:Landroid/content/ContentValues;
+    const-string v5, "mid"
+
+    invoke-static/range {v30 .. v31}, Ljava/lang/Long;->valueOf(J)Ljava/lang/Long;
+
+    move-result-object v6
+
+    invoke-virtual {v8, v5, v6}, Landroid/content/ContentValues;->put(Ljava/lang/String;Ljava/lang/Long;)V
+
+    move-object/from16 v0, p0
+
+    iget-object v0, v0, Lcom/google/android/mms/pdu/PduPersister;->mContext:Landroid/content/Context;
+
+    move-object v5, v0
+
+    move-object/from16 v0, p0
+
+    iget-object v0, v0, Lcom/google/android/mms/pdu/PduPersister;->mContentResolver:Landroid/content/ContentResolver;
+
+    move-object v6, v0
+
+    new-instance v7, Ljava/lang/StringBuilder;
+
+    invoke-direct {v7}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string v9, "content://mms/"
+
+    invoke-virtual {v7, v9}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v7
+
+    move-object v0, v7
+
+    move-wide/from16 v1, v18
+
+    invoke-virtual {v0, v1, v2}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
+
+    move-result-object v7
+
+    const-string v9, "/part"
+
+    invoke-virtual {v7, v9}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v7
+
+    invoke-virtual {v7}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v7
+
+    invoke-static {v7}, Landroid/net/Uri;->parse(Ljava/lang/String;)Landroid/net/Uri;
+
+    move-result-object v7
+
+    const/4 v9, 0x0
+
+    const/4 v10, 0x0
+
+    invoke-static/range {v5 .. v10}, Lcom/google/android/mms/util/SqliteWrapper;->update(Landroid/content/Context;Landroid/content/ContentResolver;Landroid/net/Uri;Landroid/content/ContentValues;Ljava/lang/String;[Ljava/lang/String;)I
+
+    new-instance v5, Ljava/lang/StringBuilder;
+
+    invoke-direct {v5}, Ljava/lang/StringBuilder;-><init>()V
+
+    move-object v0, v5
 
     move-object/from16 v1, p2
 
     invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/Object;)Ljava/lang/StringBuilder;
 
-    move-result-object v37
+    move-result-object v5
 
-    const-string v38, "/"
+    const-string v6, "/"
 
-    invoke-virtual/range {v37 .. v38}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 
-    move-result-object v37
+    move-result-object v5
 
-    move-object/from16 v0, v37
+    move-object v0, v5
 
-    move-wide/from16 v1, v24
+    move-wide/from16 v1, v30
 
     invoke-virtual {v0, v1, v2}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
 
-    move-result-object v37
+    move-result-object v5
 
-    invoke-virtual/range {v37 .. v37}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+    invoke-virtual {v5}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
 
-    move-result-object v37
+    move-result-object v5
 
-    invoke-static/range {v37 .. v37}, Landroid/net/Uri;->parse(Ljava/lang/String;)Landroid/net/Uri;
+    invoke-static {v5}, Landroid/net/Uri;->parse(Ljava/lang/String;)Landroid/net/Uri;
 
-    move-result-object v30
+    move-result-object v36
 
-    sget-object v7, Lcom/google/android/mms/pdu/PduPersister;->ADDRESS_FIELDS:[I
+    sget-object v13, Lcom/google/android/mms/pdu/PduPersister;->ADDRESS_FIELDS:[I
 
-    .restart local v7       #arr$:[I
-    move-object v0, v7
+    .restart local v13       #arr$:[I
+    move-object v0, v13
 
     array-length v0, v0
 
-    move/from16 v22, v0
+    move/from16 v28, v0
 
-    const/16 v19, 0x0
+    const/16 v25, 0x0
 
     :goto_9
-    move/from16 v0, v19
+    move/from16 v0, v25
 
-    move/from16 v1, v22
+    move/from16 v1, v28
 
-    if-ge v0, v1, :cond_15
+    if-ge v0, v1, :cond_14
 
-    aget v5, v7, v19
+    aget v11, v13, v25
 
-    .restart local v5       #addrType:I
-    invoke-static {v5}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+    .restart local v11       #addrType:I
+    invoke-static {v11}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
 
-    move-result-object v37
+    move-result-object v5
 
-    move-object v0, v6
+    invoke-virtual {v12, v5}, Ljava/util/HashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
 
-    move-object/from16 v1, v37
+    move-result-object v14
 
-    invoke-virtual {v0, v1}, Ljava/util/HashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
+    check-cast v14, [Lcom/google/android/mms/pdu/EncodedStringValue;
 
-    move-result-object v8
-
-    check-cast v8, [Lcom/google/android/mms/pdu/EncodedStringValue;
-
-    .restart local v8       #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
-    if-eqz v8, :cond_14
+    .restart local v14       #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
+    if-eqz v14, :cond_13
 
     move-object/from16 v0, p0
 
-    move-wide/from16 v1, v24
+    move-wide/from16 v1, v30
 
-    move v3, v5
+    move v3, v11
 
-    move-object v4, v8
+    move-object v4, v14
 
     invoke-direct {v0, v1, v2, v3, v4}, Lcom/google/android/mms/pdu/PduPersister;->persistAddress(JI[Lcom/google/android/mms/pdu/EncodedStringValue;)V
 
-    :cond_14
-    add-int/lit8 v19, v19, 0x1
+    :cond_13
+    add-int/lit8 v25, v25, 0x1
 
     goto :goto_9
 
-    .end local v5           #addrType:I
-    .end local v8           #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
-    :cond_15
-    return-object v30
+    .end local v11           #addrType:I
+    .end local v14           #array:[Lcom/google/android/mms/pdu/EncodedStringValue;
+    :cond_14
+    return-object v36
 
     :pswitch_data_0
     .packed-switch 0x80
