@@ -32,25 +32,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:label="@string/gadget_title" android:icon="@blur.res:drawable/ic_launcher_calendar" android:name=".CalendarWidgetProvider" android:process="com.android.calendar">
-            <intent-filter>
-                <action android:name="com.android.providers.calendar.APPWIDGET_UPDATE" />
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.motorola.blur.home.ACTION_BLUR_WIDGET" />
-                <action android:name="com.motorola.blur.home.ACTION_SET_WIDGET_SIZE" />
-                <action android:name="com.android.calendar.APPWIDGET_UPDATE" />
-                <action android:name="com.android.providers.calendar.NEXT_WIDGET_UPDATE" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.android.providers.calendar.LAUNCH_DAY" />
-                <data android:scheme="widget" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.android.providers.calendar.VIEW_EVENT" />
-                <data android:scheme="widget" />
-            </intent-filter>
-            <meta-data android:name="android.appwidget.provider" android:resource="@xml/appwidget_info" />
-        </receiver>
         <service android:name=".CalendarWidgetProvider$WidgetService" android:process="com.android.calendar">
             <intent-filter>
                 <action android:name="com.motorola.blur.home.ACTION_WIDGET_SERVICE" />
