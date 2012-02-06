@@ -535,7 +535,7 @@
         <item name="textColor">#ffffffff</item>
     </style>
     <style name="TextAppearance.Large" parent="@style/TextAppearance">
-        <item name="textSize">18sp</item>
+        <item name="textSize">22.0sp</item>
         <item name="textStyle">normal</item>
         <item name="textColor">?textColorPrimary</item>
     </style>
@@ -544,7 +544,7 @@
         <item name="textColorHint">?textColorHintInverse</item>
     </style>
     <style name="TextAppearance.Medium" parent="@style/TextAppearance">
-        <item name="textSize">16sp</item>
+        <item name="textSize">18.0sp</item>
         <item name="textStyle">normal</item>
         <item name="textColor">?textColorPrimary</item>
     </style>
@@ -553,7 +553,7 @@
         <item name="textColorHint">?textColorHintInverse</item>
     </style>
     <style name="TextAppearance.Small" parent="@style/TextAppearance">
-        <item name="textSize">13sp</item>
+        <item name="textSize">14.0sp</item>
         <item name="textStyle">normal</item>
         <item name="textColor">?textColorSecondary</item>
     </style>
