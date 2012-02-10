@@ -59,6 +59,9 @@
     <com.android.settings.IconPreferenceScreen android:title="@string/power_schedule_settings" android:key="power_schedule_settings" settings:icon="@drawable/ic_list_auto_power">
         <intent android:targetPackage="com.android.settings" android:action="android.intent.action.MAIN" android:targetClass="com.android.settings.PowerScheduleSettings" />
     </com.android.settings.IconPreferenceScreen>
+    <com.android.settings.IconPreferenceScreen android:title="@string/advanced_settings" android:key="nduoa_settings" settings:icon="@drawable/ic_nduoa_settings">
+        <intent android:targetPackage="com.nduoa.settings" android:action="android.intent.action.MAIN" android:targetClass="com.nduoa.settings.AdvSettings" />
+    </com.android.settings.IconPreferenceScreen>
     <com.android.settings.IconPreferenceScreen android:title="@string/about_settings" settings:icon="@drawable/ic_settings_about">
         <intent android:targetPackage="com.android.settings" android:action="android.intent.action.MAIN" android:targetClass="com.android.settings.DeviceInfoSettings" />
     </com.android.settings.IconPreferenceScreen>

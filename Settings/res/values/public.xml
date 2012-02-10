@@ -20,6 +20,11 @@
     <public type="drawable" name="ic_volume" id="0x7f020071" />
     <public type="drawable" name="ic_volume_off" id="0x7f020072" />
     <public type="drawable" name="lock_anim" id="0x7f020080" />
+    <public type="drawable" name="APKTOOL_DUMMY_0082" id="0x7f020082" />
+    <public type="drawable" name="APKTOOL_DUMMY_0083" id="0x7f020083" />
+    <public type="drawable" name="APKTOOL_DUMMY_0084" id="0x7f020084" />
+    <public type="drawable" name="APKTOOL_DUMMY_0085" id="0x7f020085" />
+    <public type="drawable" name="APKTOOL_DUMMY_0086" id="0x7f020086" />
     <public type="drawable" name="signal" id="0x7f020096" />
     <public type="drawable" name="wifi_signal" id="0x7f02009a" />
     <public type="drawable" name="wifi_signal_adhoc" id="0x7f02009b" />
@@ -158,11 +163,7 @@
     <public type="drawable" name="stat_notify_hotspot_connected" id="0x7f020097" />
     <public type="drawable" name="stat_notify_hotspot_disconnected" id="0x7f020098" />
     <public type="drawable" name="stat_notify_hotspot_roaming" id="0x7f020099" />
-    <public type="drawable" name="APKTOOL_DUMMY_0082" id="0x7f020082" />
-    <public type="drawable" name="APKTOOL_DUMMY_0083" id="0x7f020083" />
-    <public type="drawable" name="APKTOOL_DUMMY_0084" id="0x7f020084" />
-    <public type="drawable" name="APKTOOL_DUMMY_0085" id="0x7f020085" />
-    <public type="drawable" name="APKTOOL_DUMMY_0086" id="0x7f020086" />
+    <public type="drawable" name="ic_nduoa_settings" id="0x7f0200a0" />
     <public type="layout" name="apn_preference_layout" id="0x7f030000" />
     <public type="layout" name="band_mode" id="0x7f030001" />
     <public type="layout" name="battery_info" id="0x7f030002" />
@@ -2235,6 +2236,7 @@
     <public type="string" name="certificate_manage_button" id="0x7f080717" />
     <public type="string" name="password_error" id="0x7f080718" />
     <public type="string" name="wapi_cert_null" id="0x7f080719" />
+    <public type="string" name="advanced_settings" id="0x7f080731" />
     <public type="string" name="hdmi_title" id="0x7f08027b" />
     <public type="string" name="assisted_gps_enabled" id="0x7f08071a" />
     <public type="string" name="assisted_gps_disabled" id="0x7f08071b" />

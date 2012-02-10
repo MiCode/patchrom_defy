@@ -1890,4 +1890,5 @@ Click OK to install the screen reader."</string>
     <string name="certificate_manage_button">WAPI Certificate List</string>
     <string name="password_error">Password Error !</string>
     <string name="wapi_cert_null">Wapi cert is null!</string>
+    <string name="advanced_settings">Advanced Settings</string>
 </resources>

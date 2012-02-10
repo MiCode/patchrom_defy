@@ -57,6 +57,60 @@
     return-void
 .end method
 
+.method private addNduoaPreference()V
+    .locals 6
+
+    const/4 v5, 0x0
+
+    invoke-virtual {p0}, Lcom/android/settings/Settings;->getPreferenceScreen()Landroid/preference/PreferenceScreen;
+
+    move-result-object v0
+
+    const-string v4, "nduoa_settings"
+
+    invoke-virtual {v0, v4}, Landroid/preference/PreferenceGroup;->findPreference(Ljava/lang/CharSequence;)Landroid/preference/Preference;
+
+    move-result-object v3
+
+    invoke-virtual {p0}, Lcom/android/settings/Settings;->getPackageManager()Landroid/content/pm/PackageManager;
+
+    move-result-object v2
+
+    invoke-virtual {v3}, Landroid/preference/Preference;->getIntent()Landroid/content/Intent;
+
+    move-result-object v4
+
+    invoke-virtual {v2, v4, v5}, Landroid/content/pm/PackageManager;->queryIntentActivities(Landroid/content/Intent;I)Ljava/util/List;
+
+    move-result-object v1
+
+    invoke-interface {v1}, Ljava/util/List;->size()I
+
+    move-result v4
+
+    if-lez v4, :cond_0
+
+    invoke-interface {v1, v5}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object p0
+
+    check-cast p0, Landroid/content/pm/ResolveInfo;
+
+    invoke-virtual {p0, v2}, Landroid/content/pm/ResolveInfo;->loadLabel(Landroid/content/pm/PackageManager;)Ljava/lang/CharSequence;
+
+    move-result-object v4
+
+    invoke-virtual {v3, v4}, Landroid/preference/Preference;->setTitle(Ljava/lang/CharSequence;)V
+
+    :goto_0
+    return-void
+
+    :cond_0
+    invoke-virtual {v0, v3}, Landroid/preference/PreferenceGroup;->removePreference(Landroid/preference/Preference;)Z
+
+    goto :goto_0
+.end method
+
 
 # virtual methods
 .method public isBlurSupported()Z
@@ -582,6 +636,8 @@
 
     .line 236
     return-void
+
+    invoke-direct {p0}, Lcom/android/settings/Settings;->addNduoaPreference()V
 
     .line 150
     .end local v0           #activePhoneType:I

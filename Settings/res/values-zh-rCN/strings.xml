@@ -1830,6 +1830,7 @@ PIN 码可能不正确。"</string>
     <string name="certificate_manage_button">WAPI证书列表</string>
     <string name="password_error">密码错误 !</string>
     <string name="wapi_cert_null">Wapi证书为空!</string>
+    <string name="advanced_settings">高级设置</string>
     <string name="hdmi_title">HDMI</string>
     <string name="assisted_gps_enabled">使用服务器来辅助 GPS（取消选中可降低网络使用率）</string>
     <string name="assisted_gps_disabled">使用服务器来辅助 GPS（取消选中可提高 GPS 性能）</string>
