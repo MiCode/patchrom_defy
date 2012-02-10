@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen android:title="@string/power_schedule_settings"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference android:persistent="false" android:title="@string/schedule_shutdown_enabled" android:key="shutdown_enabled" />
+    <Preference android:persistent="false" android:title="@string/schedule_shutdown_time" android:key="shutdown_time" android:dependency="shutdown_enabled" />
+    <CheckBoxPreference android:persistent="false" android:title="@string/schedule_powerup_enabled" android:key="powerup_enabled" />
+    <Preference android:persistent="false" android:title="@string/schedule_powerup_time" android:key="powerup_time" android:dependency="powerup_enabled" />
+</PreferenceScreen>

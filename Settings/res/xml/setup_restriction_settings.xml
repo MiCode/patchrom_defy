@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen android:title="@string/restriction_settings_label" android:key="parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference android:persistent="false" android:title="@string/enable_restriction_lock_title" android:key="enable_restriction_lock" android:summary="@string/enable_restriction_lock_summary" />
+    <PreferenceScreen android:persistent="false" android:title="@string/change_restriction_password_title" android:key="change_restriction_password" android:summary="@string/change_restriction_password_summary" android:dependency="enable_restriction_lock" />
+    <PreferenceScreen android:persistent="false" android:title="@string/restriction_lock_title" android:key="restriction_lock_setting" android:summary="@string/restriction_lock_summary" android:dependency="enable_restriction_lock" />
+</PreferenceScreen>

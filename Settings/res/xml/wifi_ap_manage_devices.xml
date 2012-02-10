@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen android:key="wifi_ap_manage_devices_screen"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceScreen android:persistent="false" android:title="@string/manage_allowed_devices" android:key="wifi_ap_manage_allowed_devices_screen"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+        <CheckBoxPreference android:persistent="true" android:title="@string/wifi_ap_allow_all_devices" android:key="wifi_ap_allow_all_devices" android:disableDependentsState="true" />
+        <Preference android:title="@string/wifi_ap_allow_device" android:key="wifi_ap_allow_device" />
+        <com.android.settings.ProgressCategory android:persistent="true" android:title="@string/wifi_ap_allowed_devices" android:key="wifi_ap_allowed_devices" android:dependency="wifi_ap_allow_all_devices" />
+    </PreferenceScreen>
+    <ListPreference android:persistent="true" android:entries="@array/num_devices" android:title="@string/device_limit" android:key="max_devices" android:summary="@string/set_max_devices_summary" android:defaultValue="0" android:entryValues="@array/num_devices_values" />
+    <com.android.settings.ProgressCategory android:persistent="false" android:title="@string/connected_devices" android:key="wifi_ap_connected_devices" />
+</PreferenceScreen>

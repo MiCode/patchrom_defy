@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="view_spacing_left">90</integer>
+    <integer name="view_spacing_right">90</integer>
+    <integer name="view_spacing_top">8</integer>
+    <integer name="view_spacing_bottom">0</integer>
+</resources>

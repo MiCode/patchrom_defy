@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen android:title="@string/wifi_settings_category"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference android:persistent="false" android:title="@string/wifi_quick_toggle_title" android:key="enable_wifi" android:summary="@string/wifi_quick_toggle_summary" />
+    <com.android.settings.ProgressCategory android:persistent="false" android:title="@string/wifi_notify_open_networks" android:key="network_notification" android:dependency="enable_wifi" />
+    <CheckBoxPreference android:persistent="false" android:title="@string/wifi_open_networks" android:key="notify_open_networks" android:summary="@string/wifi_notify_open_networks_summary" android:dependency="enable_wifi" />
+    <CheckBoxPreference android:persistent="false" android:title="@string/wifi_secured_networks" android:key="notify_secure_networks" android:summary="@string/wifi_notify_secure_networks_summary" android:dependency="enable_wifi" />
+    <com.android.settings.ProgressCategory android:persistent="false" android:title="@string/wifi_access_points" android:key="access_points" android:dependency="enable_wifi" />
+    <Preference android:persistent="false" android:title="@string/wifi_add_network" android:key="add_network" android:dependency="enable_wifi" />
+    <PreferenceScreen android:persistent="false" android:background="#ffffff00" android:title="@string/manage_networks_category" android:key="manage_networks" android:dependency="enable_wifi">
+        <intent android:targetPackage="com.android.settings" android:action="android.intent.action.MAIN" android:targetClass="com.android.settings.wifi.ManageNetworks" />
+    </PreferenceScreen>
+    <Preference android:persistent="false" android:title="@string/wifi_manage_wapi_cert" android:key="manage_wapi_cert" android:dependency="enable_wifi" />
+</PreferenceScreen>

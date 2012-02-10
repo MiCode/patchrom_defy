@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/location_title" android:key="location_category">
+        <CheckBoxPreference android:title="@string/location_network_based" android:key="location_network" android:summaryOn="@string/location_neighborhood_level" android:summaryOff="@string/location_networks_disabled" />
+        <CheckBoxPreference android:title="@string/location_gps" android:key="location_gps" android:summaryOn="@string/location_street_level" android:summaryOff="@string/location_gps_disabled" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/location_section_title" android:key="location_category_privacy"
+      xmlns:settings="http://schemas.android.com/apk/res/com.android.settings">
+        <com.android.settings.SummaryListPreference android:persistent="false" android:entries="@array/location_privacy_policy_entries" android:title="@string/location_privacy_policy_setting_title" android:key="location_privacy_policy_setting" android:summary="@string/location_privacy_policy_setting_summary" android:entryValues="@array/location_privacy_policy_values" settings:entrySummaries="@array/location_privacy_policy_summaries" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/compass_title">
+        <Preference android:title="@string/compass_calribrate" android:key="compass_calribrate" android:summary="@string/compass_calribrate_summary">
+            <intent android:targetPackage="com.motorola.CompassCalibrate" android:action="android.intent.action.MAIN" android:targetClass="com.motorola.CompassCalibrate.CompassCalibrate" />
+        </Preference>
+    </PreferenceCategory>
+</PreferenceScreen>

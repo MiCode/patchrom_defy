@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference android:persistent="false" android:title="@string/airplane_mode" android:key="toggle_airplane" android:summary="@string/airplane_mode_summary" android:disableDependentsState="true" />
+    <CheckBoxPreference android:persistent="false" android:title="@string/wifi_quick_toggle_title" android:key="toggle_wifi" android:summary="@string/wifi_quick_toggle_summary" />
+    <PreferenceScreen android:title="@string/wifi_settings" android:key="wifi_settings" android:summary="@string/wifi_settings_summary">
+        <intent android:targetPackage="com.android.settings" android:action="android.intent.action.MAIN" android:targetClass="com.android.settings.wifi.WifiSettings" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="@string/wimax_settings" android:key="wimax_settings" android:summary="@string/wimax_settings_summary">
+        <intent android:targetPackage="com.android.settings.wimax" android:action="android.intent.action.MAIN" android:targetClass="com.android.settings.wimax.WimaxSettings" />
+    </PreferenceScreen>
+    <CheckBoxPreference android:persistent="false" android:title="@string/bluetooth_quick_toggle_title" android:key="toggle_bluetooth" android:summary="@string/bluetooth_quick_toggle_summary" />
+    <PreferenceScreen android:title="@string/bluetooth_settings_title" android:key="bt_settings" android:summary="@string/bluetooth_settings_summary">
+        <intent android:targetPackage="com.android.settings" android:action="android.intent.action.MAIN" android:targetClass="com.android.settings.bluetooth.BluetoothSettings" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="@string/tether_settings_title_both" android:key="tether_settings" android:summary="@string/tether_settings_summary_both">
+        <intent android:targetPackage="com.android.settings" android:action="android.intent.action.MAIN" android:targetClass="com.android.settings.TetherSettings" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="@string/vpn_settings_title" android:key="vpn_settings" android:summary="@string/vpn_settings_summary" />
+    <CheckBoxPreference android:persistent="false" android:title="@string/nfc_quick_toggle_title" android:key="toggle_nfc" android:summary="@string/nfc_quick_toggle_summary" />
+    <PreferenceScreen android:title="@string/network_settings_title" android:key="network_settings" android:summary="@string/network_settings_summary" android:dependency="toggle_airplane">
+        <intent android:targetPackage="com.android.phone" android:action="android.intent.action.MAIN" android:targetClass="com.android.phone.Settings" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="@string/broadcast_settings_title" android:key="cellbroadcast_settings" android:summary="@string/broadcast_settings_summary" android:dependency="toggle_airplane">
+        <intent android:targetPackage="com.motorola.cellbroadcast" android:action="android.intent.action.MAIN" android:targetClass="com.motorola.cellbroadcast.CBSettings" />
+    </PreferenceScreen>
+</PreferenceScreen>

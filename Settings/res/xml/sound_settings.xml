@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen android:title="@string/sound_settings" android:key="sound_settings"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:settings="http://schemas.android.com/apk/res/com.android.settings">
+    <PreferenceCategory android:title="@string/sound_category_sound_title" />
+    <PreferenceScreen android:title="@string/ring_modes_title" android:key="ring_modes" android:summary="@string/ring_modes_summary">
+        <intent android:action="com.android.settings.SHOW_RINGER_MODES" />
+    </PreferenceScreen>
+    <CheckBoxPreference android:persistent="false" android:title="@string/silent_mode_title" android:key="silent" android:summary="@string/silent_mode_summary" android:disableDependentsState="true" />
+    <ListPreference android:entries="@array/vibrate_entries" android:title="@string/vibrate_title" android:key="vibrate" android:summary="@string/vibrate_summary" android:entryValues="@array/vibrate_values" />
+    <com.android.settings.RingerVolumePreference android:persistent="false" android:title="@string/all_volume_title" android:key="ring_volume" android:summary="@string/ring_volume_summary" android:dialogTitle="@string/all_volume_title" android:streamType="ring" />
+    <PreferenceCategory android:title="@string/sound_category_calls_title" />
+    <com.motorola.ringtone.SoundPreference android:persistent="false" android:title="@string/ringtone_title" android:key="gsm_ringtone_settings" android:summary="@string/ringtone_summary" />
+    <PreferenceCategory android:title="@string/sound_category_notification_title" />
+    <com.android.settings.DefaultRingtonePreference android:persistent="false" android:title="@string/notification_sound_title" android:key="notification_sound" android:summary="@string/notification_sound_summary" android:dialogTitle="@string/notification_sound_dialog_title" android:ringtoneType="notification" />
+    <CheckBoxPreference android:persistent="false" android:title="@string/notification_led_enable_title" android:key="notification_pulse" android:summary="@string/notification_led_enable_summary_on" />
+    <PreferenceCategory android:title="@string/sound_category_feedback_title" />
+    <CheckBoxPreference android:title="@string/dtmf_tone_enable_title" android:key="dtmf_tone" android:defaultValue="true" android:summaryOn="@string/dtmf_tone_enable_summary_on" android:summaryOff="@string/dtmf_tone_enable_summary_off" />
+    <CheckBoxPreference android:title="@string/sound_effects_enable_title" android:key="sound_effects" android:defaultValue="true" android:summaryOn="@string/sound_effects_enable_summary_on" android:summaryOff="@string/sound_effects_enable_summary_off" />
+    <CheckBoxPreference android:title="@string/lock_sounds_enable_title" android:key="lock_sounds" android:defaultValue="true" android:summaryOn="@string/lock_sounds_enable_summary_on" android:summaryOff="@string/lock_sounds_enable_summary_off" />
+    <PreferenceScreen android:title="@string/media_audio_effect_title" android:key="audio_effect" android:summary="@string/media_audio_effect_summary">
+        <intent android:targetPackage="com.motorola.android.AudioEffectSettings" android:action="android.intent.action.MAIN" android:targetClass="com.motorola.android.AudioEffectSettings.DeviceListActivity" />
+    </PreferenceScreen>
+    <CheckBoxPreference android:title="@string/haptic_feedback_enable_title" android:key="haptic_feedback" android:defaultValue="true" android:summaryOn="@string/haptic_feedback_enable_summary_on" android:summaryOff="@string/haptic_feedback_enable_summary_off" />
+    <CheckBoxPreference android:title="@string/play_media_notification_sounds_enable_title" android:key="play_media_notification_sounds" android:defaultValue="true" android:summaryOn="@string/play_media_notification_sounds_enable_summary_on" android:summaryOff="@string/play_media_notification_sounds_enable_summary_off" />
+    <ListPreference android:entries="@array/emergency_tone_entries" android:title="@string/emergency_tone_title" android:key="emergency_tone" android:summary="@string/emergency_tone_summary" android:entryValues="@array/emergency_tone_values" />
+    <CheckBoxPreference android:title="@string/call_connect_tone_enable_title" android:key="call_connect_tone" android:summary="@string/call_connect_tone_enable_summary" android:defaultValue="false" />
+    <CheckBoxPreference android:title="@string/network_lost_tone_enable_title" android:key="network_lost_tone" android:defaultValue="false" />
+    <CheckBoxPreference android:title="@string/enhanced_roaming_tone_enable_title" android:key="eri_alert_sounds" android:summary="@string/enhanced_roaming_tone_enable_summary" android:defaultValue="false" />
+    <CheckBoxPreference android:title="@string/software_update_alert_title" android:key="software_update_alert" android:summary="@string/software_update_alert_summary" android:defaultValue="false" />
+    <CheckBoxPreference android:title="@string/full_charge_notification_title" android:key="full_charge_notification" android:defaultValue="true" android:summaryOn="@string/full_charge_notification_summary_on" android:summaryOff="@string/full_charge_notification_summary_off" />
+</PreferenceScreen>

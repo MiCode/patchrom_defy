@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen android:title="@string/restriction_settings_label"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference android:persistent="false" android:title="@string/location_restriction_title" android:key="location_restriction" android:summary="@string/location_restriction_summary" />
+    <PreferenceScreen android:title="@string/call_restriction_title" android:key="call_restriction" android:summary="@string/call_restriction_summary">
+        <intent android:targetPackage="com.android.settings" android:action="android.intent.action.MAIN" android:targetClass="com.android.settings.restriction.CallRestrictionSettings" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="@string/messages_restriction_title" android:key="messages_restriction" android:summary="@string/messages_restriction_summary">
+        <intent android:targetPackage="com.android.settings" android:action="android.intent.action.MAIN" android:targetClass="com.android.settings.restriction.MessageRestrictionSettings" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="@string/dial_up_modem_title" android:key="dialup_restriction" android:summary="@string/dialup_restriction_summary" />
+</PreferenceScreen>

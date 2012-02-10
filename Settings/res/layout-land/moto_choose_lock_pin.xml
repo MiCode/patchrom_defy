@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="horizontal" android:id="@id/topLayout" android:background="@color/black" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:textSize="18.0sp" android:gravity="center" android:id="@id/headerText" android:layout_width="0.0dip" android:layout_height="wrap_content" android:layout_weight="1.0" />
+    <LinearLayout android:orientation="vertical" android:id="@id/normalPasscode" android:layout_width="fill_parent" android:layout_height="fill_parent">
+        <EditText android:textSize="15.0sp" android:id="@id/pinEdit" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="3.0dip" android:layout_marginTop="5.0dip" android:layout_marginRight="3.0dip" android:maxLines="1" android:inputType="textPassword" android:imeOptions="actionDone" />
+        <LinearLayout android:orientation="horizontal" android:id="@id/passcodeButton" android:layout_width="fill_parent" android:layout_height="fill_parent">
+            <Button android:id="@id/enterButton" android:visibility="gone" android:layout_width="150.0dip" android:layout_height="wrap_content" android:text="@android:string/ok" android:layout_below="@id/pinEdit" />
+            <Button android:id="@id/cancelButton" android:visibility="gone" android:layout_width="150.0dip" android:layout_height="wrap_content" android:text="@string/cancel" android:layout_below="@id/pinEdit" />
+        </LinearLayout>
+    </LinearLayout>
+    <com.motorola.internal.widget.LockPinView android:id="@id/lockPin" android:layout_width="0.0dip" android:layout_height="fill_parent" android:layout_weight="3.0" />
+</LinearLayout>

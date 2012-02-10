@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:id="@id/text_view_enter_mac_headline" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/wifi_ap_enter_mac_address" style="?android:attr/textAppearanceSmallInverse" />
+    <EditText android:id="@id/text_view_enter_mac" android:layout_width="fill_parent" android:layout_height="wrap_content" android:hint="@string/wifi_ap_mac_address_sample" />
+    <TextView android:id="@id/text_view_enter_name_headline" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/wifi_ap_enter_device_name" style="?android:attr/textAppearanceSmallInverse" />
+    <EditText android:id="@id/text_view_enter_name" android:layout_width="fill_parent" android:layout_height="wrap_content" />
+</LinearLayout>

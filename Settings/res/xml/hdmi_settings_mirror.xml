@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.android.settings.HDMIOverscanPreference android:id="@id/hdmi_overscan_seekbar" android:paddingLeft="20.0dip" android:paddingTop="2.0dip" android:paddingRight="20.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:title="@string/hdmi_overscan_title" android:key="hdmi_overscan_seekbar" android:summary="@string/hdmi_overscan_descr" />
+</PreferenceScreen>

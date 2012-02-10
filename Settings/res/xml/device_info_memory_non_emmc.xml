@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/external_sd_memory" android:key="memory_sd">
+        <Preference android:title="@string/memory_size" android:key="external_memory_sd_size" android:summary="00" style="?android:attr/preferenceInformationStyle" />
+        <Preference android:title="@string/memory_available" android:key="external_memory_sd_avail" android:summary="00" style="?android:attr/preferenceInformationStyle" />
+        <Preference android:title="@string/external_sd_eject" android:key="external_sd_mount_toggle" android:summary="@string/external_sd_eject_summary" />
+        <Preference android:title="@string/external_sd_format" android:key="external_memory_sd_format" android:summary="@string/external_sd_format_summary" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/application_storage_memory">
+        <Preference android:title="@string/memory_available" android:key="memory_application_avail" android:summary="00" style="?android:attr/preferenceInformationStyle" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/memory_software_install_category_title" android:key="memory_swinstall">
+        <CheckBoxPreference android:persistent="false" android:title="@string/memory_software_install_title" android:key="memory_software_install" android:summary="@string/memory_software_install_summary" />
+        <PreferenceScreen android:title="@string/memory_software_install_help_button_text" android:key="memory_software_install_help" />
+    </PreferenceCategory>
+</PreferenceScreen>

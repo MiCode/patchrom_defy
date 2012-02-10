@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen android:title="@string/manage_networks_category"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference android:persistent="false" android:title="@string/wifi_manage_networks" android:key="forget_all" android:summary="@string/wifi_manage_networks_summary" />
+    <com.android.settings.ProgressCategory android:persistent="false" android:title="@string/wifi_access_points" android:key="access_points" android:dependency="forget_all" />
+</PreferenceScreen>
