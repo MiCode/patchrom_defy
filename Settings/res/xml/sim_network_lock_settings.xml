@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen android:title="@string/sim_network_lock_settings"
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:settings="http://schemas.android.com/apk/res/com.android.settings">
-    <CheckBoxPreference android:title="@string/sim_network_lock_toggle" android:key="sim_network_lock_toggle" android:summaryOn="@string/sim_network_lock_on" android:summaryOff="@string/sim_network_lock_off" />
-    <com.android.settings.EditPinPreference android:key="sim_network_lock_code" android:dialogTitle="@string/sim_network_lock_code" android:positiveButtonText="@string/sim_network_lock_enter_ok" android:negativeButtonText="@string/sim_network_lock_enter_cancel" />
-</PreferenceScreen>

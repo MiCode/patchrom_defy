@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen android:title="@string/message_restriction_settings_label"
-  xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceScreen android:title="@string/incoming_message_restriction_title" android:key="incoming_message_restriction_settings" android:summary="@string/incoming_message_restriction_summary" />
-    <PreferenceScreen android:title="@string/outgoing_message_restriction_title" android:key="outgoing_message_restriction_settings" android:summary="@string/outgoing_message_restriction_summary" />
-</PreferenceScreen>

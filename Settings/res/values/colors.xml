@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="black">#ff000000</color>
-    <color name="red">#ffff0000</color>
-    <color name="lock_pwd_background">@android:color/background_light</color>
-    <color name="text_color">@android:color/black</color>
-    <color name="look_10_text_color_in_black_background">@android:color/secondary_text_dark</color>
-</resources>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-  xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListPreference android:entries="@array/hdmi_format_entries" android:title="@string/hdmi_format" android:key="hdmi_format" android:summary="@string/hdmi_format_summary" android:dialogTitle="@string/dialog_hdmi_format" android:entryValues="@array/hdmi_format_values" />
-    <CheckBoxPreference android:title="@string/hdmi_incoming_call_enable_title" android:key="hdmi_incoming_call" android:summary="@string/hdmi_incoming_call_enable_summary" android:defaultValue="true" />
-</PreferenceScreen>

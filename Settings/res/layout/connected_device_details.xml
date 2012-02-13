@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content"
-  xmlns:android="http://schemas.android.com/apk/res/android">
-    <TextView android:id="@id/textview_ip_address" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/ip_address" />
-    <TextView android:id="@id/textview_mac_address" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/mac_address" />
-    <TextView android:id="@id/textview_connected" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/connected" />
-    <TextView android:id="@id/textview_conn_duration" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/conn_duration" />
-</LinearLayout>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen android:title="@string/wifi_preferred_nw_finder"
-  xmlns:android="http://schemas.android.com/apk/res/android">
-    <Preference android:persistent="false" android:title="@string/wifi_network_selection" android:summary="@string/pref_finder_text" />
-    <com.android.settings.ProgressCategory android:persistent="false" android:title="@string/wifi_access_points" android:key="access_points" />
-</PreferenceScreen>

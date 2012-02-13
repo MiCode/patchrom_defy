@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen android:title="@string/call_restriction_settings_label"
-  xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceScreen android:title="@string/incoming_call_restriction_title" android:key="incoming_call_restriction_settings" android:summary="@string/incoming_call_restriction_summary" />
-    <PreferenceScreen android:title="@string/outgoing_call_restriction_title" android:key="outgoing_call_restriction_settings" android:summary="@string/outgoing_call_restriction_summary" />
-</PreferenceScreen>
