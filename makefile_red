@@ -14,7 +14,8 @@ local-zip-file     := defy_2.3.4_cn_red.zip
 local-out-zip-file := defy_2.3.4_cn_miui_red.zip
 
 # All apps from original ZIP, but has smali files chanded
-local-modified-apps := BlurPhone MediaProvider OverlaySettingsProvider Setup TelephonyProvider BlurCalendarProvider
+local-modified-apps := BlurPhone MediaProvider OverlaySettingsProvider Setup TelephonyProvider \
+BlurCalendarProvider
 
 local-miui-modified-apps := Launcher2 Contacts
 

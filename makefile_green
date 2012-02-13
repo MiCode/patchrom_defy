@@ -32,7 +32,8 @@ blur_sinamicroblog blur_sina_vip blur_sina blur_renren blur_qzone \
 blur_qq_vip blur_qq blur_netease_yeah blur_netease_188 blur_netease_163 \
 blur_netease_126 blur_kaixin001 blur_fiveone YoudaoDict Tudou Top100Music \
 SHOP4APPS QQBrowser QQIM QQMicroBlog Quickoffice StraightFlush \
-NewsWidget SinaWeatherWidget StickyNoteWidget Viva Protips BookmarksWidget basebandswitcherV4.0
+NewsWidget SinaWeatherWidget StickyNoteWidget Viva Protips BookmarksWidget \
+CMScreenshot
 
 # To include the local targets before and after zip the final ZIP file, 
 # and the local-targets should:
